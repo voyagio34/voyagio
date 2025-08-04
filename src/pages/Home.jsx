@@ -769,7 +769,7 @@ const Home = () => {
       <section className='relative py-20'>
         <div className='bg-gray-200/30 relative max-w-6xl mx-auto rounded-2xl py-10 w-full'>
           <div className="flex flex-col items-center md:px-20 sm:px-10 px-4 py-20">
-            <h2 className='text-blue-600 sm:text-2xl text-xl text-center  font-medium tracking-widest mb-2'>SUBSCRIBE TO OUT NEWSLETTER</h2>
+            <h2 className='text-blue-600 sm:text-2xl text-xl text-center  font-medium tracking-widest mb-2'>SUBSCRIBE TO OUR NEWSLETTER</h2>
             <h2 className='text-gray-900 sm:text-4xl text-3xl text-center font-semibold'>Prepare you self and let’s explore the <br className='sm:block hidden'/> beautiful of the world</h2>
           <div className='flex sm:flex-row flex-col sm:gap-0 gap-4 items-center pt-20 w-full'>
             <Mail className='text-gray-300 sm:block hidden translate-x-10'  />
