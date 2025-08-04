@@ -1,0 +1,128 @@
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+/* Hide number input spinners */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+body{
+  font-family:'Franklin Gothic ', 'Arial Narrow', Arial, sans-serif;
+}
+
+
+/* for date icon */
+/* Basic gray calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+/* Method 1: Using filter for gray color */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+  cursor: pointer;
+}
+
+/* Method 2: Specific gray color using complex filter */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(95%);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: brightness(0) saturate(100%) invert(30%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(95%);
+}
+
+/* For different color schemes */
+/* Blue calendar icon */
+.date-input-blue input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(45%) sepia(93%) saturate(1352%) hue-rotate(196deg) brightness(95%) contrast(88%);
+}
+
+/* Red calendar icon */
+.date-input-red input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(341deg) brightness(96%) contrast(97%);
+}
+
+/* Focus state */
+input[type="date"]:focus::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(25%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(95%);
+}
+
+/* For Firefox (limited support) */
+input[type="date"]::-moz-calendar-picker-indicator {
+  opacity: 0.5;
+}
+
+/* For Edge */
+input[type="date"]::-ms-calendar-picker-indicator {
+  opacity: 0.5;
+}
+
+/* Complete cross-browser solution */
+input[type="date"] {
+  position: relative;
+  color: #6b7280; /* text-gray-500 */
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 10px;
+  opacity: 0.6;
+  cursor: pointer;
+  filter: invert(50%);
+  width: 20px;
+  height: 20px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(70%);
+  }
+}
+
+/* Custom class for better control */
+.custom-date-input::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(48%) sepia(8%) saturate(509%) hue-rotate(178deg) brightness(95%) contrast(85%);
+  opacity: 1;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.custom-date-input::-webkit-calendar-picker-indicator:hover {
+  filter: brightness(0) saturate(100%) invert(28%) sepia(8%) saturate(509%) hue-rotate(178deg) brightness(95%) contrast(85%);
+}
