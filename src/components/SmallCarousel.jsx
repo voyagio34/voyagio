@@ -54,7 +54,13 @@ const SmallCarousel = () => {
             name: "Grand Canyon",
             tours: "356 Tours",
             image: "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=300&h=400&fit=crop"
-        }
+        }, 
+        {
+            id: 9,
+            name: "Eiffel Tower",
+            tours: "356 Tours",
+            image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=300&h=400&fit=crop"
+        },
     ];
 
     const checkScrollButtons = () => {
@@ -97,9 +103,8 @@ const SmallCarousel = () => {
                 {/* Left Arrow */}
                 <button
                     onClick={() => scroll('left')}
-                    className={`absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg transition-opacity ${
-                        canScrollLeft ? 'opacity-100 cursor-pointer hover:bg-gray-100' : 'opacity-50 cursor-not-allowed'
-                    }`}
+                    className={`absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg transition-opacity ${canScrollLeft ? 'opacity-100 cursor-pointer hover:bg-gray-100' : 'opacity-50 cursor-not-allowed'
+                        }`}
                     disabled={!canScrollLeft}
                     aria-label="Scroll left"
                 >
@@ -109,9 +114,8 @@ const SmallCarousel = () => {
                 {/* Right Arrow */}
                 <button
                     onClick={() => scroll('right')}
-                    className={`absolute sm:-right-4 right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg transition-opacity ${
-                        canScrollRight ? 'opacity-100 cursor-pointer hover:bg-gray-100' : 'opacity-50 cursor-not-allowed'
-                    }`}
+                    className={`absolute sm:-right-4 right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg transition-opacity ${canScrollRight ? 'opacity-100 cursor-pointer hover:bg-gray-100' : 'opacity-50 cursor-not-allowed'
+                        }`}
                     disabled={!canScrollRight}
                     aria-label="Scroll right"
                 >
