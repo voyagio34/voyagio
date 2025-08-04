@@ -43,7 +43,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <div className="flex items-center">
                         <Link to="/" className="flex items-center space-x-3 group">
-                            <img src='/src/assets/icon.png' alt='LOGO' />
+                            <img src='/icon.png' alt='LOGO' />
                         </Link>
                     </div>
 
@@ -89,18 +89,18 @@ const Navbar = () => {
                 {/* Mobile Menu */}
                 <div className={`lg:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0 overflow-hidden'
                     }`}>
-                    <div className="py-4 w-auto space-y-2 font-medium bg-white/95 backdrop-blur-sm rounded-2xl shadow-inner">
+                    <div className="py-4 w-auto space-y-2 font-medium bg-white/95 backdrop-blur-sm rounded-2xl ">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 to={link.href}
-                                className="block text-center px-6 py-3 text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 rounded-xl transition-all duration-300 mx-2"
+                                className="block  px-6 py-3 text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 rounded-xl transition-all duration-300 mx-2"
                             >
                                 {link.name}
                             </Link>
                         ))}
                         <div className="pt-4 border-t w-auto border-gray-200 space-y-3 px-6">
-                            <Link href="/" className="block w-full py-3 text-center text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
+                            <Link href="/" className="block w-full py-3 text-center bg-gray-100 text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
                                 Download App
                             </Link>
                             <Link to="/signin" className="block w-full cursor-pointer text-center py-3 text-gray-50 font-medium transition-colors duration-300 bg-blue-500 hover:bg-blue-700 rounded-lg">

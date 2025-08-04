@@ -6,7 +6,7 @@ export const TopRestaurants = [
         rating: 5.0,
         reviewCount: 5.5,
         address: "263 Oak Terrace, Los Angeles, CA 44527",
-        image: "/src/assets/res1.jpg"
+        image: "/res1.jpg"
     },
     {
         id: 2,
@@ -15,7 +15,7 @@ export const TopRestaurants = [
         rating: 5.0,
         reviewCount: 5.5,
         address: "263 Oak Terrace, Los Angeles, CA 44527",
-        image: "/src/assets/res2.jpg"
+        image: "/res2.jpg"
     },
     {
         id: 3,
@@ -24,7 +24,7 @@ export const TopRestaurants = [
         rating: 4.0,
         reviewCount: 5.5,
         address: "263 Oak Terrace, Los Angeles, CA 44527",
-        image: "/src/assets/res3.jpg"
+        image: "/res3.jpg"
     },
     {
         id: 4,
@@ -33,6 +33,6 @@ export const TopRestaurants = [
         rating: 5.0,
         reviewCount: 5.5,
         address: "263 Oak Terrace, Los Angeles, CA 44527",
-        image: "/src/assets/res4.jpg"
+        image: "/res4.jpg"
     }
 ];

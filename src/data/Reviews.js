@@ -6,7 +6,7 @@ export const testimonialsData = [
     author: {
       name: "Sara Mohamed",
       location: "Jakatar",
-      avatar: "/src/assets/sara.png"
+      avatar: "/sara.png"
     },
     rating: 5
   },
@@ -17,7 +17,7 @@ export const testimonialsData = [
     author: {
       name: "Atend John",
       location: "California",
-       avatar: "/src/assets/sara.png"
+       avatar: "/sara.png"
     },
     rating: 3
   },
@@ -28,7 +28,7 @@ export const testimonialsData = [
       author: {
           name: "Sara Mohamed",
           location: "Jakatar",
-          avatar: "/src/assets/sara.png"
+          avatar: "/sara.png"
         },
         rating: 4
     },
@@ -39,7 +39,7 @@ export const testimonialsData = [
       author: {
         name: "Atend John",
         location: "California",
-         avatar: "/src/assets/sara.png"
+         avatar: "/sara.png"
       },
       rating: 3
     },

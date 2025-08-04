@@ -1,25 +1,25 @@
 export const InfoCards = [
   {
     id: 1,
-    icon: '/src/assets/icon1.png',
+    icon: '/icon1.png',
     title: "Pick Your Destination",
     description: "Choose one or more cities you'd like to explore."
   },
   {
     id: 2,
-    icon: '/src/assets/icon2.png',
+    icon: '/icon2.png',
     title: "Set Your Dates",
     description: "Select your travel window or let Voyagio suggest the best time based on preferences."
   },
   {
     id: 3,
-    icon: '/src/assets/icon3.png',
+    icon: '/icon3.png',
     title: "Tell Us Your Style",
     description: "Foodie? Art lover? Nature seeker? We'll match your vibe."
   },
   {
     id: 4,
-    icon: '/src/assets/icon4.png',
+    icon: '/icon4.png',
     title: "Preview Your Itinerary",
     description: "Get a real-time itinerary instantly-and edit it on the fly as your trip evolves."
   }

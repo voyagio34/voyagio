@@ -77,11 +77,11 @@ const Home = () => {
   return (
     <div className='bg-gray-50'>
       {/* Hero section */}
-      <section className="relative bg-cover bg-center bg-[url('/src/assets/Hero_bg.png')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full">
+      <section className="relative bg-cover bg-center bg-[url('/Hero_bg.png')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full">
         <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-12">
 
           {/* Left: Form Section */}
-          <div className=" p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2">
+          <div className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2">
 
             {/* Travel Style Dropdown */}
             <div className='bg-white p-6 rounded-2xl flex sm:flex-row flex-col w-auto'>
@@ -220,19 +220,19 @@ const Home = () => {
               <div className="flex sm:flex-row flex-col w-full items-center gap-3">
                 <input
                   type="date"
-                  className="w-1/2 gray text-gray-500  p-3 border border-gray-300 self rounded focus:outline-none "
+                  className="w-full sm:w-1/2 gray text-gray-500  p-3 border border-gray-300 self rounded focus:outline-none "
                 />
 
                 <input
                   type="date"
-                  className="w-1/2 p-3 border text-gray-500 border-gray-300 rounded focus:outline-none"
+                  className="w-full sm:w-1/2 p-3 border text-gray-500 border-gray-300 rounded focus:outline-none"
                 />
 
               </div>
             </div>
 
             {/* Button */}
-            <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-600 text-white text-md font-medium  hover:bg-blue-700 transition-all cursor-pointer" >
+            <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-600 text-white text-md   hover:bg-blue-700 font-bold transition-all cursor-pointer" >
               Generate Itinerary
             </button>
           </div>
@@ -240,7 +240,7 @@ const Home = () => {
           {/* Right: Mobile Images */}
           <div className="relative w-full h-full lg:w-1/2 flex justify-center items-center ">
             <img
-              src="/src/assets/Hero_img.png"
+              src="/Hero_img.png"
               alt="App preview 1"
               className="w-full max-w-4xl"
             />
@@ -558,7 +558,7 @@ const Home = () => {
                   />
                   {/* Wave Pattern Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 rounded-b-2xl">
-                    <img src="/src/assets/how4.png" alt="wave" />
+                    <img src="/how4.png" alt="wave" />
                   </div>
                 </div>
               </div>
@@ -597,7 +597,7 @@ const Home = () => {
       </section>
 
       <section className='relative bg-blue-200/35 py-20 w-full'>
-        <img src="/src/assets/testbg.png" alt="bg" className='absolute bottom-0 max-w-64 left-2' />
+        <img src="/testbg.png" alt="bg" className='absolute bottom-0 max-w-64 left-2' />
         <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
           <div className='flex flex-row justify-between w-full h-full items-baseline'>
             <div className="flex flex-col">
@@ -739,8 +739,8 @@ const Home = () => {
       <section className='relative py-20 md:px-20 px-10'>
         <div className='bg-red-200/30 relative max-w-7xl mx-auto rounded-2xl w-full'>
           <div className='flex flex-col md:px-20 px-10 py-24'>
-            <img src="/src/assets/rightbottom.png" alt="arrow" className='md:block hidden absolute w-25 bottom-10 lg:right-50 right-20' />
-            <img src="/src/assets/rightbottom.png" alt="arrow" className='md:block hidden absolute w-40 bottom-20 lg:right-30 right-10' />
+            <img src="/rightbottom.png" alt="arrow" className='md:block hidden absolute w-25 bottom-10 lg:right-50 right-20' />
+            <img src="/rightbottom.png" alt="arrow" className='md:block hidden absolute w-40 bottom-20 lg:right-30 right-10' />
             <div className='flex sm:flex-row flex-col sm:items-center sm:justify-start justify-center'>
               <div className="flex flex-col">
                 <h2 className='lg:text-5xl text-4xl font-bold mb-2'>
@@ -752,13 +752,13 @@ const Home = () => {
                   Embark on a journey like never before with Travila – your <br />ultimate travel companion.
                 </p>
               </div>
-              <img src="/src/assets/download1.png" alt="download mobile" className='w-34 -rotate-12 ms-10' />
+              <img src="/download1.png" alt="download mobile" className='w-34 -rotate-12 ms-10' />
 
             </div>
             <div className="flex md:flex-row flex-col gap-4 mt-14">
 
-              <img src="/src/assets/playstore.png" alt="playstore" className='w-40' />
-              <img src="/src/assets/appstore.png" alt="appstore" className='w-40' />
+              <img src="/playstore.png" alt="playstore" className='w-40' />
+              <img src="/appstore.png" alt="appstore" className='w-40' />
 
             </div>
           </div>

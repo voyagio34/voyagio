@@ -1,9 +1,9 @@
 export const Deals = [
     {
         id:"1",
-        logo:"/src/assets/deal2.png",
-        image:"/src/assets/deal1.png",
-        agent:"/src/assets/deal3.png",
+        logo:"/deal2.png",
+        image:"/deal1.png",
+        agent:"/deal3.png",
         from:"Austin",
         to:"New York",
         day:"friday",
@@ -12,9 +12,9 @@ export const Deals = [
     },
     {
         id:"2",
-        logo:"/src/assets/deal2.png",
-        image:"/src/assets/deal1.png",
-        agent:"/src/assets/deal3.png",
+        logo:"/deal2.png",
+        image:"/deal1.png",
+        agent:"/deal3.png",
         from:"Austin",
         to:"New York",
         day:"friday",
@@ -23,9 +23,9 @@ export const Deals = [
     },
     {
         id:"3",
-        logo:"/src/assets/deal2.png",
-        image:"/src/assets/deal1.png",
-        agent:"/src/assets/deal3.png",
+        logo:"/deal2.png",
+        image:"/deal1.png",
+        agent:"/deal3.png",
         from:"Austin",
         to:"New York",
         day:"friday",
