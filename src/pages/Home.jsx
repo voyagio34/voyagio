@@ -703,9 +703,10 @@ const Home = () => {
       </section>
 
       <section className='relative mx-auto py-20 w-full'>
-        <div className='max-w-7xl w-full mx-auto px-4'>
+        <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
 
-          <div className=" flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
             <div>
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Travel Insights & Guides
