@@ -37,7 +37,7 @@ const ScrollToTop = () => {
   return (
     <>
       {/* Style 1: Simple Circle Button */}
-      <div className="fixed bottom-8 right-8 z-50 ">
+      <div className="fixed bottom-8 right-8 z-20 ">
         <button
           onClick={scrollToTop}
           className={`

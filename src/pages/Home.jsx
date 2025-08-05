@@ -4,7 +4,7 @@ import { getTrackBackground, Range } from 'react-range';
 import SmallCarousel from '../components/SmallCarousel';
 import { AppFeatures } from '../data/AppFeatures';
 import { TopRestaurants } from '../data/TopRestaurants';
-import { FaArrowRight, FaCalendar, FaCalendarAlt, FaClock, FaHeart, FaInbox, FaMailchimp, FaMapMarked, FaMapMarkedAlt, FaRegClock, FaRegStar, FaSearch, FaStar, FaVoicemail } from 'react-icons/fa';
+import { FaArrowRight, FaCalendar, FaCalendarAlt, FaClock, FaHeart, FaInbox, FaMailchimp, FaMap, FaMapMarked, FaMapMarkedAlt, FaRegClock, FaRegStar, FaSearch, FaStar, FaVoicemail } from 'react-icons/fa';
 import { InfoCards } from '../data/InfoCards';
 import { Deals } from '../data/Deals';
 import { Experiences } from '../data/Experience';
@@ -13,6 +13,8 @@ import { FaCircleLeft, FaCircleRight, FaFolderClosed, FaMessage, FaRegMessage } 
 import { testimonialsData } from '../data/Reviews';
 import { blogPosts } from '../data/BlogPosts';
 import { Mail, MailIcon } from 'lucide-react';
+import OnboardingModal from '../components/OnboardModal';
+import DestinationModal from '../components/DestinationModal';
 const STEP = 100;
 const MIN = 2000;
 const MAX = 15000;
@@ -20,6 +22,11 @@ const MAX = 15000;
 
 const Home = () => {
   const [values, setValues] = useState([2000, 15000]);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [destinationOpen, setDestinationOpen] = useState(false);
+
+  const [onboardingLocation, setOnboardingLocation] = useState({ lat: 51.1784, lng: -115.5708 });
+  const [destinationLocation, setDestinationLocation] = useState({ lat: 51.1784, lng: -115.5708 })
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -60,6 +67,12 @@ const Home = () => {
       />
     ));
   };
+  const scrollToHowitworks = () => {
+    const howSection = document.getElementById('howitworks');
+    if (howSection) {
+      howSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   const getCategoryColor = (category) => {
     switch (category.toLowerCase()) {
@@ -189,13 +202,22 @@ const Home = () => {
                   <span className='text-md text-gray-900 font-semibold'>Boarding</span>
                   <span className='text-sm text-gray-400'>Select the location</span>
                 </div>
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    placeholder="Search a city, region"
-                    className="p-3 pr-10 border border-gray-300 rounded w-full focus:outline-none"
-                  />
-                  <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <div className='flex w-full flex-row gap-2'>
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Search a city, region"
+                      className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none"
+                    />
+                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+
+                  </div>
+                  <div className='flex items-center'>
+                    <FaMapMarkedAlt
+                      className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all'
+                      onClick={() => setOnboardingOpen(true)}
+                    />
+                  </div>
                 </div>
               </div>
               <div className='flex  sm:flex-row flex-col gap-2'>
@@ -203,13 +225,22 @@ const Home = () => {
                   <span className='text-md text-gray-900 font-semibold'>Destination</span>
                   <span className='text-sm text-gray-400'>Select the location</span>
                 </div>
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    placeholder="Search a city, region"
-                    className="p-3 pr-10 border border-gray-300 rounded w-full focus:outline-none"
-                  />
-                  <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <div className='flex w-full flex-row gap-2'>
+
+                  <div className="relative w-full">
+                    <input
+                      type="text"
+                      placeholder="Search a city, region"
+                      className="p-3 pr-10 border min-w-5xs border-gray-300 rounded w-full focus:outline-none"
+                    />
+                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                  </div>
+                  <div className='flex items-center'>
+                    <FaMapMarkedAlt
+                      className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all  '
+                      onClick={() => setDestinationOpen(true)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -247,6 +278,20 @@ const Home = () => {
 
           </div>
         </div>
+        <OnboardingModal
+          isOpen={onboardingOpen}
+          onClose={() => setOnboardingOpen(false)}
+          location={onboardingLocation}
+          setLocation={setOnboardingLocation}
+        />
+
+        <DestinationModal
+          isOpen={destinationOpen}
+          onClose={() => setDestinationOpen(false)}
+          location={destinationLocation}
+          setLocation={setDestinationLocation}
+        />
+
       </section>
 
       <section className='relative py-20  w-full flex flex-col justify-center items-center'>
@@ -343,7 +388,9 @@ const Home = () => {
           </div>
           <div className='mt-20 flex gap-4 justify-center'>
             <button className='px-5 py-3 font-bold text-sm text-blue-50 transition-all rounded-full bg-blue-500 hover:bg-blue-50 outline-2 hover:text-blue-500 outline-blue-500 cursor-pointer'>Try the Travel Hub</button>
-            <button className='px-5 py-3 font-bold text-sm text-blue-500 transition-all rounded-full bg-blue-50 hover:bg-blue-500 outline-2 hover:text-blue-50 outline-blue-500 cursor-pointer'>How it Works</button>
+            <button
+              onClick={scrollToHowitworks}
+              className='px-5 py-3 font-bold text-sm text-blue-500 transition-all rounded-full bg-blue-50 hover:bg-blue-500 outline-2 hover:text-blue-50 outline-blue-500 cursor-pointer'>How it Works</button>
           </div>
         </div>
       </section>
@@ -525,7 +572,7 @@ const Home = () => {
 
       </section>
 
-      <section className="relative py-20 w-full">
+      <section className="relative py-20 w-full" id='howitworks'>
         <div className='max-w-7xl mx-auto px-4  items-center  sm:px-6 lg:px-8  w-full flex flex-col '>
           <h1 className='sm:text-5xl text-4xl font-bold mb-4 '>How it Works</h1>
           <span className='text-gray-500 text-center flex items-center mb-14'>Competitive fares for your route-specific searches.</span>
@@ -772,13 +819,13 @@ const Home = () => {
         <div className='bg-gray-200/50 relative max-w-6xl mx-auto rounded-2xl py-10 w-full'>
           <div className="flex flex-col items-center md:px-20 sm:px-10 px-4 py-20">
             <h2 className='text-blue-600 sm:text-2xl text-xl text-center font-medium tracking-widest mb-2'>SUBSCRIBE TO OUR NEWSLETTER</h2>
-            <h2 className='text-gray-900 sm:text-4xl text-3xl text-center font-semibold'>Prepare you self and let’s explore the <br className='sm:block hidden'/> beautiful of the world</h2>
-          <div className='flex sm:flex-row flex-col sm:gap-0 gap-4 items-center pt-20 w-full'>
-            <Mail className='text-gray-300 sm:block hidden translate-x-10'  />
-            
-            <input type="email" placeholder='Your email' className='bg-white text-gray-300 sm:ps-14 ps-4 rounded-2xl shadow-md p-4 w-full'/>
-            <button className='cursor-pointer hover:bg-blue-600 transition-all bg-blue-500 text-white font-semibold p-4 w-full sm:w-auto rounded-2xl mx-2'>Subscribe</button>
-          </div>
+            <h2 className='text-gray-900 sm:text-4xl text-3xl text-center font-semibold'>Prepare you self and let’s explore the <br className='sm:block hidden' /> beautiful of the world</h2>
+            <div className='flex sm:flex-row flex-col sm:gap-0 gap-4 items-center pt-20 w-full'>
+              <Mail className='text-gray-300 sm:block hidden translate-x-10' />
+
+              <input type="email" placeholder='Your email' className='bg-white text-gray-300 sm:ps-14 ps-4 rounded-2xl shadow-md p-4 w-full' />
+              <button className='cursor-pointer hover:bg-blue-600 transition-all bg-blue-500 text-white font-semibold p-4 w-full sm:w-auto rounded-2xl mx-2'>Subscribe</button>
+            </div>
           </div>
         </div>
       </section>

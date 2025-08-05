@@ -35,7 +35,7 @@ const Footer = () => {
           {/* Right: Navigation Links */}
           <div className="flex-1 flex flex-wrap justify-start md:justify-end gap-x-6 gap-y-2 text-gray-400">
 
-            <Link to="/company" className="hover:text-white transition-all">Company</Link>
+            {/* <Link to="/company" className="hover:text-white transition-all">Company</Link> */}
             <Link to="/" className="hover:text-white transition-all">Home</Link>
             <Link to="/features" className="hover:text-white transition-all">Features</Link>
             <Link to="/about" className="hover:text-white transition-all">About</Link>
