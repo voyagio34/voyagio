@@ -85,7 +85,7 @@ const Home = () => {
 
             {/* Travel Style Dropdown */}
             <div className='bg-white p-6 rounded-2xl flex sm:flex-row flex-col w-auto'>
-              <div className='flex flex-col w-full'>
+              <div className='flex flex-col w-full sm:mb-0 mb-4'>
                 <span className='text-md text-gray-900 font-semibold'>Select Travel Style</span>
                 <span className='text-sm text-gray-400'>Select all that interest you</span>
               </div>
@@ -232,7 +232,7 @@ const Home = () => {
             </div>
 
             {/* Button */}
-            <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-600 text-white text-md   hover:bg-blue-700 font-bold transition-all cursor-pointer" >
+            <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-500 text-white text-md   hover:bg-blue-600 font-bold transition-all cursor-pointer" >
               Generate Itinerary
             </button>
           </div>
@@ -676,7 +676,7 @@ const Home = () => {
           </div>
 
           {/* Blog Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-10 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-10 gap-8 md:mx-8 sm:mx-6 mx-4">
             {blogPosts.map((post) => (
               <article key={post.id} className="bg-gray-50 cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group max-w-96 mx-auto">
                 <div className="relative h-64 overflow-hidden">
@@ -693,7 +693,7 @@ const Home = () => {
                 {/* Content */}
                 <div className="p-6 flex flex-col justify-between">
                   {/* Meta Information */}
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                  <div className="flex sm:flex-row flex-col sm:items-center items-start sm:gap-4 gap-1 text-sm text-gray-500 mb-4">
                     <div className="flex items-center gap-1">
                       <FaCalendarAlt size={16} />
                       <span>{post.date}</span>
@@ -712,7 +712,7 @@ const Home = () => {
                     {post.title}
                   </h3>
 
-                  <div className="flex h-full items-center justify-between">
+                  <div className="flex sm:flex-row flex-col gap-6 h-full sm:items-center  justify-between">
                     <div className="flex items-center gap-3">
                       <img
                         src={post.author.avatar}
@@ -736,12 +736,14 @@ const Home = () => {
 
       </section>
 
-      <section className='relative py-20 md:px-20 px-10'>
+      <section className='relative py-20 md:px-20 sm:px-10 px-4'>
         <div className='bg-red-200/30 relative max-w-7xl mx-auto rounded-2xl w-full'>
           <div className='flex flex-col md:px-20 px-10 py-24'>
-            <img src="/rightbottom.png" alt="arrow" className='md:block hidden absolute w-25 bottom-10 lg:right-50 right-20' />
-            <img src="/rightbottom.png" alt="arrow" className='md:block hidden absolute w-40 bottom-20 lg:right-30 right-10' />
-            <div className='flex sm:flex-row flex-col sm:items-center sm:justify-start justify-center'>
+            <img src="/rightbottom.png" alt="arrow" className=' absolute w-25 bottom-5 lg:right-50 sm:right-20 right-10' />
+            <img src="/rightbottom.png" alt="arrow" className=' absolute w-40 bottom-15 lg:right-30 sm:right-10 right-5' />
+            <img src="/downloadbg.png" alt="arrow" className='absolute md:w-1/2 w-full bottom-0 right-0' />
+
+            <div className='flex sm:flex-row flex-col sm:items-center sm:justify-start items-center justify-center'>
               <div className="flex flex-col">
                 <h2 className='lg:text-5xl text-4xl font-bold mb-2'>
                   Discover Seamless
@@ -766,15 +768,15 @@ const Home = () => {
         </div>
       </section>
 
-      <section className='relative py-20'>
-        <div className='bg-gray-200/30 relative max-w-6xl mx-auto rounded-2xl py-10 w-full'>
+      <section className='relative py-20 lg:px-20 md:px-10 px-4'>
+        <div className='bg-gray-200/50 relative max-w-6xl mx-auto rounded-2xl py-10 w-full'>
           <div className="flex flex-col items-center md:px-20 sm:px-10 px-4 py-20">
-            <h2 className='text-blue-600 sm:text-2xl text-xl text-center  font-medium tracking-widest mb-2'>SUBSCRIBE TO OUR NEWSLETTER</h2>
+            <h2 className='text-blue-600 sm:text-2xl text-xl text-center font-medium tracking-widest mb-2'>SUBSCRIBE TO OUR NEWSLETTER</h2>
             <h2 className='text-gray-900 sm:text-4xl text-3xl text-center font-semibold'>Prepare you self and let’s explore the <br className='sm:block hidden'/> beautiful of the world</h2>
           <div className='flex sm:flex-row flex-col sm:gap-0 gap-4 items-center pt-20 w-full'>
             <Mail className='text-gray-300 sm:block hidden translate-x-10'  />
             
-            <input type="email" placeholder='Your email' className='bg-white text-gray-300 sm:ps-14 ps-4 rounded-2xl shadow-lg p-4 w-full'/>
+            <input type="email" placeholder='Your email' className='bg-white text-gray-300 sm:ps-14 ps-4 rounded-2xl shadow-md p-4 w-full'/>
             <button className='cursor-pointer hover:bg-blue-600 transition-all bg-blue-500 text-white font-semibold p-4 w-full sm:w-auto rounded-2xl mx-2'>Subscribe</button>
           </div>
           </div>

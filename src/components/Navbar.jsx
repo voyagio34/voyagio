@@ -53,7 +53,7 @@ const Navbar = () => {
                             <Link
                                 key={link.name}
                                 to={link.href}
-                                className="relative text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 group"
+                                className="relative text-gray-600 hover:text-gray-900 font-semibold transition-all duration-300 group"
                             >
                                 {link.name}
                             </Link>
@@ -62,17 +62,17 @@ const Navbar = () => {
 
                     {/* Action Buttons */}
                     <div className="hidden lg:flex items-center space-x-4">
-                        <Link to="/" className="px-6 py-2.5 text-gray-600 font-medium transition-all duration-300 transform hover:text-gray-900">
+                        <Link to="/" className="px-6 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900">
                             Download App
                         </Link>
-                        <Link to="/signup" className="px-10 py-3  bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50  font-medium transition-colors duration-300">
+                        <Link to="/signup" className="px-10 py-3  bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50  font-semibold transition-colors duration-300">
                             Sign Up
                         </Link>
 
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <div className="lg:hidden">
+                    <div className="lg:hidden ">
                         <span
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="p-2 bg-transparent cursor-pointer rounded-lg hover:bg-gray-100 transition-colors duration-500"
@@ -87,9 +87,9 @@ const Navbar = () => {
                 </div>
 
                 {/* Mobile Menu */}
-                <div className={`lg:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0 overflow-hidden'
+                <div className={`lg:hidden font-semibold transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0 overflow-hidden'
                     }`}>
-                    <div className="py-4 w-auto space-y-2 font-medium bg-white/95 backdrop-blur-sm rounded-2xl ">
+                    <div className="py-4 w-auto space-y-2 bg-white/95 backdrop-blur-sm rounded-2xl ">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
@@ -103,8 +103,8 @@ const Navbar = () => {
                             <Link href="/" className="block w-full py-3 text-center bg-gray-100 text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
                                 Download App
                             </Link>
-                            <Link to="/signin" className="block w-full cursor-pointer text-center py-3 text-gray-50 font-medium transition-colors duration-300 bg-blue-500 hover:bg-blue-700 rounded-lg">
-                                Sign in
+                            <Link to="/signup" className="block w-full cursor-pointer text-center py-3 text-gray-50  transition-colors duration-300 bg-blue-500 hover:bg-blue-700 rounded-lg">
+                                Sign up
                             </Link>
 
                         </div>
