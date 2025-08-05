@@ -8,6 +8,7 @@ import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Header'
 import Features from './pages/Features'
 import About from './pages/About'
+import Contact from './pages/Contact'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/features' element={<Features />} />
           <Route path='/about' element={<About />} />
+          <Route path='/contactus' element={<Contact />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
         </Routes>
