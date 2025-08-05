@@ -1,12 +1,50 @@
-import React from 'react'
+import React, { useState, useRef } from 'react';
+import { useKeenSlider } from 'keen-slider/react';
+import 'keen-slider/keen-slider.min.css';
+import { agents } from '../data/Agents'
+import { stats } from '../data/Stats'
+import { FaFacebookF, FaInstagram, FaStar, FaTwitter, FaWhatsapp } from 'react-icons/fa'
 
-const stats = [
-  { label: "Happy Clients", value: "168k" },
-  { label: "Destinations", value: "+45k" },
-  { label: "Global Branch", value: "+49" },
-  { label: "Campaigns", value: "+26k" },
-];
 const About = () => {
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [sliderRef] = useKeenSlider({
+        loop: true,
+        slides: {
+            perView: 1,
+            spacing: 15,
+        },
+        breakpoints: {
+            '(min-width: 640px)': {
+                slides: { perView: 2, spacing: 15 },
+            },
+            '(min-width: 1024px)': {
+                slides: { perView: 3, spacing: 15 },
+            },
+        },
+        slideChanged(slider) {
+            setCurrentSlide(slider.track.details.rel);
+        },
+        created(slider) {
+            setCurrentSlide(slider.track.details.rel);
+        },
+        renderMode: 'performance',
+        drag: true,
+        autoplay: true,
+    });
+
+    // autoplay workaround
+    const timer = useRef();
+    const [paused, setPaused] = useState(false);
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            if (!paused && sliderRef.current) {
+                sliderRef.current.next();
+            }
+        }, 3000);
+        return () => clearInterval(interval);
+    }, [paused]);
+
     return (
         <div className='bg-gray-50 overflow-x-hidden'>
             <section className="relative bg-cover bg-center bg-blue-200/30 px-2 py-20 sm:px-6 lg:px-8 w-full">
@@ -78,19 +116,100 @@ const About = () => {
                     }}
                 >
                     {/* Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-6 justify-center text-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-14 gap-y-6 justify-center text-center">
                         {stats.map((stat, idx) => (
                             <div key={idx} className="flex flex-col  items-center justify-center relative">
-                                <h3 className="text-2xl lg:text-3xl font-bold">{stat.value}</h3>
+                                <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold">{stat.value}</h3>
                                 <p className="text-sm md:text-base text-gray-300">{stat.label}</p>
-
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
+            
+            <section
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                className="relative py-20 max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto w-full"
+            >
+                <div className="flex flex-col items-start">
+                    <h2 className="text-4xl  font-bold text-gray-900 mt-10">Our Team</h2>
+
+                    {/* Carousel */}
+                    <div ref={sliderRef} className="keen-slider mt-16">
+                        {agents.map((agent, index) => (
+                            <div key={index} className="keen-slider__slide p-2">
+                                <div className="bg-white shadow-md rounded-xl p-6 flex flex-row items-center text-start gap-4">
+                                    <img
+                                        src={agent.image}
+                                        alt={agent.name}
+                                        className="w-32 h-32 rounded-full object-cover bg-gray-200"
+                                    />
+                                    <div className="flex flex-col items-start justify-start">
+                                        <div className="mb-4">
+                                            <h3 className="text-lg font-bold text-gray-900">{agent.name}</h3>
+                                            <p className="text-blue-500 text-sm font-semibold">{agent.role}</p>
+                                            <div className="flex text-sm text-gray-400 font-medium mt-1">
+                                                <FaStar className="text-yellow-400 mr-1" />
+                                                ({agent.rating} Ratings)
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 mt-2">
+                                            <SocialIcon icon={<FaFacebookF />} />
+                                            <SocialIcon icon={<FaTwitter />} />
+                                            <SocialIcon icon={<FaWhatsapp />} />
+                                            <SocialIcon icon={<FaInstagram />} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Dots/Indicators */}
+                    <div className="flex mx-auto min-h-8 items-end gap-2 mt-6">
+                        {agents.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => sliderRef.current?.moveToIdx(idx)}
+                                className={`w-1 rounded-full transition-all ${currentSlide === idx ? 'h-8 bg-blue-600' : 'bg-blue-300 h-3'
+                                    }`}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="relative bg-gray-200 py-10 ">
+                <div className='max-w-7xl px-4  mx-auto sm:px-6 lg:px-8 w-full flex flex-col md:flex-row justify-between gap-8'>
+                    <div className='flex flex-col'>
+                        <span className="text-lg  text-blue-500 font-bold">
+                            🌍 Download the Voyagio AI™ App
+                        </span>
+                        <span className="text-md max-w-lg mt-2 px-1 text-gray-700 font-medium">
+                            Plan, personalize, and book your entire trip in seconds with the power of AI — all from one smart, seamless app.
+                        </span>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex gap-4">
+                            <img src="/appstore.png" alt="appstore" className='h-10' />
+                            <img src="/qrcode.png" alt="qrcode" className='h-10' />
+                        </div>
+                        <div className="flex gap-4">
+                            <img src="/playstore.png" alt="appstore" className='h-10' />
+                            <img src="/qrcode.png" alt="qrcode" className='h-10' />
+                        </div>
+                    </div>
+                </div>
+
+            </section>
         </div>
     )
 }
+const SocialIcon = ({ icon }) => (
+    <div className="w-9 h-9 flex items-center cursor-pointer justify-center rounded-full bg-white outline-1 shadow-md outline-gray-400 text-gray-400 hover:text-white hover:bg-blue-500 transition">
+        {icon}
+    </div>
+);
 
 export default About
