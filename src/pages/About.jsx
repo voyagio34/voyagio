@@ -81,7 +81,7 @@ const About = () => {
                         </p>
                     </div>
 
-                    <div className='flex-2/5 justify-end w-full'>
+                    <div className='flex-2/5 flex  w-full'>
                         <img src="/about1.png" alt="about1" className='relative z-10 w-full bottom-5 right-0' />
                     </div>
                 </div>
@@ -93,7 +93,7 @@ const About = () => {
                         <img src="/about2.png" alt="about2" className='sm:max-w-lg w-full' />
                     </div>
                     <div className='flex-3/5 flex flex-col gap-10 sm:px-10 px-4'>
-                        <h2 className='text-4xl font-bold text-gray-900 mt-10'>Milestones</h2>
+                        <h2 className='text-4xl font-bold text-gray-900 sm:mt-10'>Milestones</h2>
                         <div className="flex flex-col gap-4">
                             <span className='p-6 bg-orange-300/30 rounded-xl text-md font-bold'>Launched Voyagio Al beta to rave reviews</span>
                             <span className='p-6 bg-green-300/30 rounded-xl text-md font-bold'>Reached 50 000 registered users in record time</span>

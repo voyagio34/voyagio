@@ -4,7 +4,7 @@ import { AppFeatures } from '../data/AppFeatures'
 const Features = () => {
     return (
         <div className='bg-gray-50'>
-            <section className="relative bg-cover bg-center bg-blue-200/30 px-4 py-20 sm:px-6 lg:px-8 w-full">
+            <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 py-20 sm:px-6 lg:px-8 w-full">
                 <div className="absolute top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0" />
                 <div className="absolute sm:block hidden top-2 right-4 w-50 h-50 bg-gray-200 rounded-full z-0" />
                 <div className="absolute sm:bottom-20 bottom-10 sm:right-20 -right-5 w-26 h-26 bg-blue-500/60 rounded-full z-0" />
