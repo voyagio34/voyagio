@@ -9,6 +9,7 @@ import Navbar from './components/Header'
 import Features from './pages/Features'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import TravelHub from './pages/TravelHub'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path='/features' element={<Features />} />
           <Route path='/about' element={<About />} />
           <Route path='/contactus' element={<Contact />} />
+          <Route path='/travelhub' element={<TravelHub />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
         </Routes>

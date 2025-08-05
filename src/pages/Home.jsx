@@ -15,6 +15,7 @@ import { blogPosts } from '../data/BlogPosts';
 import { Mail, MailIcon } from 'lucide-react';
 import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
+import { Link } from 'react-router-dom';
 const STEP = 100;
 const MIN = 2000;
 const MAX = 15000;
@@ -402,7 +403,8 @@ const Home = () => {
             }
           </div>
           <div className='mt-20 flex gap-4 justify-center'>
-            <button className='px-5 py-3 font-bold text-sm text-blue-50 transition-all rounded-full bg-blue-500 hover:bg-blue-50 outline-2 hover:text-blue-500 outline-blue-500 cursor-pointer'>Try the Travel Hub</button>
+            <Link to='/travelhub' 
+              className='px-5 py-3 font-bold text-sm text-blue-50 transition-all rounded-full bg-blue-500 hover:bg-blue-50 outline-2 hover:text-blue-500 outline-blue-500 cursor-pointer'>Try the Travel Hub</Link>
             <button
               onClick={scrollToHowitworks}
               className='px-5 py-3 font-bold text-sm text-blue-500 transition-all rounded-full bg-blue-50 hover:bg-blue-500 outline-2 hover:text-blue-50 outline-blue-500 cursor-pointer'>How it Works</button>

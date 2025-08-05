@@ -11,7 +11,7 @@ const Contact = () => {
                 <div className="absolute sm:block hidden bottom-10 left-10 w-20 h-20 bg-blue-200 rounded-full z-0" />
 
                 <div className='flex md:items-center items-start max-w-7xl  sm:mx-auto px-4 sm:px-6 lg:px-8  md:flex-row flex-col gap-8'>
-                    <div className='flex flex-col z-10'>
+                    <div className='flex flex-1/2 flex-col z-10'>
 
                         <h1 className='font-bold flex sm:text-5xl text-4xl'>
                             Contact
@@ -20,8 +20,9 @@ const Contact = () => {
                         <span className='ml-1 font-normal text-lg text-gray-700 mt-2'>
                             Home / Contact Us
                         </span>
+                      
                     </div>
-                    <div className='w-full flex z-10 justify-end'>
+                    <div className='w-full flex-1/2 flex z-10 justify-end'>
                         <img src="/FeaturesBg.png" alt="Features" />
                     </div>
                 </div>
