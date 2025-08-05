@@ -246,21 +246,36 @@ const Home = () => {
             </div>
 
             {/* Travel Period */}
-            <div className='bg-white p-6 space-y-3 rounded-2xl flex sm:flex-row flex-col justify-between sm:items-center items-start gap-2  w-auto'>
-              <label className="block text-sm font-semibold mb-1">Travel Period</label>
-              <div className="flex sm:flex-row flex-col w-full items-center gap-3">
-                <input
-                  type="date"
-                  className="w-full sm:w-1/2 gray text-gray-500  p-3 border border-gray-300 self rounded focus:outline-none "
-                />
+            <div className="bg-white p-6 space-y-3 rounded-2xl flex flex-col w-auto">
+              <label className="block text-md font-semibold text-gray-900">Travel Period</label>
 
-                <input
-                  type="date"
-                  className="w-full sm:w-1/2 p-3 border text-gray-500 border-gray-300 rounded focus:outline-none"
-                />
+              <div className="flex sm:flex-row flex-col w-full items-start sm:items-center gap-4">
+
+                {/* Start Date */}
+                <div className="flex flex-col w-full sm:w-1/2">
+                  <label className="text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                  <div className="relative w-full">
+                    <input
+                      type="date"
+                      className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
+                    />
+                  </div>
+                </div>
+
+                {/* End Date */}
+                <div className="flex flex-col w-full sm:w-1/2">
+                  <label className="text-sm font-medium text-gray-700 mb-1">End Date</label>
+                  <div className="relative w-full">
+                    <input
+                      type="date"
+                      className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
+                    />
+                  </div>
+                </div>
 
               </div>
             </div>
+
 
             {/* Button */}
             <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-500 text-white text-md   hover:bg-blue-600 font-bold transition-all cursor-pointer" >
