@@ -103,7 +103,7 @@ const Home = () => {
                 <span className='text-sm text-gray-400'>Select all that interest you</span>
               </div>
               <div className="relative w-full">
-                <select className="w-full appearance-none bg-gray-50 text-gray-800 font-medium px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <select className="w-full appearance-none bg-gray-50 text-gray-800 font-medium px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
                   <option>Select</option>
                   <option>Adventure</option>
                   <option>Culture</option>

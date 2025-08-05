@@ -46,7 +46,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-6 flex flex-col sm:flex-row sm:justify-between justify-start  sm:items-center items-start gap-4">
+        <div className="border-t border-gray-700 pt-6 mb-20 flex flex-col sm:flex-row sm:justify-between justify-start  sm:items-center items-start gap-4">
           {/* Copyright */}
           <p className="text-gray-400">© 2024 Travila Inc. All rights reserved.</p>
 
