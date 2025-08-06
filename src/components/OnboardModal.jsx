@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { X } from "lucide-react";
 import { FaSearch } from "react-icons/fa";
 
