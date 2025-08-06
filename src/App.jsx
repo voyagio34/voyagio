@@ -10,6 +10,7 @@ import Features from './pages/Features'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import TravelHub from './pages/TravelHub'
+import GeneratedPlans from './pages/GeneratedPlans'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Route path='/about' element={<About />} />
           <Route path='/contactus' element={<Contact />} />
           <Route path='/travelhub' element={<TravelHub />} />
+          <Route path='/generatedplans' element={<GeneratedPlans />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
         </Routes>

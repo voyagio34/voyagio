@@ -15,7 +15,8 @@ import { blogPosts } from '../data/BlogPosts';
 import { Mail, MailIcon } from 'lucide-react';
 import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 const STEP = 100;
 const MIN = 2000;
 const MAX = 15000;
@@ -26,11 +27,15 @@ const Home = () => {
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
 
+  const [onboardingPlace, setOnboardingPlace] = useState('');
+  const [destinationPlace, setDestinationPlace] = useState('');
   const [onboardingLocation, setOnboardingLocation] = useState({ lat: 51.1784, lng: -115.5708 });
   const [destinationLocation, setDestinationLocation] = useState({ lat: 51.1784, lng: -115.5708 })
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  const router = useNavigate();
 
   const handlePrevious = () => {
     if (isTransitioning) return;
@@ -75,6 +80,21 @@ const Home = () => {
     }
   }
 
+  const handleOnboardingLocation = (place) => {
+    const lat = place.value.geometry.location.lat();
+    const lng = place.value.geometry.location.lng();
+    const coords = { lat, lng };
+    setOnboardingLocation(coords);
+    set(place);
+  }
+  const handleDestinationLocation = () => {
+    const lat = place.value.geometry.location.lat();
+    const lng = place.value.geometry.location.lng();
+    const coords = { lat, lng };
+    setDestinationLocation(coords);
+    setSearchValue(place);
+  }
+
   const getCategoryColor = (category) => {
     switch (category.toLowerCase()) {
       case 'cultural':
@@ -95,7 +115,11 @@ const Home = () => {
         <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-12">
 
           {/* Left: Form Section */}
-          <div className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            router('generatedplans');
+            
+          }} className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2">
 
             {/* Travel Style Dropdown */}
             <div className='bg-white p-6 rounded-2xl flex sm:flex-row flex-col w-auto'>
@@ -205,13 +229,38 @@ const Home = () => {
                 </div>
                 <div className='flex w-full flex-row gap-2'>
                   <div className="relative w-full">
-                    <input
-                      type="text"
-                      placeholder="Search a city, region"
-                      className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none"
+                    <GooglePlacesAutocomplete
+                      onChange={handleOnboardingLocation}
+                      apiKey={import.meta.env.VITE_REACT_GOOGLE_MAP_API_KEY}
+                      selectProps={{
+                        placeholder: 'Search onboarding',
+                        className: 'w-full',
+                        classNamePrefix: 'react-select',
+                        isClearable: 'true',
+                        components: {
+                          DropdownIndicator: () => null, // Hides dropdown arrow
+                          IndicatorSeparator: () => null,
+                        },
+                        styles: {
+                          control: (base) => ({
+                            ...base,
+                            padding: '6px',
+                            borderRadius: '0.5rem',
+                            borderColor: '#D1D5DB', // gray-300
+                            boxShadow: 'none',
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            padding: 0,
+                            margin: 0,
+                          }),
+                          placeholder: (base) => ({
+                            ...base,
+                            color: '#6B7280', // gray-500
+                          }),
+                        },
+                      }}
                     />
-                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-
                   </div>
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
@@ -227,14 +276,40 @@ const Home = () => {
                   <span className='text-sm text-gray-400'>Select the location</span>
                 </div>
                 <div className='flex w-full flex-row gap-2'>
-
                   <div className="relative w-full">
-                    <input
-                      type="text"
-                      placeholder="Search a city, region"
-                      className="p-3 pr-10 border min-w-5xs border-gray-300 rounded w-full focus:outline-none"
+                    <GooglePlacesAutocomplete
+                      onChange={handleDestinationLocation}
+                      apiKey={import.meta.env.VITE_REACT_GOOGLE_MAP_API_KEY}
+                      selectProps={{
+                        placeholder: 'Search destination',
+                        className: 'w-full',
+                        classNamePrefix: 'react-select',
+                        isClearable: 'true',
+                        components: {
+                          DropdownIndicator: () => null, // Hides dropdown arrow
+                          IndicatorSeparator: () => null,
+                        },
+                        styles: {
+                          control: (base) => ({
+                            ...base,
+                            padding: '6px',
+                            borderRadius: '0.5rem',
+                            borderColor: '#D1D5DB', // gray-300
+                            boxShadow: 'none',
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            padding: 0,
+                            margin: 0,
+                          }),
+                          placeholder: (base) => ({
+                            ...base,
+                            color: '#6B7280', // gray-500
+                          }),
+                        },
+                      }}
                     />
-                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    {/* <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
                   </div>
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
@@ -282,7 +357,7 @@ const Home = () => {
             <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-500 text-white text-md   hover:bg-blue-600 font-bold transition-all cursor-pointer" >
               Generate Itinerary
             </button>
-          </div>
+          </form>
 
           {/* Right: Mobile Images */}
           <div className="relative w-full h-full lg:w-1/2 flex justify-center items-center ">
@@ -372,7 +447,8 @@ const Home = () => {
                           <p className='text-gray-500 text-xs'>({restaurant.reviewCount})</p>
                         </div>
                       </div>
-                      <p className='text-gray-500 mt-2  flex gap-1 items-baseline'><FaMapMarkedAlt className='w-4 items-center' />
+                      <p className='text-gray-500 mt-2  flex gap-1 items-baseline'>
+                        <FaMapMarkedAlt className='w-4 items-center' />
                         <span className='text-xs'>{restaurant.address}</span></p>
                     </div>
                   </div>
@@ -403,7 +479,7 @@ const Home = () => {
             }
           </div>
           <div className='mt-20 flex gap-4 justify-center'>
-            <Link to='/travelhub' 
+            <Link to='/travelhub'
               className='px-5 py-3 font-bold text-sm text-blue-50 transition-all rounded-full bg-blue-500 hover:bg-blue-50 outline-2 hover:text-blue-500 outline-blue-500 cursor-pointer'>Try the Travel Hub</Link>
             <button
               onClick={scrollToHowitworks}
