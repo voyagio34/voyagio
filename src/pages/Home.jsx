@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getTrackBackground, Range } from 'react-range';
 import SmallCarousel from '../components/SmallCarousel';
 import { AppFeatures } from '../data/AppFeatures';
@@ -16,11 +16,11 @@ import { Mail, MailIcon } from 'lucide-react';
 import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
 import { Link, useNavigate } from 'react-router-dom';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { useJsApiLoader } from '@react-google-maps/api';
 const STEP = 100;
 const MIN = 2000;
 const MAX = 15000;
-
+const LIBRARIES = ['places']
 
 const Home = () => {
   const [values, setValues] = useState([2000, 15000]);
@@ -34,8 +34,143 @@ const Home = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  
+
   const router = useNavigate();
+
+  const onboardingInputRef = useRef(null);
+  const destinationInputRef = useRef(null);
+  const onboardingAutocompleteRef = useRef(null);
+  const destinationAutocompleteRef = useRef(null);
+  const [mapsLoaded, setMapsLoaded] = useState(false);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY,
+    libraries: LIBRARIES
+  });
+
+
+  // Initialize Google Places Autocomplete
+  useEffect(() => {
+    // Load Google Maps script if not already loaded
+    const checkGoogleMaps = () => {
+      return window.google &&
+        window.google.maps &&
+        window.google.maps.places &&
+        window.google.maps.places.Autocomplete;
+    };
+
+    // If already loaded, initialize immediately
+    if (checkGoogleMaps()) {
+      setMapsLoaded(true);
+      initializeAutocomplete();
+      return;
+    }
+
+    // Check if script already exists
+    const existingScript = document.getElementById('google-maps-script');
+
+    if (!existingScript) {
+      // Create and load the script
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
+      script.async = true;
+      script.defer = true;
+      script.id = 'google-maps-script';
+
+      // Create global callback function
+      window.initGoogleMaps = () => {
+        setMapsLoaded(true);
+        delete window.initGoogleMaps; // Clean up
+      };
+
+      script.onerror = () => {
+        console.error('Failed to load Google Maps API');
+        delete window.initGoogleMaps;
+      };
+
+      document.head.appendChild(script);
+    } else {
+      // Script exists, wait for it to load
+      const checkInterval = setInterval(() => {
+        if (checkGoogleMaps()) {
+          clearInterval(checkInterval);
+          setMapsLoaded(true);
+          initializeAutocomplete();
+        }
+      }, 100);
+
+      // Clear interval after 10 seconds to avoid infinite checking
+      setTimeout(() => clearInterval(checkInterval), 10000);
+    }
+
+    // Cleanup
+    return () => {
+      if (onboardingAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(onboardingAutocompleteRef.current);
+      }
+      if (destinationAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(destinationAutocompleteRef.current);
+      }
+    };
+  }, []);
+  useEffect(() => {
+    if (mapsLoaded) {
+      initializeAutocomplete();
+    }
+  }, [mapsLoaded]);
+  const initializeAutocomplete = () => {
+    // Double-check that everything is loaded
+    if (!window.google?.maps?.places?.Autocomplete) {
+      console.error('Google Maps Places Autocomplete is not available');
+      return;
+    }
+
+    try {
+      // Initialize onboarding autocomplete
+      if (onboardingInputRef.current && !onboardingAutocompleteRef.current) {
+        onboardingAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+          onboardingInputRef.current,
+          {
+            types: ['(cities)'],
+            fields: ['place_id', 'geometry', 'name', 'formatted_address']
+          }
+        );
+
+        onboardingAutocompleteRef.current.addListener('place_changed', () => {
+          const place = onboardingAutocompleteRef.current.getPlace();
+          if (place && place.geometry) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            setOnboardingLocation({ lat, lng });
+            setOnboardingPlace(place.formatted_address || place.name || '');
+          }
+        });
+      }
+
+      // Initialize destination autocomplete
+      if (destinationInputRef.current && !destinationAutocompleteRef.current) {
+        destinationAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+          destinationInputRef.current,
+          {
+            types: ['(cities)'],
+            fields: ['place_id', 'geometry', 'name', 'formatted_address']
+          }
+        );
+
+        destinationAutocompleteRef.current.addListener('place_changed', () => {
+          const place = destinationAutocompleteRef.current.getPlace();
+          if (place && place.geometry) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            setDestinationLocation({ lat, lng });
+            setDestinationPlace(place.formatted_address || place.name || '');
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error initializing autocomplete:', error);
+    }
+  };
 
   const handlePrevious = () => {
     if (isTransitioning) return;
@@ -118,7 +253,7 @@ const Home = () => {
           <form onSubmit={(e) => {
             e.preventDefault();
             router('generatedplans');
-            
+
           }} className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2">
 
             {/* Travel Style Dropdown */}
@@ -158,47 +293,57 @@ const Home = () => {
                   min={MIN}
                   max={MAX}
                   onChange={(vals) => setValues(vals)}
-                  renderTrack={({ props, children }) => (
-                    <div
-                      {...props}
-                      style={{
-                        ...props.style,
-                        height: '8px',
-                        width: '100%',
-                        background: getTrackBackground({
-                          values,
-                          colors: ['#e5e7eb', '#facc15', '#e5e7eb'],
-                          min: MIN,
-                          max: MAX,
-                        }),
-                        borderRadius: '9999px',
-                      }}
-                      className="relative mt-4 mb-6"
-                    >
-                      {children}
-                    </div>
-                  )}
-                  renderThumb={({ props, index, isDragged }) => (
-                    <div
-                      {...props}
-                      style={{
-                        ...props.style,
-                        height: '24px',
-                        width: '24px',
-                        borderRadius: '50%',
-                        backgroundColor: '#fff',
-                        border: '2px solid #facc15',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        boxShadow: '0 0 2px rgba(0,0,0,0.2)',
-                      }}
-                    >
-                      <div className="absolute -top-9 bg-white text-sm text-gray-800 font-semibold px-2 py-1 rounded shadow-md">
-                        {values[index]}
+                  renderTrack={({ props, children }) => {
+                    // Extract key from props
+                    const { key, ...trackProps } = props;
+                    return (
+                      <div
+                        key={key}
+                        {...trackProps}
+                        style={{
+                          ...trackProps.style,
+                          height: '8px',
+                          width: '100%',
+                          background: getTrackBackground({
+                            values,
+                            colors: ['#e5e7eb', '#facc15', '#e5e7eb'],
+                            min: MIN,
+                            max: MAX,
+                          }),
+                          borderRadius: '9999px',
+                        }}
+                        className="relative cursor-pointer mt-4 mb-6"
+                      >
+                        {children}
                       </div>
-                    </div>
-                  )}
+                    );
+                  }}
+                  renderThumb={({ props, index, isDragged }) => {
+                    // Extract key from props
+                    const { key, ...thumbProps } = props;
+                    return (
+                      <div
+                        key={key}
+                        {...thumbProps}
+                        style={{
+                          ...thumbProps.style,
+                          height: '24px',
+                          width: '24px',
+                          borderRadius: '50%',
+                          backgroundColor: '#fff',
+                          border: '2px solid #facc15',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          boxShadow: '0 0 2px rgba(0,0,0,0.2)',
+                        }}
+                      >
+                        <div className="absolute -top-9 bg-white text-sm text-gray-800 font-semibold px-2 py-1 rounded shadow-md">
+                          ${values[index].toLocaleString()}
+                        </div>
+                      </div>
+                    );
+                  }}
                 />
 
                 {/* Output (optional) */}
@@ -220,8 +365,9 @@ const Home = () => {
               />
             </div>
 
-            {/* Boarding Location */}
+            {/*  Location */}
             <div className='bg-white p-6 space-y-3 rounded-2xl flex-col w-auto'>
+              {/* Boarding Location */}
               <div className='flex sm:flex-row flex-col gap-2'>
                 <div className='flex flex-col w-full'>
                   <span className='text-md text-gray-900 font-semibold'>Boarding</span>
@@ -229,38 +375,15 @@ const Home = () => {
                 </div>
                 <div className='flex w-full flex-row gap-2'>
                   <div className="relative w-full">
-                    <GooglePlacesAutocomplete
-                      onChange={handleOnboardingLocation}
-                      apiKey={import.meta.env.VITE_REACT_GOOGLE_MAP_API_KEY}
-                      selectProps={{
-                        placeholder: 'Search onboarding',
-                        className: 'w-full',
-                        classNamePrefix: 'react-select',
-                        isClearable: 'true',
-                        components: {
-                          DropdownIndicator: () => null, // Hides dropdown arrow
-                          IndicatorSeparator: () => null,
-                        },
-                        styles: {
-                          control: (base) => ({
-                            ...base,
-                            padding: '6px',
-                            borderRadius: '0.5rem',
-                            borderColor: '#D1D5DB', // gray-300
-                            boxShadow: 'none',
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            padding: 0,
-                            margin: 0,
-                          }),
-                          placeholder: (base) => ({
-                            ...base,
-                            color: '#6B7280', // gray-500
-                          }),
-                        },
-                      }}
+                    <input
+                      ref={onboardingInputRef}
+                      type="text"
+                      id='onboard'
+                      placeholder="Search a city, region"
+                      className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      defaultValue={onboardingPlace}
                     />
+                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                   </div>
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
@@ -270,57 +393,34 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <div className='flex  sm:flex-row flex-col gap-2'>
+
+              {/* Destination Location */}
+              <div className='flex sm:flex-row flex-col gap-2'>
                 <div className='flex flex-col w-full'>
                   <span className='text-md text-gray-900 font-semibold'>Destination</span>
                   <span className='text-sm text-gray-400'>Select the location</span>
                 </div>
                 <div className='flex w-full flex-row gap-2'>
                   <div className="relative w-full">
-                    <GooglePlacesAutocomplete
-                      onChange={handleDestinationLocation}
-                      apiKey={import.meta.env.VITE_REACT_GOOGLE_MAP_API_KEY}
-                      selectProps={{
-                        placeholder: 'Search destination',
-                        className: 'w-full',
-                        classNamePrefix: 'react-select',
-                        isClearable: 'true',
-                        components: {
-                          DropdownIndicator: () => null, // Hides dropdown arrow
-                          IndicatorSeparator: () => null,
-                        },
-                        styles: {
-                          control: (base) => ({
-                            ...base,
-                            padding: '6px',
-                            borderRadius: '0.5rem',
-                            borderColor: '#D1D5DB', // gray-300
-                            boxShadow: 'none',
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            padding: 0,
-                            margin: 0,
-                          }),
-                          placeholder: (base) => ({
-                            ...base,
-                            color: '#6B7280', // gray-500
-                          }),
-                        },
-                      }}
+                    <input
+                      ref={destinationInputRef}
+                      type="text"
+                      id='destination'
+                      placeholder="Search a city, region"
+                      className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      defaultValue={destinationPlace}
                     />
-                    {/* <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
+                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                   </div>
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
-                      className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all  '
+                      className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all'
                       onClick={() => setDestinationOpen(true)}
                     />
                   </div>
                 </div>
               </div>
             </div>
-
             {/* Travel Period */}
             <div className="bg-white p-6 space-y-3 rounded-2xl flex flex-col w-auto">
               <label className="block text-md font-semibold text-gray-900">Travel Period</label>
@@ -374,6 +474,8 @@ const Home = () => {
           onClose={() => setOnboardingOpen(false)}
           location={onboardingLocation}
           setLocation={setOnboardingLocation}
+          ref={onboardingInputRef}
+          defaultValue={onboardingPlace}
         />
 
         <DestinationModal
@@ -381,6 +483,8 @@ const Home = () => {
           onClose={() => setDestinationOpen(false)}
           location={destinationLocation}
           setLocation={setDestinationLocation}
+          ref={destinationInputRef}
+          defaultValue={destinationPlace}
         />
 
       </section>

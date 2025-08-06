@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { FaSearch } from "react-icons/fa";
 
+const LIBRARIES = ['places'];
 
 const containerStyle = {
   width: "100%",
@@ -14,7 +16,7 @@ const defaultCenter = {
   lng: 77.2090,
 };
 
-export default function DestinationModal({ isOpen, onClose, location, setLocation }) {
+export default function DestinationModal({ isOpen, onClose, location, setLocation, ref, defaultValue }) {
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('overflow-hidden');
@@ -26,10 +28,11 @@ export default function DestinationModal({ isOpen, onClose, location, setLocatio
       document.body.classList.remove('overflow-hidden'); // Cleanup
     };
   }, [isOpen]);
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY,
-    libraries: ['places']
-  });
+
+  // const { isLoaded } = useJsApiLoader({
+  //   googleMapsApiKey: import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY,
+  //   libraries: LIBRARIES
+  // });
 
   const [searchValue, setSearchValue] = useState(null);
 
@@ -68,36 +71,25 @@ export default function DestinationModal({ isOpen, onClose, location, setLocatio
           <p className="text-center text-gray-500 mb-4">Search or click on map to select a location</p>
 
           {/* 🔍 Autocomplete Search */}
-          <div className="mb-4 relative w-full">
-            <GooglePlacesAutocomplete
-              apiKey={import.meta.env.VITE_REACT_GOOGLE_MAP_API_KEY}
-              
-              selectProps={{
-                value: searchValue,
-                onChange: handlePlaceSelect,
-                placeholder: 'Search a city, region',
-                isClearable: 'true',
-                components: {
-                  DropdownIndicator: () => null, // Hides dropdown arrow
-                  IndicatorSeparator: () => null,
-                },
-                styles: {
-                  control: (base) => ({
-                    ...base,
-                    padding: '4px',
-                    borderRadius: '8px',
-                    borderColor: '#D1D5DB',
-                    boxShadow: 'none',
-                  }),
-                  placeholder: (base) => ({
-                    ...base,
-                    color: '#6B7280',
-                  }),
-                },
-              }}
-            />
+          <div className="my-4 flex md:flex-row flex-col  w-full gap-2">
+            <div className="relative w-full justify-center">
+              <input
+                ref={ref}
+                type="text"
+                placeholder="Search a city, region"
+                className="p-3 pr-10 border  border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                defaultValue={defaultValue}
+              />
+              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            </div>
 
-            
+            <button
+              onClick={onClose}
+              className="bg-blue-500 min-w-46 min-h-12 hover:bg-blue-600 transition-all cursor-pointer text-white px-6 rounded-md"
+            >
+              Confirm Location
+            </button>
+
           </div>
 
           {/* 🗺 Map Container */}
@@ -112,14 +104,7 @@ export default function DestinationModal({ isOpen, onClose, location, setLocatio
             </GoogleMap>
           </div>
 
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={onClose}
-              className="bg-blue-500 hover:bg-blue-600 transition-all cursor-pointer text-white px-6 py-2 rounded-md"
-            >
-              Confirm Location
-            </button>
-          </div>
+
         </div>
       </div>
     </div>
