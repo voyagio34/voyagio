@@ -11,9 +11,23 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import TravelHub from './pages/TravelHub'
 import GeneratedPlans from './pages/GeneratedPlans'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { useEffect } from 'react'
+import YourSmart from './pages/YourSmart'
+import BlogDetails from './pages/BlogDetails'
 
 function App() {
-
+  useEffect(() => {
+    AOS.init({
+      
+      duration: 1000, // Animation duration
+      once: true, // Whether animation should happen only once
+      offset: 0, // Offset from the original trigger point
+      delay: 0, // Delay before animation starts
+      easing: 'ease-in-out', // Easing function
+    });
+  }, []);
   return (
     <BrowserRouter>
       <div className='bg-gray-50 text-gray-900 '>
@@ -23,12 +37,14 @@ function App() {
           <Route path='/features' element={<Features />} />
           <Route path='/about' element={<About />} />
           <Route path='/contactus' element={<Contact />} />
+          <Route path='/blog' element={<BlogDetails/>} />
           <Route path='/travelhub' element={<TravelHub />} />
           <Route path='/generatedplans' element={<GeneratedPlans />} />
+          <Route path='/yoursmart' element={<YourSmart />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
         </Routes>
-        <ScrollToTop/>
+        <ScrollToTop />
         <Footer />
       </div>
     </BrowserRouter>

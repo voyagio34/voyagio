@@ -58,7 +58,7 @@ export default function OnboardingModal({ isOpen, onClose, location, setLocation
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-start pt-10 justify-center px-4" data-aos="fade-in" data-aos-duration="500">
       <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl relative z-50">
         <button
           onClick={onClose}

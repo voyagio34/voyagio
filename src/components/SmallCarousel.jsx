@@ -99,7 +99,7 @@ const SmallCarousel = () => {
 
     return (
         <div className="w-full max-w-7xl  mx-auto px-4 py-8">
-            <div className="relative">
+            <div className="relative" data-aos="fade-up">
                 {/* Left Arrow */}
                 <button
                     onClick={() => scroll('left')}
@@ -132,10 +132,12 @@ const SmallCarousel = () => {
                         WebkitScrollbar: { display: 'none' }
                     }}
                 >
-                    {landmarks.map((landmark) => (
+                    {landmarks.map((landmark,index) => (
                         <div
                             key={landmark.id}
                             className="flex-none group cursor-pointer"
+                            data-aos="fade-up"
+                            data-aos-delay={index*50}
                         >
                             <div className="flex flex-col items-center space-y-3">
                                 {/* Circular Image Container */}

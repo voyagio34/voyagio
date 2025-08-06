@@ -58,7 +58,7 @@ export default function DestinationModal({ isOpen, onClose, location, setLocatio
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm pt-10 z-50 flex items-start justify-center px-4" data-aos="fade-in" data-aos-duration="500">
       <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl relative z-50">
         <button onClick={onClose} className="absolute cursor-pointer transition-all top-8 right-6 text-gray-500 hover:text-black">
           <X className="w-6 h-6" />

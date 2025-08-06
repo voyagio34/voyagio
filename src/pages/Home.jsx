@@ -244,17 +244,20 @@ const Home = () => {
   };
 
   return (
-    <div className='bg-gray-50'>
+    <div className='bg-gray-50 overflow-x-hidden'>
       {/* Hero section */}
-      <section className="relative bg-cover bg-center bg-[url('/Hero_bg.webp')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full">
-        <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-12">
+      <section className="relative bg-cover bg-center bg-[url('/Hero_bg.webp')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
+        <div className="w-full max-w-7xl overflow-hidden mx-auto flex flex-col lg:flex-row justify-between items-center gap-12">
 
           {/* Left: Form Section */}
           <form onSubmit={(e) => {
             e.preventDefault();
             router('generatedplans');
 
-          }} className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2">
+          }} className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
 
             {/* Travel Style Dropdown */}
             <div className='bg-white p-6 rounded-2xl flex sm:flex-row flex-col w-auto'>
@@ -460,7 +463,9 @@ const Home = () => {
           </form>
 
           {/* Right: Mobile Images */}
-          <div className="relative w-full h-full lg:w-1/2 flex justify-center items-center ">
+          <div className="relative w-full h-full lg:w-1/2 flex justify-center items-center "
+            data-aos="fade-up"
+            data-aos-delay="200">
             <img
               src="/Hero_img.webp"
               alt="App preview 1"
@@ -490,7 +495,7 @@ const Home = () => {
       </section>
 
       <section className='relative py-20  w-full flex flex-col justify-center items-center'>
-        <div className='flex-col justify-center items-center'>
+        <div className='flex-col justify-center items-center' data-aos="fade-up">
           <p className='sm:text-4xl text-3xl font-bold text-center'>Top Destination</p>
           <span className='text-gray-500'>Navigate the Globe with Confidence</span>
         </div>
@@ -501,12 +506,16 @@ const Home = () => {
       </section>
 
       <section className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '>
-        <h1 className='sm:text-5xl text-4xl font-bold'>App Feature</h1>
-        <div className='flex flex-wrap justify-center sm:space-x-10 space-x-0 mt-10'>
+        <h1 className='sm:text-5xl text-4xl font-bold' data-aos="fade-up">App Feature</h1>
+        <div className='flex flex-wrap justify-center sm:space-x-10 space-x-0 mt-10' >
           {
             AppFeatures.map((feature, index) => {
               return (
-                <div key={index} className='flex-col max-w-84 mx-4'>
+                <div key={index}
+                  className='flex-col max-w-84 mx-4'
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
+                >
                   <img src={feature.img} alt={feature.title} className='-z-10' />
                   <div className='relative bottom-26 py-2 z-10 bg-gray-50'>
                     <p className='text-2xl font-bold'>{feature.title}</p>
@@ -522,16 +531,19 @@ const Home = () => {
       </section>
 
       {/* Top Restaurant cards */}
-      <section className='relative py-20 bg-blue-200/35 '>
+      <section className='relative py-20 bg-blue-200/35 ' data-aos="fade-up">
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '>
 
-          <h1 className='sm:text-5xl text-4xl font-bold'>Top Restaurants</h1>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-up">Top Restaurants</h1>
 
           <div className='flex flex-wrap justify-center gap-4 mt-10 '>
             {
               TopRestaurants.map((restaurant, index) => {
                 return (
-                  <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all'>
+                  <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all'
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
+                    data-aos-anchor-placement="center-bottom">
                     <div className='h-56 object-fill '>
 
                       <img src={restaurant.image} alt={restaurant.name} className='-z-10 rounded-lg h-full' />
@@ -567,14 +579,14 @@ const Home = () => {
 
       <section className='relative py-20 '>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col'>
-          <h1 className='sm:text-5xl text-4xl font-bold mb-8'>Your Smart Travel Planning Hub</h1>
-          <p className='text-md font-normal text-gray-500 mb-4'>Plan with precision, adjust with ease, and sync it all in real time-powered by our Living Itinerary Engine™.</p>
-          <p className='text-md font-normal text-gray-500 mb-4'>Build your perfect trip in just a few steps with Voyagio's intelligent Travel Hub. Whether you're mapping out a weekend getaway or a multi-city journey, our Al- powered system personalizes every detail-so you can stop planning and start experiencing.</p>
-          <p className='text-md font-normal text-gray-500 mb-4'>Everything updates in real time, including weather-based suggestions, schedule changes, and local recommendations. Sync with your mobile app and take your trip wherever you go.</p>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-8' data-aos="fade-up">Your Smart Travel Planning Hub</h1>
+          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-up" data-aos-delay="50">Plan with precision, adjust with ease, and sync it all in real time-powered by our Living Itinerary Engine™.</p>
+          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-up" data-aos-delay="50">Build your perfect trip in just a few steps with Voyagio's intelligent Travel Hub. Whether you're mapping out a weekend getaway or a multi-city journey, our Al- powered system personalizes every detail-so you can stop planning and start experiencing.</p>
+          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-up" data-aos-delay="50">Everything updates in real time, including weather-based suggestions, schedule changes, and local recommendations. Sync with your mobile app and take your trip wherever you go.</p>
           <div className='flex flex-wrap justify-center gap-4 mt-8'>
             {
               InfoCards.map((info, index) => {
-                return <div key={index} className='py-8 px-4 items-center gap-2 border-1 max-w-72 w-full shadow-sm bg-gray-50 border-gray-300 rounded-2xl flex flex-col '>
+                return <div key={index} className='py-8 px-4 items-center gap-2 border-1 max-w-72 w-full shadow-sm bg-gray-50 border-gray-300 rounded-2xl flex flex-col ' data-aos="fade-up" data-aos-delay={100 + index * 100}>
                   <img src={info.icon} alt={info.title} className='w-16' />
                   <p className='mt-4 font-bold text-lg text-gray-800'>{info.title}</p>
                   <p className='text-gray-500 text-sm'>{info.description}</p>
@@ -584,9 +596,13 @@ const Home = () => {
           </div>
           <div className='mt-20 flex gap-4 justify-center'>
             <Link to='/travelhub'
+              data-aos="fade-up"
+              data-aos-delay={250}
               className='px-5 py-3 font-bold text-sm text-blue-50 transition-all rounded-full bg-blue-500 hover:bg-blue-50 outline-2 hover:text-blue-500 outline-blue-500 cursor-pointer'>Try the Travel Hub</Link>
             <button
               onClick={scrollToHowitworks}
+              data-aos="fade-up"
+              data-aos-delay={300}
               className='px-5 py-3 font-bold text-sm text-blue-500 transition-all rounded-full bg-blue-50 hover:bg-blue-500 outline-2 hover:text-blue-50 outline-blue-500 cursor-pointer'>How it Works</button>
           </div>
         </div>
@@ -594,7 +610,7 @@ const Home = () => {
 
       <section className='relative py-20 '>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col'>
-          <h1 className='sm:text-5xl text-4xl font-bold mb-8'>Deals (Flights and Last-Minute)</h1>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-8' data-aos="fade-up">Deals (Flights and Last-Minute)</h1>
           <div className='flex flex-wrap justify-center gap-8 mt-8'>
             {
               Deals.map((deal, index) => {
@@ -602,6 +618,8 @@ const Home = () => {
                   <div
                     key={deal.id}
                     className="bg-gray-50 rounded-lg border-1 border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-300 p-6 w-full max-w-sm"
+                    data-aos="fade-up"
+                    data-aos-delay={100 + index * 100}
                   >
                     {/* Airline Logo */}
                     <div className="flex items-center mb-4">
@@ -609,6 +627,7 @@ const Home = () => {
                         src={deal.logo}
                         alt="Airline Logo"
                         className="h-8 object-contain"
+
                       />
                     </div>
 
@@ -656,12 +675,14 @@ const Home = () => {
 
       <section className='relative py-20'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col'>
-          <h2 className='sm:text-5xl text-4xl font-bold text-gray-900 mb-4'>Activities & Events</h2>
+          <h2 className='sm:text-5xl text-4xl font-bold text-gray-900 mb-4' data-aos="fade-up">Activities & Events</h2>
           <div className="flex flex-wrap justify-center gap-4 mt-10">
-            {Experiences.map((experience) => (
+            {Experiences.map((experience, index) => (
               <div
                 key={experience.id}
-                className="flex flex-col bg-white rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-300 overflow-hidden group w-full max-w-72"
+                className="flex flex-col bg-white rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition-all  duration-300 overflow-hidden group w-full max-w-72"
+                data-aos="fade-up"
+                data-aos-delay={100 + index * 100}
               >
                 {/* Image Container with Heart Button */}
                 <div className="relative h-48 overflow-hidden flex-shrink-0">
@@ -715,16 +736,16 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Top Restaurant cards */}
-      <section className='relative py-20 bg-blue-200/35 '>
+      {/* Unique stays cards */}
+      <section className='relative py-20 bg-blue-200/35 ' data-aos="fade-up">
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '>
 
-          <h1 className='sm:text-5xl text-4xl font-bold mb-4'>Explore Unique Stays</h1>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-up">Explore Unique Stays</h1>
           <div className='flex flex-wrap justify-center gap-4 mt-10 '>
             {
               TopRestaurants.map((restaurant, index) => {
                 return (
-                  <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all'>
+                  <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all' data-aos="fade-up" data-aos-delay={index * 100}>
                     <div className='h-56 object-fill '>
 
                       <img src={restaurant.image} alt={restaurant.name} className='-z-10 rounded-lg h-full' />
@@ -759,7 +780,7 @@ const Home = () => {
       </section>
 
       <section className='relative py-20  w-full flex flex-col justify-center items-center'>
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col justify-center items-center' data-aos="fade-up">
           <p className='sm:text-4xl text-3xl font-bold text-center'>Discover Your New Favorite Stay</p>
           <span className='text-gray-500 text-center flex   items-center'>Navigate the Globe with Confidence</span>
         </div>
@@ -770,12 +791,12 @@ const Home = () => {
       </section>
 
       <section className="relative py-20 w-full" id='howitworks'>
-        <div className='max-w-7xl mx-auto px-4  items-center  sm:px-6 lg:px-8  w-full flex flex-col '>
+        <div className='max-w-7xl mx-auto px-4  items-center  sm:px-6 lg:px-8  w-full flex flex-col ' data-aos="fade-up">
           <h1 className='sm:text-5xl text-4xl font-bold mb-4 '>How it Works</h1>
           <span className='text-gray-500 text-center flex items-center mb-14'>Competitive fares for your route-specific searches.</span>
           <div className="flex flex-col lg:flex-row gap-8 items-start mt-10">
             {/* Left Side - Images */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4" data-aos="fade-up" data-aos-delay="200">
               {/* Main Large Image */}
               <div className="col-span-1">
                 <img
@@ -809,11 +830,12 @@ const Home = () => {
             </div>
 
             {/* Right Side - Steps */}
-            <div className="flex flex-col gap-6 lg:w-1/2">
+            <div className="flex flex-col gap-6 overflow-y-hidden lg:w-1/2">
               {steps.map((step, index) => (
                 <div
                   key={step.id}
-                  className={`${step.bgColor} rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300`}
+                  className={`${step.bgColor} rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer duration-300`}
+                  data-aos="fade-up" data-aos-delay={index * 100}
                 >
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Icon */}
@@ -840,16 +862,16 @@ const Home = () => {
         </div>
       </section>
 
-      <section className='relative bg-blue-200/35 py-20 w-full'>
-        <img src="/testbg.webp" alt="bg" className='absolute bottom-0 max-w-64 left-2' />
+      <section className='relative bg-blue-200/35 overflow-x-hidden py-20 w-full' data-aos="fade-in">
+        <img src="/testbg.webp" alt="bg" className='absolute bottom-0 max-w-64 left-2' data-aos="fade-up" />
         <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
           <div className='flex flex-row justify-between w-full h-full items-baseline'>
-            <div className="flex flex-col">
+            <div className="flex flex-col overflow-y-hidden" data-aos="fade-up" data-aos-delay="100">
 
               <h2 className='sm:text-5xl text-4xl  font-bold mb-4'>Social Proof / Testimonials</h2>
               <p className='text-gray-500 mb-4 text-md '>What our clients are saying about us?</p>
             </div>
-            <div className='flex flex-row gap-2'>
+            <div className='flex flex-row gap-2' data-aos="fade-up" data-aos-delay="100">
               <FaCircleLeft className='w-8 h-8 text-gray-700 cursor-pointer hover:text-gray-600 transition-all' aria-labelledby='Previous Testimonial' onClick={handlePrevious} />
               <FaCircleRight className='w-8 h-8 text-gray-700 cursor-pointer hover:text-gray-600 transition-all' aria-labelledby='Previous Testimonial' onClick={handleNext} />
             </div>
@@ -859,6 +881,8 @@ const Home = () => {
             {getVisibleTestimonials().map((testimonial, index) => (
               <div
                 key={testimonial.id}
+                data-aos="fade-up"
+                data-aos-delay={100 + index * 100}
                 className={`bg-gray-50 rounded-2xl shadow-lg p-6 lg:p-8 transform transition-all duration-300 hover:shadow-xl ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
                   }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
@@ -899,12 +923,12 @@ const Home = () => {
         </div>
       </section>
 
-      <section className='relative mx-auto py-20 w-full'>
+      <section className='relative mx-auto py-20 overflow-x-hidden w-full'>
         <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
 
 
-          <div className="flex flex-col w-full md:flex-row justify-between items-start md:items-center mb-12">
-            <div>
+          <div className="flex flex-col w-full md:flex-row overflow-hidden justify-between items-start md:items-center mb-12">
+            <div data-aos="fade-up" >
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Travel Insights & Guides
               </h2>
@@ -914,7 +938,7 @@ const Home = () => {
               </p>
             </div>
 
-            <button className="mt-6 md:mt-0 bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-colors duration-200 group cursor-pointer">
+            <button className="mt-6 md:mt-0 bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-colors duration-200 group cursor-pointer " data-aos="fade-up" data-aos-delay="100">
               View More
               <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
             </button>
@@ -922,8 +946,8 @@ const Home = () => {
 
           {/* Blog Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-10 gap-8 md:mx-8 sm:mx-6 mx-4">
-            {blogPosts.map((post) => (
-              <article key={post.id} className="bg-gray-50 cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group max-w-96 mx-auto">
+            {blogPosts.map((post, index) => (
+              <article key={post.id} className="bg-gray-50 cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group max-w-96 mx-auto" data-aos="fade-up" data-aos-delay={index * 100}>
                 <div className="relative h-64 overflow-hidden">
                   <img
                     src={post.image}
@@ -982,7 +1006,7 @@ const Home = () => {
       </section>
 
       <section className='relative py-20 md:px-20 sm:px-10 px-4'>
-        <div className='bg-red-200/30 relative max-w-7xl mx-auto rounded-2xl w-full'>
+        <div className='bg-red-200/30 relative max-w-7xl mx-auto rounded-2xl w-full' data-aos="fade-up">
           <div className='flex flex-col md:px-20 px-10 py-24'>
             <img src="/rightbottom.webp" alt="arrow" className=' absolute w-25 bottom-5 lg:right-50 sm:right-20 right-10' />
             <img src="/rightbottom.webp" alt="arrow" className=' absolute w-40 bottom-15 lg:right-30 sm:right-10 right-5' />
@@ -1013,15 +1037,17 @@ const Home = () => {
         </div>
       </section>
 
-      <section className='relative py-20 lg:px-20 md:px-10 px-4'>
-        <div className='bg-gray-200/50 relative max-w-6xl mx-auto rounded-2xl py-10 w-full'>
+      <section className='relative py-20 lg:px-20 md:px-10 px-4 overflow-y-hidden'>
+        <div className='bg-gray-200/50 relative max-w-6xl mx-auto rounded-2xl py-10 w-full' data-aos="fade-up">
           <div className="flex flex-col items-center md:px-20 sm:px-10 px-4 py-20">
-            <h2 className='text-blue-600 sm:text-2xl text-xl text-center font-medium tracking-widest mb-2'>SUBSCRIBE TO OUR NEWSLETTER</h2>
-            <h2 className='text-gray-900 sm:text-4xl text-3xl text-center font-semibold'>Prepare you self and let’s explore the <br className='sm:block hidden' /> beautiful of the world</h2>
-            <div className='flex sm:flex-row flex-col sm:gap-0 gap-4 items-center pt-20 w-full'>
-              <Mail className='text-gray-300 sm:block hidden translate-x-10' />
+            <h2 className='text-blue-600 sm:text-2xl text-xl text-center font-medium tracking-widest mb-2' data-aos="fade-up" >SUBSCRIBE TO OUR NEWSLETTER</h2>
+            <h2 className='text-gray-900 sm:text-4xl text-3xl text-center font-semibold' data-aos="fade-up" data-aos-delay="100">Prepare you self and let’s explore the <br className='sm:block hidden' /> beautiful of the world</h2>
+            <div className='flex sm:flex-row flex-col sm:gap-0 gap-4 items-center pt-20 w-full' data-aos="fade-up" data-aos-delay="200">
+              <div className='flex w-full items-center' >
 
-              <input type="email" placeholder='Your email' className='bg-white text-gray-300 sm:ps-14 ps-4 rounded-2xl shadow-md p-4 w-full' />
+                <Mail className='text-gray-300 sm:block hidden translate-x-10' />
+                <input type="email" placeholder='Your email' className='bg-white text-gray-500 sm:ps-14 ps-4 rounded-2xl shadow-md p-4 w-full focus:outline-none focus:ring-1 focus:ring-blue-400' />
+              </div>
               <button className='cursor-pointer hover:bg-blue-600 transition-all bg-blue-500 text-white font-semibold p-4 w-full sm:w-auto rounded-2xl mx-2'>Subscribe</button>
             </div>
           </div>

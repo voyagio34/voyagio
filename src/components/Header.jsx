@@ -6,7 +6,7 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const location = useNavigate();
-
+  
     useEffect(() => {
         // Handle scroll effect
         const handleScroll = () => {
@@ -21,8 +21,8 @@ const Navbar = () => {
     }, [])
 
     useEffect(() => {
-        setIsMenuOpen(false)
         window.scrollTo(0, 0);
+        setIsMenuOpen(false)
 
     }, [location])
 
@@ -36,24 +36,25 @@ const Navbar = () => {
     ]
 
     return (
-        <nav className={`w-full top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white shadow-2xl py-2' : 'bg-white/95 backdrop-blur-md shadow-lg py-2'
-            }`}>
+        <nav className={`w-full top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white shadow-2xl py-2' : 'bg-white/95 backdrop-blur-md shadow-lg py-2'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Logo Section */}
-                    <div className="flex items-center">
+                    <div className="flex items-center" data-aos="fade-down">
                         <Link to="/" className="flex items-center space-x-3 group">
                             <img src='/icon.webp' alt='LOGO' />
                         </Link>
                     </div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center space-x-8">
-                        {navLinks.map((link) => (
+                    <div className="hidden lg:flex items-center xl:space-x-8 space-x-6">
+                        {navLinks.map((link, i) => (
                             <Link
                                 key={link.name}
                                 to={link.href}
                                 className="relative text-gray-600 hover:text-gray-900 font-semibold transition-all duration-300 group"
+                                data-aos="fade-down"
+                                data-aos-delay={i * 50}
                             >
                                 {link.name}
                             </Link>
@@ -62,17 +63,17 @@ const Navbar = () => {
 
                     {/* Action Buttons */}
                     <div className="hidden lg:flex items-center space-x-4">
-                        <Link to="/" className="px-6 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900">
+                        <Link to="/" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="350">
                             Download App
                         </Link>
-                        <Link to="/signup" className="px-10 py-3  bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50  font-semibold transition-colors duration-300">
+                        <Link to="/signup" className="xl:px-10 px-6 py-3  bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50  font-semibold transition-colors duration-300" data-aos="fade-down" data-aos-delay="400">
                             Sign Up
                         </Link>
 
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <div className="lg:hidden ">
+                    <div className="lg:hidden " data-aos="fade-down">
                         <span
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="p-2 bg-transparent cursor-pointer rounded-lg hover:bg-gray-100 transition-colors duration-500"
