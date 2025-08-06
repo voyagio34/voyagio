@@ -246,7 +246,7 @@ const Home = () => {
   return (
     <div className='bg-gray-50'>
       {/* Hero section */}
-      <section className="relative bg-cover bg-center bg-[url('/Hero_bg.png')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full">
+      <section className="relative bg-cover bg-center bg-[url('/Hero_bg.webp')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full">
         <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-12">
 
           {/* Left: Form Section */}
@@ -312,7 +312,7 @@ const Home = () => {
                           }),
                           borderRadius: '9999px',
                         }}
-                        className="relative cursor-pointer mt-4 mb-6"
+                        className="relative mt-4 mb-6"
                       >
                         {children}
                       </div>
@@ -338,7 +338,7 @@ const Home = () => {
                           boxShadow: '0 0 2px rgba(0,0,0,0.2)',
                         }}
                       >
-                        <div className="absolute -top-9 bg-white text-sm text-gray-800 font-semibold px-2 py-1 rounded shadow-md">
+                        <div className="absolute cursor-pointer -top-9 bg-white text-sm text-gray-800 font-semibold px-2 py-1 rounded shadow-md">
                           ${values[index].toLocaleString()}
                         </div>
                       </div>
@@ -462,7 +462,7 @@ const Home = () => {
           {/* Right: Mobile Images */}
           <div className="relative w-full h-full lg:w-1/2 flex justify-center items-center ">
             <img
-              src="/Hero_img.png"
+              src="/Hero_img.webp"
               alt="App preview 1"
               className="w-full max-w-4xl"
             />
@@ -802,7 +802,7 @@ const Home = () => {
                   />
                   {/* Wave Pattern Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 rounded-b-2xl">
-                    <img src="/how4.png" alt="wave" />
+                    <img src="/how4.webp" alt="wave" />
                   </div>
                 </div>
               </div>
@@ -841,7 +841,7 @@ const Home = () => {
       </section>
 
       <section className='relative bg-blue-200/35 py-20 w-full'>
-        <img src="/testbg.png" alt="bg" className='absolute bottom-0 max-w-64 left-2' />
+        <img src="/testbg.webp" alt="bg" className='absolute bottom-0 max-w-64 left-2' />
         <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
           <div className='flex flex-row justify-between w-full h-full items-baseline'>
             <div className="flex flex-col">
@@ -984,9 +984,9 @@ const Home = () => {
       <section className='relative py-20 md:px-20 sm:px-10 px-4'>
         <div className='bg-red-200/30 relative max-w-7xl mx-auto rounded-2xl w-full'>
           <div className='flex flex-col md:px-20 px-10 py-24'>
-            <img src="/rightbottom.png" alt="arrow" className=' absolute w-25 bottom-5 lg:right-50 sm:right-20 right-10' />
-            <img src="/rightbottom.png" alt="arrow" className=' absolute w-40 bottom-15 lg:right-30 sm:right-10 right-5' />
-            <img src="/downloadbg.png" alt="arrow" className='absolute md:w-1/2 w-full bottom-0 right-0' />
+            <img src="/rightbottom.webp" alt="arrow" className=' absolute w-25 bottom-5 lg:right-50 sm:right-20 right-10' />
+            <img src="/rightbottom.webp" alt="arrow" className=' absolute w-40 bottom-15 lg:right-30 sm:right-10 right-5' />
+            <img src="/downloadbg.webp" alt="arrow" className='absolute md:w-1/2 w-full bottom-0 right-0' />
 
             <div className='flex sm:flex-row flex-col sm:items-center sm:justify-start items-center justify-center'>
               <div className="flex flex-col">
@@ -999,13 +999,13 @@ const Home = () => {
                   Embark on a journey like never before with Travila – your <br />ultimate travel companion.
                 </p>
               </div>
-              <img src="/download1.png" alt="download mobile" className='w-34 -rotate-12 ms-10' />
+              <img src="/download1.webp" alt="download mobile" className='w-34 -rotate-12 ms-10' />
 
             </div>
             <div className="flex md:flex-row flex-col gap-4 mt-14">
 
-              <img src="/playstore.png" alt="playstore" className='w-40' />
-              <img src="/appstore.png" alt="appstore" className='w-40' />
+              <img src="/playstore.webp" alt="playstore" className='w-40' />
+              <img src="/appstore.webp" alt="appstore" className='w-40' />
 
             </div>
           </div>

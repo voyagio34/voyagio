@@ -4,37 +4,37 @@ import { FaSearch } from 'react-icons/fa'
 const categories = ['All', 'Destination', 'Tips', 'Itineraies', 'Deals', 'AI Travel'];
 const data = [
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
     {
-        img: '/th1.jpg',
+        img: '/th1.webp',
         title: 'Exploring the Arnalfi Coast: A Complete Guide',
         desc: "Discover the best places to visit, eat, and stay along italy's stunning Amalfi Coast...."
     },
@@ -78,7 +78,7 @@ const TravelHub = () => {
                         </div>
                     </div>
                     <div className='w-full flex-1/2 flex z-10 justify-end'>
-                        <img src="/FeaturesBg.png" alt="Features" />
+                        <img src="/FeaturesBg.webp" alt="Features" />
                     </div>
                 </div>
             </section>
@@ -116,12 +116,12 @@ const TravelHub = () => {
                     </div>
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex gap-4">
-                            <img src="/appstore.png" alt="appstore" className='h-10' />
-                            <img src="/qrcode.png" alt="qrcode" className='h-10' />
+                            <img src="/appstore.webp" alt="appstore" className='h-10' />
+                            <img src="/qrcode.webp" alt="qrcode" className='h-10' />
                         </div>
                         <div className="flex gap-4">
-                            <img src="/playstore.png" alt="appstore" className='h-10' />
-                            <img src="/qrcode.png" alt="qrcode" className='h-10' />
+                            <img src="/playstore.webp" alt="appstore" className='h-10' />
+                            <img src="/qrcode.webp" alt="qrcode" className='h-10' />
                         </div>
                     </div>
                 </div>

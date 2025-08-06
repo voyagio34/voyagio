@@ -43,7 +43,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <div className="flex items-center">
                         <Link to="/" className="flex items-center space-x-3 group">
-                            <img src='/icon.png' alt='LOGO' />
+                            <img src='/icon.webp' alt='LOGO' />
                         </Link>
                     </div>
 

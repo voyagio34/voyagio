@@ -19,7 +19,7 @@ const Features = () => {
                         </span>
                     </div>
                     <div className='w-full flex z-10 justify-center'>
-                        <img src="/FeaturesBg.png" alt="Features" />
+                        <img src="/FeaturesBg.webp" alt="Features" />
                     </div>
                 </div>
 

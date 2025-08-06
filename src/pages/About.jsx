@@ -82,7 +82,7 @@ const About = () => {
                     </div>
 
                     <div className='flex-2/5 flex  w-full'>
-                        <img src="/about1.png" alt="about1" className='relative z-10 w-full bottom-5 right-0' />
+                        <img src="/about1.webp" alt="about1" className='relative z-10 w-full bottom-5 right-0' />
                     </div>
                 </div>
             </section>
@@ -90,7 +90,7 @@ const About = () => {
             <section className='relative py-20 max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 w-full' >
                 <div className="flex gap-10 justify-center flex-col-reverse  lg:flex-row ">
                     <div className='flex-2/5 flex justify-center px-4'>
-                        <img src="/about2.png" alt="about2" className='sm:max-w-lg w-full' />
+                        <img src="/about2.webp" alt="about2" className='sm:max-w-lg w-full' />
                     </div>
                     <div className='flex-3/5 flex flex-col gap-10 sm:px-10 px-4'>
                         <h2 className='text-4xl font-bold text-gray-900 sm:mt-10'>Milestones</h2>
@@ -109,7 +109,7 @@ const About = () => {
                 <div
                     className="flex justify-around bg-black min-h-72 text-white rounded-3xl px-6 py-10 lg:px-20 overflow-hidden"
                     style={{
-                        backgroundImage: `url('/about3.png')`,
+                        backgroundImage: `url('/about3.webp')`,
                         backgroundPosition: 'center',
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
@@ -192,12 +192,12 @@ const About = () => {
                     </div>
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex gap-4">
-                            <img src="/appstore.png" alt="appstore" className='h-10' />
-                            <img src="/qrcode.png" alt="qrcode" className='h-10' />
+                            <img src="/appstore.webp" alt="appstore" className='h-10' />
+                            <img src="/qrcode.webp" alt="qrcode" className='h-10' />
                         </div>
                         <div className="flex gap-4">
-                            <img src="/playstore.png" alt="appstore" className='h-10' />
-                            <img src="/qrcode.png" alt="qrcode" className='h-10' />
+                            <img src="/playstore.webp" alt="appstore" className='h-10' />
+                            <img src="/qrcode.webp" alt="qrcode" className='h-10' />
                         </div>
                     </div>
                 </div>

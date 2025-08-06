@@ -7,7 +7,7 @@ export const destinations = [
     country: "Canada",
     flightDuration: "8h 15m flight",
     tags: ["Mountain Views", "Hiking Trails", "Wildlife"],
-    image: "/dest.jpg",
+    image: "/dest.webp",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ export const destinations = [
     country: "Canada",
     flightDuration: "8h 15m flight",
     tags: ["Mountain Views", "Hiking Trails", "Wildlife"],    
-    image: "/dest.jpg",
+    image: "/dest.webp",
   },
   {
     id: 3,
@@ -27,6 +27,6 @@ export const destinations = [
     country: "Canada",
     flightDuration: "8h 15m flight",
     tags: ["Mountain Views", "Hiking Trails", "Wildlife"],
-    image: "/dest.jpg",
+    image: "/dest.webp",
   },
 ];
