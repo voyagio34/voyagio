@@ -79,15 +79,12 @@ function DayDetails() {
                     <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={()=>router('/plan')}/>
 
                     <div className='flex flex-8/10 flex-col gap-2 md:items-center'>
-                        <h1 className='sm:text-4xl text-3xl text-gray-800 font-semibold'>Trip Plan for Banff, Canada</h1>
-                        <span className='text-md text-gray-500 font-medium'>3 days • June 30 - July 2</span>
+                        <h1 className='sm:text-4xl text-3xl text-gray-800 font-semibold'>Day 1 - Adventure day</h1>
+                        <span className='text-md text-gray-500 font-medium'>Monday , June 30</span>
                     </div>
-                    <button
-                        className="bg-blue-500 min-w-46 min-h-12 hover:bg-blue-600 transition-all cursor-pointer flex flex-1/10 items-center gap-4 justify-center text-white px-6 rounded-md"
-                    >
-                        <FaRepeat />
-                        Regenerate
-                    </button>
+                    <div className='flex flex-1/10'>
+
+                    </div>
                 </div>
 
                 <div className=" mx-auto p-4 space-y-6 min-h-screen">
@@ -175,10 +172,12 @@ function DayDetails() {
 
                             {/* Action Buttons */}
                             <div className="flex sm:flex-row flex-col border-gray-100 px-4 sm:px-6 gap-2">
-                                <button className="flex-1 py-3 sm:py-4 text-center text-blue-600 hover:bg-blue-50 transition-colors duration-200 font-semibold text-sm rounded-2xl sm:text-base border-1 border-blue-500 cursor-pointer">
+                                <button onClick={()=>{
+                                    router('/edit')
+                                }} className="flex-1 py-3 sm:py-4 text-center text-blue-600 hover:bg-blue-50 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base border-1 border-blue-500 cursor-pointer">
                                     Edit
                                 </button>
-                                <button className="flex-1 py-3 sm:py-4 text-center bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm rounded-2xl sm:text-base cursor-pointer">
+                                <button className="flex-1 py-3 sm:py-4 text-center bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base cursor-pointer">
                                     Skip
                                 </button>
                             </div>
