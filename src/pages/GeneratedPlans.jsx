@@ -1,9 +1,11 @@
 import React from 'react'
 import { destinations } from '../data/Destination'
 import { FaClock, FaMapMarker, FaMapMarkerAlt, FaRegClock } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 function GeneratedPlans() {
 
+    const router = useNavigate();
     return (
         <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen' data-aos="fade-in">
 
@@ -111,7 +113,9 @@ function GeneratedPlans() {
                                         data-aos="fade-left"
                                         data-aos-delay={index * 100 + 400}
                                     >
-                                        <button className="bg-blue-100 w-full text-blue-600 font-medium px-4 py-2 rounded-md hover:bg-blue-200 transition-all cursor-pointer">
+                                        <button className="bg-blue-100 w-full text-blue-600 font-medium px-4 py-2 rounded-md hover:bg-blue-200 transition-all cursor-pointer" onClick={()=>{
+                                            router('/plan')
+                                        }} >
                                             View itinerary
                                         </button>
                                     </div>

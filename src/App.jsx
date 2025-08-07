@@ -16,6 +16,8 @@ import 'aos/dist/aos.css';
 import { useEffect } from 'react'
 import YourSmart from './pages/YourSmart'
 import BlogDetails from './pages/BlogDetails'
+import PlanDetails from './pages/PlanDetails'
+import DayDetails from './pages/DayDetails'
 
 function App() {
   useEffect(() => {
@@ -40,7 +42,9 @@ function App() {
           <Route path='/blog' element={<BlogDetails/>} />
           <Route path='/travelhub' element={<TravelHub />} />
           <Route path='/generatedplans' element={<GeneratedPlans />} />
+          <Route path='/plan' element={<PlanDetails/>}/>
           <Route path='/yoursmart' element={<YourSmart />} />
+          <Route path='/day' element={<DayDetails/>}/>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
         </Routes>
