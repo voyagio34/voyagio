@@ -71,34 +71,24 @@ const blogPosts = [
 
 function BlogDetails() {
     return (
-        <div className='bg-gray-50'>
-            <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 py-20 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
+        <div className='bg-gray-50 pt-10'>
+            <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div
                     className="absolute top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0"
-                    data-aos="fade-right"
-                    data-aos-duration="1500"
                 />
                 <div
                     className="absolute sm:block hidden top-2 right-4 w-50 h-50 bg-gray-200 rounded-full z-0"
-                    data-aos="fade-left"
-                    data-aos-duration="1500"
                 />
                 <div
                     className="absolute sm:bottom-20 bottom-10 sm:right-20 -right-5 w-26 h-26 bg-blue-500/60 rounded-full z-0"
-                    data-aos="fade-left"
-                    data-aos-delay="500"
                 />
                 <div
                     className="absolute sm:block hidden bottom-10 left-10 w-20 h-20 bg-blue-200 rounded-full z-0"
-                    data-aos="fade-right"
-                    data-aos-delay="300"
                 />
 
                 <div className='flex md:items-center py-20 items-start max-w-7xl sm:mx-auto px-4 sm:px-6 lg:px-8 md:flex-row flex-col gap-8'>
                     <div
                         className='flex flex-1/2 flex-col z-10'
-                        data-aos="fade-right"
-                        data-aos-duration="800"
                     >
                         <h1 className='font-bold flex sm:text-5xl text-4xl'>
                             Blog
@@ -110,35 +100,27 @@ function BlogDetails() {
                     </div>
                     <div
                         className='w-full flex-1/2 flex z-10 justify-end'
-                        data-aos="fade-left"
-
                     >
                         <img src="/FeaturesBg.webp" alt="Features" />
                     </div>
                 </div>
             </section>
 
-            <section className="min-h-screen ">
+            <section className="min-h-screen mt-10" data-aos="fade-up">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
                     {/* Main Article */}
                     <article
                         className="rounded-2xl overflow-hidden mb-10"
-                        data-aos="fade-up"
-                        data-aos-duration="800"
                     >
                         <img
                             src="/blog3.webp"
                             alt="Travel Journey"
                             className="w-full h-full rounded-2xl sm:h-96 object-cover"
-                            data-aos="fade-up"
-
                         />
 
                         <div
                             className="flex flex-wrap gap-4 sm:gap-6 pt-6 text-md text-gray-600"
-                            data-aos="fade-up"
-                            data-aos-delay="100"
                         >
                             <span className="flex items-center gap-2">
                                 <FaCalendarAlt className="w-4 h-4" />
@@ -154,24 +136,19 @@ function BlogDetails() {
                             </span>
                         </div>
 
-                        <div className=" py-6"
-                            data-aos="fade-up"
-                            data-aos-delay="200">
+                        <div className=" py-6">
                             <h1
                                 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-gray-900"
-
                             >
                                 Ultimate Travel Planning Guide: 10 Tips for a Seamless Journey
                             </h1>
                             <p
                                 className="text-gray-600 text-justify leading-relaxed mb-4"
-
                             >
                                 Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
                             </p>
                             <p
                                 className="text-gray-600 text-justify leading-relaxed"
-
                             >
                                 Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
                             </p>
@@ -185,12 +162,9 @@ function BlogDetails() {
                         <div className="lg:col-span-2">
                             <div
                                 className=" rounded-2xl  "
-                                data-aos="fade-up"
-                                data-aos-duration="800"
                             >
                                 <h2
                                     className="text-2xl font-bold mb-6 text-gray-900"
-                                    data-aos="fade-up"
                                 >
                                     Ultimate Travel Planning Guide: 10 Tips for a Seamless Journey
                                 </h2>
@@ -198,31 +172,22 @@ function BlogDetails() {
                                     src="/blog3.webp"
                                     alt="Travel Journey"
                                     className="w-full h-full rounded-2xl sm:h-96 mb-10 object-cover"
-                                    data-aos="fade-up"
-                                    data-aos-delay="50"
-
                                 />
 
                                 <p
                                     className="text-gray-600 text-justify leading-relaxed mb-4"
-                                    data-aos="fade-up"
-                                    data-aos-delay="100"
                                 >
                                     Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
                                 </p>
 
                                 <p
                                     className="text-gray-600 text-justify leading-relaxed mb-4"
-                                    data-aos="fade-up"
-                                    data-aos-delay="200"
                                 >
                                     It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem ipsum.
                                 </p>
 
                                 <p
                                     className="text-gray-600 text-justify leading-relaxed"
-                                    data-aos="fade-up"
-                                    data-aos-delay="300"
                                 >
                                     Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
                                 </p>
@@ -233,14 +198,9 @@ function BlogDetails() {
                         <aside className="lg:col-span-1">
                             <div
                                 className=" rounded-2xl sm:px-6 px-2 py-6 sticky top-8"
-                                data-aos="fade-up"
-                                data-aos-duration="800"
-
                             >
                                 <h2
                                     className="text-xl font-bold mb-6 text-gray-900"
-                                    data-aos="fade-up"
-                                    data-aos-delay="300"
                                 >
                                     Categories :
                                 </h2>
@@ -249,8 +209,6 @@ function BlogDetails() {
                                         <li
                                             key={index}
                                             className="flex flex-row items-center gap-3 py-3 sm:px-4 border-b border-gray-100 last:border-0 cursor-pointer group"
-                                            data-aos="fade-in"
-                                            data-aos-delay={400 + (index * 50)}
                                         >
                                             <span className="text-xl  group-hover:text-blue-500 group-hover:translate-x-1 duration-200  ">{category.icon}</span>
                                             <span className="text-md font-medium  group-hover:text-blue-500 group-hover:translate-x-1 duration-200  ">{category.name}</span>
@@ -262,8 +220,6 @@ function BlogDetails() {
                                 <div className="mt-8">
                                     <h3
                                         className="text-lg font-bold mb-6 text-gray-900"
-                                        data-aos="fade-up"
-                                        data-aos-delay="700"
                                     >
                                         Recent Posts :
                                     </h3>
@@ -272,8 +228,6 @@ function BlogDetails() {
                                             <div
                                                 key={post.id}
                                                 className="flex flex-row gap-3 transition-all group hover:translate-x-1 duration-200 cursor-pointer"
-                                                data-aos="fade-up"
-                                                data-aos-delay={800 + (index * 100)}
                                             >
                                                 <img
                                                     src={post.image}
@@ -295,20 +249,17 @@ function BlogDetails() {
                     </div>
 
 
-                    <div className='relative py-20'>
+                    <div className='relative py-20' data-aos="fade-up">
                         <div className="flex sm:flex-row flex-col justify-between sm:items-center mb-8">
                             <div className='flex flex-col gap-2'>
 
                                 <h2
                                     className="text-2xl sm:text-3xl font-bold text-gray-900"
-                                    data-aos="fade-up"
                                 >
                                     Our Blogs
                                 </h2>
                                 <p
                                     className="text-gray-600 text-justify leading-relaxed"
-                                    data-aos="fade-up"
-
                                 >
                                     Lorem ipsum is simply dummy text of the printing and typesetting industry.
                                 </p>
@@ -316,8 +267,6 @@ function BlogDetails() {
 
                             <button
                                 className="mt-6 md:mt-0 bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-colors duration-200 max-w-40 justify-center group cursor-pointer"
-                                data-aos="fade-up"
-                                data-aos-delay="100"
                             >
                                 View More
                                 <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
@@ -329,9 +278,6 @@ function BlogDetails() {
                                 <article
                                     key={post.id}
                                     className=" rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all"
-                                    data-aos="fade-up"
-                                    data-aos-delay={100 + (index * 100)}
-                                    data-aos-duration="800"
                                 >
                                     <img
                                         src={post.image}
@@ -385,22 +331,17 @@ function BlogDetails() {
                     <div className='flex flex-col'>
                         <span
                             className="text-lg text-blue-500 font-bold"
-                            data-aos="fade-right"
                         >
                             🌍 Download the Voyagio AI™ App
                         </span>
                         <span
                             className="text-md max-w-lg mt-2 px-1 text-gray-700 font-medium"
-                            data-aos="fade-right"
-
                         >
                             Plan, personalize, and book your entire trip in seconds with the power of AI — all from one smart, seamless app.
                         </span>
                     </div>
                     <div
                         className="flex flex-col items-center gap-2"
-                        data-aos="fade-left"
-
                     >
                         <div className="flex gap-4">
                             <img src="/appstore.webp" alt="appstore" className='h-10' />

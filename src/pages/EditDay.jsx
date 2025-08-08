@@ -32,15 +32,14 @@ function EditDay() {
         }
     };
     return (
-        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen' data-aos="fade-in">
+        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10' >
             <section
                 className="relative max-w-7xl mx-auto py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
-                data-aos="fade-up"
-                data-aos-duration="200"
+                data-aos="fade-right"
             >
                 <div
                     className="flex md:flex-row flex-col md:justify-between gap-4 items-start  p-4 mb-8"
-                    data-aos="fade-up"
+
                 >
                     <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router('/day')} />
 
@@ -56,7 +55,7 @@ function EditDay() {
                 {/* Form Content */}
                 <div className="p-4 sm:p-6 lg:p-8 space-y-6">
                     {/* Title */}
-                    <div data-aos="fade-up" data-aos-delay="100" >
+                    <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Title
                         </label>
@@ -73,8 +72,7 @@ function EditDay() {
                     {/* Time Fields */}
                     <div
                         className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-                        data-aos="fade-up"
-                        data-aos-delay="200"
+
                     >
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -105,7 +103,7 @@ function EditDay() {
                     </div>
 
                     {/* Location */}
-                    <div data-aos="fade-up" data-aos-delay="300" >
+                    <div  >
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Location
                         </label>
@@ -122,8 +120,7 @@ function EditDay() {
                     {/* Image Upload */}
                     <div
                         className="border-2 border-dashed border-gray-300 rounded-lg p-8"
-                        data-aos="fade-up"
-                        data-aos-delay="400"
+
                     >
                         <div className="text-center">
                             <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
@@ -149,7 +146,7 @@ function EditDay() {
                     </div>
 
                     {/* Outfit */}
-                    <div data-aos="fade-up" data-aos-delay="500" >
+                    <div  >
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Outfit
                         </label>
@@ -164,7 +161,7 @@ function EditDay() {
                     </div>
 
                     {/* Weather */}
-                    <div data-aos="fade-up" data-aos-delay="600" >
+                    <div >
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Weather
                         </label>
@@ -181,8 +178,7 @@ function EditDay() {
                     {/* Action Buttons */}
                     <div
                         className="flex flex-col sm:flex-row gap-4 pt-6"
-                        data-aos="fade-up"
-                        data-aos-delay="700"
+
                     >
                         <button className="flex-1 py-3 px-6 border-1 border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition-colors font-semibold cursor-pointer">
                             Cancel

@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react'
 import { getTrackBackground, Range } from 'react-range';
 import SmallCarousel from '../components/SmallCarousel';
@@ -12,15 +11,16 @@ import { images, steps } from '../data/Steps';
 import { FaCircleLeft, FaCircleRight, FaFolderClosed, FaMessage, FaRegMessage } from 'react-icons/fa6';
 import { testimonialsData } from '../data/Reviews';
 import { blogPosts } from '../data/BlogPosts';
-import { Mail, MailIcon } from 'lucide-react';
+import { Mail, MailIcon, X } from 'lucide-react';
 import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
 import { Link, useNavigate } from 'react-router-dom';
 import { useJsApiLoader } from '@react-google-maps/api';
+
 const STEP = 100;
 const MIN = 2000;
 const MAX = 15000;
-const LIBRARIES = ['places']
+const LIBRARIES = ['places'];
 
 const Home = () => {
   const [values, setValues] = useState([2000, 15000]);
@@ -30,7 +30,7 @@ const Home = () => {
   const [onboardingPlace, setOnboardingPlace] = useState('');
   const [destinationPlace, setDestinationPlace] = useState('');
   const [onboardingLocation, setOnboardingLocation] = useState({ lat: 51.1784, lng: -115.5708 });
-  const [destinationLocation, setDestinationLocation] = useState({ lat: 51.1784, lng: -115.5708 })
+  const [destinationLocation, setDestinationLocation] = useState({ lat: 51.1784, lng: -115.5708 });
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -41,85 +41,38 @@ const Home = () => {
   const destinationInputRef = useRef(null);
   const onboardingAutocompleteRef = useRef(null);
   const destinationAutocompleteRef = useRef(null);
-  const [mapsLoaded, setMapsLoaded] = useState(false);
 
+  useEffect(() => {
+    console.log('=== LOCATION UPDATE ===');
+    console.log('Onboarding Location:', {
+      place: onboardingPlace,
+      lat: onboardingLocation.lat,
+      lng: onboardingLocation.lng,
+      fullLocation: onboardingLocation
+    });
+    console.log('Destination Location:', {
+      place: destinationPlace,
+      lat: destinationLocation.lat,
+      lng: destinationLocation.lng,
+      fullLocation: destinationLocation
+    });
+    console.log('=====================');
+  }, [onboardingLocation, destinationLocation, onboardingPlace, destinationPlace]);
+
+  // Use useJsApiLoader for Google Maps
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES
   });
 
-
-  // Initialize Google Places Autocomplete
+  // Initialize autocomplete when Google Maps is loaded
   useEffect(() => {
-    // Load Google Maps script if not already loaded
-    const checkGoogleMaps = () => {
-      return window.google &&
-        window.google.maps &&
-        window.google.maps.places &&
-        window.google.maps.places.Autocomplete;
-    };
-
-    // If already loaded, initialize immediately
-    if (checkGoogleMaps()) {
-      setMapsLoaded(true);
-      initializeAutocomplete();
-      return;
-    }
-
-    // Check if script already exists
-    const existingScript = document.getElementById('google-maps-script');
-
-    if (!existingScript) {
-      // Create and load the script
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMaps`;
-      script.async = true;
-      script.defer = true;
-      script.id = 'google-maps-script';
-
-      // Create global callback function
-      window.initGoogleMaps = () => {
-        setMapsLoaded(true);
-        delete window.initGoogleMaps; // Clean up
-      };
-
-      script.onerror = () => {
-        console.error('Failed to load Google Maps API');
-        delete window.initGoogleMaps;
-      };
-
-      document.head.appendChild(script);
-    } else {
-      // Script exists, wait for it to load
-      const checkInterval = setInterval(() => {
-        if (checkGoogleMaps()) {
-          clearInterval(checkInterval);
-          setMapsLoaded(true);
-          initializeAutocomplete();
-        }
-      }, 100);
-
-      // Clear interval after 10 seconds to avoid infinite checking
-      setTimeout(() => clearInterval(checkInterval), 10000);
-    }
-
-    // Cleanup
-    return () => {
-      if (onboardingAutocompleteRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(onboardingAutocompleteRef.current);
-      }
-      if (destinationAutocompleteRef.current && window.google?.maps?.event) {
-        window.google.maps.event.clearInstanceListeners(destinationAutocompleteRef.current);
-      }
-    };
-  }, []);
-  useEffect(() => {
-    if (mapsLoaded) {
+    if (isLoaded) {
       initializeAutocomplete();
     }
-  }, [mapsLoaded]);
+  }, [isLoaded]);
+
   const initializeAutocomplete = () => {
-    // Double-check that everything is loaded
     if (!window.google?.maps?.places?.Autocomplete) {
       console.error('Google Maps Places Autocomplete is not available');
       return;
@@ -138,11 +91,26 @@ const Home = () => {
 
         onboardingAutocompleteRef.current.addListener('place_changed', () => {
           const place = onboardingAutocompleteRef.current.getPlace();
+          console.log('--- Onboarding Place Changed ---');
+          console.log('Place object:', place);
+
           if (place && place.geometry) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
+            const locationName = place.formatted_address || place.name || '';
+
+            console.log('Onboarding - New Location:', {
+              name: locationName,
+              lat: lat,
+              lng: lng,
+              placeId: place.place_id
+            });
+
             setOnboardingLocation({ lat, lng });
-            setOnboardingPlace(place.formatted_address || place.name || '');
+            setOnboardingPlace(locationName);
+            if (onboardingInputRef.current) {
+              onboardingInputRef.current.value = locationName;
+            }
           }
         });
       }
@@ -159,11 +127,26 @@ const Home = () => {
 
         destinationAutocompleteRef.current.addListener('place_changed', () => {
           const place = destinationAutocompleteRef.current.getPlace();
+          console.log('--- Destination Place Changed ---');
+          console.log('Place object:', place);
+
           if (place && place.geometry) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
+            const locationName = place.formatted_address || place.name || '';
+
+            console.log('Destination - New Location:', {
+              name: locationName,
+              lat: lat,
+              lng: lng,
+              placeId: place.place_id
+            });
+
             setDestinationLocation({ lat, lng });
-            setDestinationPlace(place.formatted_address || place.name || '');
+            setDestinationPlace(locationName);
+            if (destinationInputRef.current) {
+              destinationInputRef.current.value = locationName;
+            }
           }
         });
       }
@@ -171,6 +154,35 @@ const Home = () => {
       console.error('Error initializing autocomplete:', error);
     }
   };
+
+
+  // Add a debug function to manually check current locations
+  const debugLocations = () => {
+    console.table({
+      'Onboarding': {
+        place: onboardingPlace,
+        lat: onboardingLocation.lat,
+        lng: onboardingLocation.lng
+      },
+      'Destination': {
+        place: destinationPlace,
+        lat: destinationLocation.lat,
+        lng: destinationLocation.lng
+      }
+    });
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (onboardingAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(onboardingAutocompleteRef.current);
+      }
+      if (destinationAutocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(destinationAutocompleteRef.current);
+      }
+    };
+  }, []);
 
   const handlePrevious = () => {
     if (isTransitioning) return;
@@ -208,27 +220,13 @@ const Home = () => {
       />
     ));
   };
+
   const scrollToHowitworks = () => {
     const howSection = document.getElementById('howitworks');
     if (howSection) {
       howSection.scrollIntoView({ behavior: 'smooth' });
     }
-  }
-
-  const handleOnboardingLocation = (place) => {
-    const lat = place.value.geometry.location.lat();
-    const lng = place.value.geometry.location.lng();
-    const coords = { lat, lng };
-    setOnboardingLocation(coords);
-    set(place);
-  }
-  const handleDestinationLocation = () => {
-    const lat = place.value.geometry.location.lat();
-    const lng = place.value.geometry.location.lng();
-    const coords = { lat, lng };
-    setDestinationLocation(coords);
-    setSearchValue(place);
-  }
+  };
 
   const getCategoryColor = (category) => {
     switch (category.toLowerCase()) {
@@ -243,24 +241,29 @@ const Home = () => {
     }
   };
 
+  const toggleLike = (experienceId) => {
+    // Implement like functionality if needed
+    console.log('Toggle like for experience:', experienceId);
+  };
+
   return (
-    <div className='bg-gray-50 overflow-x-hidden'>
+    <div className='bg-gray-50 overflow-x-hidden pt-10  '>
       {/* Hero section */}
       <section className="relative bg-cover bg-center bg-[url('/Hero_bg.webp')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
-        <div className="w-full max-w-7xl overflow-hidden mx-auto flex flex-col lg:flex-row justify-between items-center gap-12">
+        <div className="w-full max-w-7xl overflow-hidden mx-auto flex flex-col xl:flex-row justify-around items-center gap-12">
 
           {/* Left: Form Section */}
           <form onSubmit={(e) => {
             e.preventDefault();
-            router('generatedplans');
+            router('/itinerary');
 
-          }} className="p-2 sm:p-6 md:p-8 rounded-xl lg:w-1/2 w-full max-w-2xl space-y-2"
-            data-aos="fade-up"
+          }} className="rounded-xl lg:w-1/2 w-full max-w-lg space-y-2"
+            data-aos="fade-right"
             data-aos-delay="200"
           >
 
             {/* Travel Style Dropdown */}
-            <div className='bg-white p-6 rounded-2xl flex sm:flex-row flex-col w-auto'>
+            <div className='bg-white px-6 py-4 rounded-2xl flex sm:flex-row flex-col w-auto'>
               <div className='flex flex-col w-full sm:mb-0 mb-4'>
                 <span className='text-md text-gray-900 font-semibold'>Select Travel Style</span>
                 <span className='text-sm text-gray-400'>Select all that interest you</span>
@@ -283,7 +286,7 @@ const Home = () => {
             </div>
 
             {/* Budget Slider */}
-            <div className='bg-white p-6 rounded-2xl flex flex-row w-auto'>
+            <div className='bg-white px-6 py-4 rounded-2xl flex flex-row w-auto'>
               <div className='flex flex-col w-full justify-center'>
                 <span className='text-md text-gray-900 font-semibold'>Budget</span>
               </div>
@@ -358,7 +361,7 @@ const Home = () => {
             </div>
 
             {/* No. of Peoples */}
-            <div className='bg-white p-6 rounded-2xl flex sm:flex-row flex-col items-center w-auto'>
+            <div className='bg-white px-6 py-4 rounded-2xl flex sm:flex-row flex-col items-center w-auto'>
               <label className="w-full block text-md  font-semibold mb-1">No. of peoples</label>
 
               <input
@@ -368,8 +371,10 @@ const Home = () => {
               />
             </div>
 
-            {/*  Location */}
-            <div className='bg-white p-6 space-y-3 rounded-2xl flex-col w-auto'>
+
+            {/* Location */}
+            <div className='bg-white px-6 py-4 space-y-3 rounded-2xl flex-col w-auto'>
+              {/* Boarding Location */}
               {/* Boarding Location */}
               <div className='flex sm:flex-row flex-col gap-2'>
                 <div className='flex flex-col w-full'>
@@ -385,8 +390,33 @@ const Home = () => {
                       placeholder="Search a city, region"
                       className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                       defaultValue={onboardingPlace}
+                      disabled={!isLoaded}
                     />
-                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    {onboardingPlace ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log('Clearing onboarding location');
+                          setOnboardingPlace('');
+                          setOnboardingLocation({ lat: 51.1784, lng: -115.5708 });
+                          if (onboardingInputRef.current) {
+                            onboardingInputRef.current.value = '';
+                          }
+                        }}
+                        className='absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 px-2 py-2 hover:text-gray-600 transition-all cursor-pointer z-30'
+                        title="Clear location"
+                      >
+                        <X className='w-5 h-5' />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className='absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none px-2 py-2'
+                        title="Search location"
+                      >
+                        <FaSearch className="w-5 h-5" />
+                      </button>
+                    )}
                   </div>
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
@@ -396,7 +426,6 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-
               {/* Destination Location */}
               <div className='flex sm:flex-row flex-col gap-2'>
                 <div className='flex flex-col w-full'>
@@ -412,8 +441,33 @@ const Home = () => {
                       placeholder="Search a city, region"
                       className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                       defaultValue={destinationPlace}
+                      disabled={!isLoaded}
                     />
-                    <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    {destinationPlace ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log('Clearing destination location');
+                          setDestinationPlace('');
+                          setDestinationLocation({ lat: 51.1784, lng: -115.5708 });
+                          if (destinationInputRef.current) {
+                            destinationInputRef.current.value = '';
+                          }
+                        }}
+                        className='absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 px-2 py-2 hover:text-gray-600 transition-all cursor-pointer z-30'
+                        title="Clear location"
+                      >
+                        <X className='w-5 h-5' />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className='absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none px-2 py-2'
+                        title="Search location"
+                      >
+                        <FaSearch className="w-5 h-5" />
+                      </button>
+                    )}
                   </div>
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
@@ -423,9 +477,14 @@ const Home = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Show loading message if maps not loaded */}
+              {!isLoaded && (
+                <p className="text-sm text-gray-500 text-center">Loading location search...</p>
+              )}
             </div>
             {/* Travel Period */}
-            <div className="bg-white p-6 space-y-3 rounded-2xl flex flex-col w-auto">
+            <div className="bg-white px-6 py-4 space-y-3 rounded-2xl flex flex-col w-auto">
               <label className="block text-md font-semibold text-gray-900">Travel Period</label>
 
               <div className="flex sm:flex-row flex-col w-full items-start sm:items-center gap-4">
@@ -464,7 +523,7 @@ const Home = () => {
 
           {/* Right: Mobile Images */}
           <div className="relative w-full h-full lg:w-1/2 flex justify-center items-center "
-            data-aos="fade-up"
+            data-aos="fade-right"
             data-aos-delay="200">
             <img
               src="/Hero_img.webp"
@@ -474,28 +533,53 @@ const Home = () => {
 
           </div>
         </div>
+
         <OnboardingModal
           isOpen={onboardingOpen}
           onClose={() => setOnboardingOpen(false)}
           location={onboardingLocation}
-          setLocation={setOnboardingLocation}
-          ref={onboardingInputRef}
+          setLocation={(loc) => {
+            console.log('Onboarding Location Set from Modal:', loc);
+            setOnboardingLocation(loc);
+            if (onboardingInputRef.current) {
+              onboardingInputRef.current.value = onboardingPlace;
+            }
+          }}
           defaultValue={onboardingPlace}
+          onConfirm={(place) => {
+            console.log('Onboarding Modal Confirmed:', place);
+            setOnboardingPlace(place);
+            if (onboardingInputRef.current) {
+              onboardingInputRef.current.value = place;
+            }
+          }}
         />
 
         <DestinationModal
           isOpen={destinationOpen}
           onClose={() => setDestinationOpen(false)}
           location={destinationLocation}
-          setLocation={setDestinationLocation}
-          ref={destinationInputRef}
+          setLocation={(loc) => {
+            console.log('Destination Location Set from Modal:', loc);
+            setDestinationLocation(loc);
+            if (destinationInputRef.current) {
+              destinationInputRef.current.value = destinationPlace;
+            }
+          }}
           defaultValue={destinationPlace}
+          onConfirm={(place) => {
+            console.log('Destination Modal Confirmed:', place);
+            setDestinationPlace(place);
+            if (destinationInputRef.current) {
+              destinationInputRef.current.value = place;
+            }
+          }}
         />
 
       </section>
 
       <section className='relative py-20  w-full flex flex-col justify-center items-center'>
-        <div className='flex-col justify-center items-center' data-aos="fade-up">
+        <div className='flex-col justify-center items-center' data-aos="fade-right">
           <p className='sm:text-4xl text-3xl font-bold text-center'>Top Destination</p>
           <span className='text-gray-500'>Navigate the Globe with Confidence</span>
         </div>
@@ -506,14 +590,14 @@ const Home = () => {
       </section>
 
       <section className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '>
-        <h1 className='sm:text-5xl text-4xl font-bold' data-aos="fade-up">App Feature</h1>
+        <h1 className='sm:text-5xl text-4xl font-bold' data-aos="fade-right">App Feature</h1>
         <div className='flex flex-wrap justify-center sm:space-x-10 space-x-0 mt-10' >
           {
             AppFeatures.map((feature, index) => {
               return (
                 <div key={index}
                   className='flex-col max-w-84 mx-4'
-                  data-aos="fade-up"
+                  data-aos="fade-right"
                   data-aos-delay={index * 100}
                 >
                   <img src={feature.img} alt={feature.title} className='-z-10' />
@@ -531,17 +615,17 @@ const Home = () => {
       </section>
 
       {/* Top Restaurant cards */}
-      <section className='relative py-20 bg-blue-200/35 ' data-aos="fade-up">
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '>
+      <section className='relative py-20 bg-blue-200/35 '>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '  data-aos="fade-right">
 
-          <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-up">Top Restaurants</h1>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-right">Top Restaurants</h1>
 
           <div className='flex flex-wrap justify-center gap-4 mt-10 '>
             {
               TopRestaurants.map((restaurant, index) => {
                 return (
                   <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all'
-                    data-aos="fade-up"
+                    data-aos="fade-right"
                     data-aos-delay={index * 100}
                     data-aos-anchor-placement="center-bottom">
                     <div className='h-56 object-fill '>
@@ -579,14 +663,14 @@ const Home = () => {
 
       <section className='relative py-20 '>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col'>
-          <h1 className='sm:text-5xl text-4xl font-bold mb-8' data-aos="fade-up">Your Smart Travel Planning Hub</h1>
-          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-up" data-aos-delay="50">Plan with precision, adjust with ease, and sync it all in real time-powered by our Living Itinerary Engine™.</p>
-          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-up" data-aos-delay="50">Build your perfect trip in just a few steps with Voyagio's intelligent Travel Hub. Whether you're mapping out a weekend getaway or a multi-city journey, our Al- powered system personalizes every detail-so you can stop planning and start experiencing.</p>
-          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-up" data-aos-delay="50">Everything updates in real time, including weather-based suggestions, schedule changes, and local recommendations. Sync with your mobile app and take your trip wherever you go.</p>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-8' data-aos="fade-right">Your Smart Travel Planning Hub</h1>
+          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-right" data-aos-delay="50">Plan with precision, adjust with ease, and sync it all in real time-powered by our Living Itinerary Engine™.</p>
+          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-right" data-aos-delay="50">Build your perfect trip in just a few steps with Voyagio's intelligent Travel Hub. Whether you're mapping out a weekend getaway or a multi-city journey, our Al- powered system personalizes every detail-so you can stop planning and start experiencing.</p>
+          <p className='text-md font-normal text-gray-500 mb-4' data-aos="fade-right" data-aos-delay="50">Everything updates in real time, including weather-based suggestions, schedule changes, and local recommendations. Sync with your mobile app and take your trip wherever you go.</p>
           <div className='flex flex-wrap justify-center gap-4 mt-8'>
             {
               InfoCards.map((info, index) => {
-                return <div key={index} className='py-8 px-4 items-center gap-2 border-1 max-w-72 w-full shadow-sm bg-gray-50 border-gray-300 rounded-2xl flex flex-col ' data-aos="fade-up" data-aos-delay={100 + index * 100}>
+                return <div key={index} className='py-8 px-4 items-center gap-2 border-1 max-w-72 w-full shadow-sm bg-gray-50 border-gray-300 rounded-2xl flex flex-col ' data-aos="fade-right" data-aos-delay={100 + index * 100}>
                   <img src={info.icon} alt={info.title} className='w-16' />
                   <p className='mt-4 font-bold text-lg text-gray-800'>{info.title}</p>
                   <p className='text-gray-500 text-sm'>{info.description}</p>
@@ -596,12 +680,12 @@ const Home = () => {
           </div>
           <div className='mt-20 flex gap-4 justify-center'>
             <Link to='/travelhub'
-              data-aos="fade-up"
+              data-aos="fade-right"
               data-aos-delay={250}
               className='px-5 py-3 font-bold text-sm text-blue-50 transition-all rounded-full bg-blue-500 hover:bg-blue-50 outline-2 hover:text-blue-500 outline-blue-500 cursor-pointer'>Try the Travel Hub</Link>
             <button
               onClick={scrollToHowitworks}
-              data-aos="fade-up"
+              data-aos="fade-right"
               data-aos-delay={300}
               className='px-5 py-3 font-bold text-sm text-blue-500 transition-all rounded-full bg-blue-50 hover:bg-blue-500 outline-2 hover:text-blue-50 outline-blue-500 cursor-pointer'>How it Works</button>
           </div>
@@ -610,15 +694,15 @@ const Home = () => {
 
       <section className='relative py-20 '>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col'>
-          <h1 className='sm:text-5xl text-4xl font-bold mb-8' data-aos="fade-up">Deals (Flights and Last-Minute)</h1>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-8' data-aos="fade-right">Deals (Flights and Last-Minute)</h1>
           <div className='flex flex-wrap justify-center gap-8 mt-8'>
             {
               Deals.map((deal, index) => {
                 return (
                   <div
                     key={deal.id}
-                    className="bg-gray-50 rounded-lg border-1 border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-300 p-6 w-full max-w-sm"
-                    data-aos="fade-up"
+                    className="bg-white rounded-lg border-1 border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-300 p-6 w-full max-w-sm"
+                    data-aos="fade-right"
                     data-aos-delay={100 + index * 100}
                   >
                     {/* Airline Logo */}
@@ -675,13 +759,13 @@ const Home = () => {
 
       <section className='relative py-20'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col'>
-          <h2 className='sm:text-5xl text-4xl font-bold text-gray-900 mb-4' data-aos="fade-up">Activities & Events</h2>
+          <h2 className='sm:text-5xl text-4xl font-bold text-gray-900 mb-4' data-aos="fade-right">Activities & Events</h2>
           <div className="flex flex-wrap justify-center gap-4 mt-10">
             {Experiences.map((experience, index) => (
               <div
                 key={experience.id}
                 className="flex flex-col bg-white rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition-all  duration-300 overflow-hidden group w-full max-w-72"
-                data-aos="fade-up"
+                data-aos="fade-right"
                 data-aos-delay={100 + index * 100}
               >
                 {/* Image Container with Heart Button */}
@@ -737,15 +821,15 @@ const Home = () => {
       </section>
 
       {/* Unique stays cards */}
-      <section className='relative py-20 bg-blue-200/35 ' data-aos="fade-up">
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '>
+      <section className='relative py-20 bg-blue-200/35 ' >
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col ' data-aos="fade-right">
 
-          <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-up">Explore Unique Stays</h1>
+          <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-right">Explore Unique Stays</h1>
           <div className='flex flex-wrap justify-center gap-4 mt-10 '>
             {
               TopRestaurants.map((restaurant, index) => {
                 return (
-                  <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all' data-aos="fade-up" data-aos-delay={index * 100}>
+                  <div key={index} className='flex-col cursor-pointer bg-white rounded-lg p-2 max-w-72 shadow-sm hover:shadow-md transition-all' data-aos="fade-right" data-aos-delay={index * 100}>
                     <div className='h-56 object-fill '>
 
                       <img src={restaurant.image} alt={restaurant.name} className='-z-10 rounded-lg h-full' />
@@ -780,7 +864,7 @@ const Home = () => {
       </section>
 
       <section className='relative py-20  w-full flex flex-col justify-center items-center'>
-        <div className='flex flex-col justify-center items-center' data-aos="fade-up">
+        <div className='flex flex-col justify-center items-center' data-aos="fade-right">
           <p className='sm:text-4xl text-3xl font-bold text-center'>Discover Your New Favorite Stay</p>
           <span className='text-gray-500 text-center flex   items-center'>Navigate the Globe with Confidence</span>
         </div>
@@ -791,12 +875,12 @@ const Home = () => {
       </section>
 
       <section className="relative py-20 w-full" id='howitworks'>
-        <div className='max-w-7xl mx-auto px-4  items-center  sm:px-6 lg:px-8  w-full flex flex-col ' data-aos="fade-up">
+        <div className='max-w-7xl mx-auto px-4  items-center  sm:px-6 lg:px-8  w-full flex flex-col ' data-aos="fade-right">
           <h1 className='sm:text-5xl text-4xl font-bold mb-4 '>How it Works</h1>
           <span className='text-gray-500 text-center flex items-center mb-14'>Competitive fares for your route-specific searches.</span>
           <div className="flex flex-col lg:flex-row gap-8 items-start mt-10">
             {/* Left Side - Images */}
-            <div className="grid grid-cols-1 gap-4" data-aos="fade-up" data-aos-delay="200">
+            <div className="grid grid-cols-1 gap-4" data-aos="fade-right" data-aos-delay="200">
               {/* Main Large Image */}
               <div className="col-span-1">
                 <img
@@ -830,12 +914,11 @@ const Home = () => {
             </div>
 
             {/* Right Side - Steps */}
-            <div className="flex flex-col gap-6 overflow-y-hidden lg:w-1/2">
+            <div className="flex flex-col gap-6 overflow-y-hidden lg:w-1/2" data-aos="fade-right" data-aos-delay={100}>
               {steps.map((step, index) => (
                 <div
                   key={step.id}
                   className={`${step.bgColor} rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer duration-300`}
-                  data-aos="fade-up" data-aos-delay={index * 100}
                 >
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Icon */}
@@ -863,15 +946,15 @@ const Home = () => {
       </section>
 
       <section className='relative bg-blue-200/35 overflow-x-hidden py-20 w-full' data-aos="fade-in">
-        <img src="/testbg.webp" alt="bg" className='absolute bottom-0 max-w-64 left-2' data-aos="fade-up" />
+        <img src="/testbg.webp" alt="bg" className='absolute bottom-0 max-w-64 left-2' data-aos="fade-right" />
         <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
           <div className='flex flex-row justify-between w-full h-full items-baseline'>
-            <div className="flex flex-col overflow-y-hidden" data-aos="fade-up" data-aos-delay="100">
+            <div className="flex flex-col overflow-y-hidden" data-aos="fade-right" data-aos-delay="100">
 
               <h2 className='sm:text-5xl text-4xl  font-bold mb-4'>Social Proof / Testimonials</h2>
               <p className='text-gray-500 mb-4 text-md '>What our clients are saying about us?</p>
             </div>
-            <div className='flex flex-row gap-2' data-aos="fade-up" data-aos-delay="100">
+            <div className='flex flex-row gap-2' data-aos="fade-right" data-aos-delay="100">
               <FaCircleLeft className='w-8 h-8 text-gray-700 cursor-pointer hover:text-gray-600 transition-all' aria-labelledby='Previous Testimonial' onClick={handlePrevious} />
               <FaCircleRight className='w-8 h-8 text-gray-700 cursor-pointer hover:text-gray-600 transition-all' aria-labelledby='Previous Testimonial' onClick={handleNext} />
             </div>
@@ -881,7 +964,7 @@ const Home = () => {
             {getVisibleTestimonials().map((testimonial, index) => (
               <div
                 key={testimonial.id}
-                data-aos="fade-up"
+                data-aos="fade-right"
                 data-aos-delay={100 + index * 100}
                 className={`bg-gray-50 rounded-2xl shadow-lg p-6 lg:p-8 transform transition-all duration-300 hover:shadow-xl ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
                   }`}
@@ -924,11 +1007,9 @@ const Home = () => {
       </section>
 
       <section className='relative mx-auto py-20 overflow-x-hidden w-full'>
-        <div className='max-w-7xl mx-auto px-4  items-start  sm:px-6 lg:px-8  w-full flex flex-col '>
-
-
+        <div className='max-w-7xl mx-auto  w-full flex flex-col items-start  '>
           <div className="flex flex-col w-full md:flex-row overflow-hidden justify-between items-start md:items-center mb-12">
-            <div data-aos="fade-up" >
+            <div data-aos="fade-right" className=" px-4 sm:px-6 lg:px-8 " >
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
                 Travel Insights & Guides
               </h2>
@@ -938,16 +1019,16 @@ const Home = () => {
               </p>
             </div>
 
-            <button className="mt-6 md:mt-0 bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-colors duration-200 group cursor-pointer " data-aos="fade-up" data-aos-delay="100">
+            <button className="mt-6 px-6 mx-4 sm:mx-6 lg:mx-8 md:mt-0 bg-black text-white py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-colors duration-200 group cursor-pointer " data-aos="fade-right" data-aos-delay="100">
               View More
               <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
 
           {/* Blog Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-10 gap-8 md:mx-8 sm:mx-6 mx-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-10 gap-8 mx-auto">
             {blogPosts.map((post, index) => (
-              <article key={post.id} className="bg-gray-50 cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group max-w-96 mx-auto" data-aos="fade-up" data-aos-delay={index * 100}>
+              <article key={post.id} className="bg-gray-50 cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group max-w-96 mx-auto " data-aos="fade-right" data-aos-delay={index * 100}>
                 <div className="relative h-64 overflow-hidden">
                   <img
                     src={post.image}

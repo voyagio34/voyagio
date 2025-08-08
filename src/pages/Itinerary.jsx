@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaHeart, FaRegHeart, FaClock, FaStar, FaPlus } from 'react-icons/fa'
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
@@ -80,6 +80,10 @@ function Itinerary() {
     const [addedItems, setAddedItems] = useState([]);
     const router = useNavigate();
 
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     const toggleLike = (id) => {
         setLikedItems(prev =>
             prev.includes(id)
@@ -98,24 +102,21 @@ function Itinerary() {
 
 
     return (
-        <div className='bg-gray-50 px-4 py-20 sm:px-6 lg:px-8 min-h-screen' data-aos="fade-in">
+        <div className='relative bg-gray-50 px-4 py-20 mt-10 sm:px-6 lg:px-8 min-h-screen' >
 
             <section
-                className="relative max-w-7xl mx-auto pt-4  px-4 bg-white shadow-lg w-full rounded-lg"
-                data-aos="fade-up"
-                data-aos-duration="1000"
+                className="relative max-w-7xl mx-auto pt-4 px-4 bg-white shadow-lg w-full rounded-lg"
+                data-aos="fade-right"
             >
                 <div
-                    className="flex flex-row gap-4 flex-1/10 items-center justify-start  p-4 mb-8"
-                    data-aos="fade-up"
-                    data-aos-delay="100"
+                    className="flex flex-row gap-4 flex-1/10 items-center justify-start mx-6 p-4 mb-8"
                 >
-                    <FaArrowLeftLong className='w-6 h-6  text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router("/generatedplans ")} />
+                    <FaArrowLeftLong className='w-6 h-6  text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router("/")} />
                 </div>
-                <div className="max-w-7xl mx-auto py-10">
+                <div className="max-w-7xl mx-auto">
                     {/* Cards Grid */}
-                    <div className="flex flex-wrap mx-3 mb-8">
-                        {activities.map((activity) => (
+                    <div className="flex flex-wrap sm:mx-3 mb-8">
+                        {activities.map((activity, index) => (
                             <div key={activity.id} className="w-full md:w-1/2 lg:w-1/3 px-2 mb-6">
                                 <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
                                     {/* Image Container */}
@@ -193,8 +194,8 @@ function Itinerary() {
                     </div>
 
                     {/* Generate Trip Plan Button */}
-                    <div className="flex justify-center">
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl" onClick={() => { router('/plan') }}>
+                    <div className="flex justify-center pb-10">
+                        <button className="max-w-lg w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl" onClick={() => { router('/plan') }}>
                             Generate My Trip Plan
                         </button>
                     </div>

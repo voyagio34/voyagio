@@ -47,44 +47,39 @@ const TravelHub = () => {
             <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 py-20 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div
                     className="absolute top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0"
-                    data-aos="fade-right"
-                    data-aos-duration="1500"
+
                 />
                 <div
                     className="absolute sm:block hidden top-2 right-4 w-50 h-50 bg-gray-200 rounded-full z-0"
-                    data-aos="fade-left"
-                    data-aos-duration="1500"
+
                 />
                 <div
                     className="absolute sm:bottom-20 bottom-10 sm:right-20 -right-5 w-26 h-26 bg-blue-500/60 rounded-full z-0"
-                    data-aos="fade-left"
-                    data-aos-delay="500"
+
                 />
                 <div
                     className="absolute sm:block hidden bottom-10 left-10 w-20 h-20 bg-blue-200 rounded-full z-0"
-                    data-aos="fade-right"
-                    data-aos-delay="300"
+
                 />
 
                 <div className='flex md:items-center items-start max-w-7xl sm:mx-auto px-4 sm:px-6 lg:px-8 md:flex-row flex-col gap-8'>
                     <div className='flex flex-1/2 flex-col z-10'>
                         <h1
                             className='font-bold flex sm:text-5xl text-4xl'
-                            data-aos="fade-right"
+
                         >
                             Travel
                             <span className='ml-4 text-blue-500'>Hub</span>
                         </h1>
                         <span
                             className='ml-1 font-normal text-lg text-gray-700 mt-2'
-                            data-aos="fade-right"
+
                         >
                             Get the latest travel tips, itineraries, guides and insights.
                         </span>
                         <div
                             className='flex mt-4 items-center bg-white rounded-md px-4'
-                            data-aos="fade-right"
-                            data-aos-delay="100"
+
                         >
                             <FaSearch className='w-5 h-5 text-gray-400' />
                             <input type="text"
@@ -92,10 +87,7 @@ const TravelHub = () => {
                                 className='bg-transparent p-4 w-full focus:outline-none'
                             />
                         </div>
-                        <div className='flex flex-row flex-wrap gap-2 mt-4'
-                            data-aos="fade-right"
-                            data-aos-delay="200"
-                        >
+                        <div className='flex flex-row flex-wrap gap-2 mt-4'>
                             {categories.map((item, index) => {
                                 return (
                                     <div
@@ -111,8 +103,6 @@ const TravelHub = () => {
                     </div>
                     <div
                         className='w-full flex-1/2 flex z-10 justify-end'
-                        data-aos="fade-left"
-                        data-aos-delay="200"
                     >
                         <img src="/FeaturesBg.webp" alt="Features" />
                     </div>
@@ -156,13 +146,13 @@ const TravelHub = () => {
                     <div className='flex flex-col'>
                         <span
                             className="text-lg text-blue-500 font-bold"
-                            data-aos="fade-right"
+                            data-aos="fade-in"
                         >
                             🌍 Download the Voyagio AI™ App
                         </span>
                         <span
                             className="text-md max-w-lg mt-2 px-1 text-gray-700 font-medium"
-                            data-aos="fade-right"
+                            data-aos="fade-in"
                             data-aos-delay="200"
                         >
                             Plan, personalize, and book your entire trip in seconds with the power of AI — all from one smart, seamless app.
@@ -170,7 +160,7 @@ const TravelHub = () => {
                     </div>
                     <div
                         className="flex flex-col items-center gap-2"
-                        data-aos="fade-left"
+                        data-aos="fade-in"
                         data-aos-delay="200"
                     >
                         <div className="flex gap-4">

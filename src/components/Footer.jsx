@@ -45,7 +45,7 @@ const Footer = () => {
           {/* Right: Navigation Links */}
           <div
             className="flex-1 flex flex-wrap justify-start md:justify-end gap-x-6 gap-y-2 text-gray-400"
-            data-aos="fade-left"
+            data-aos="fade-in"
             data-aos-duration="800"
           >
             <Link

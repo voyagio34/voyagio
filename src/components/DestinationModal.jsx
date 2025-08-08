@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, forwardRef, useRef } from "react";
 import { X } from "lucide-react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import { FaSearch } from "react-icons/fa";
-
-const LIBRARIES = ['places'];
 
 const containerStyle = {
   width: "100%",
@@ -15,44 +13,75 @@ const defaultCenter = {
   lng: 77.2090,
 };
 
-export default function DestinationModal({ isOpen, onClose, location, setLocation, ref, defaultValue }) {
+const DestinationModal = ({ isOpen, onClose, location, setLocation, defaultValue, onConfirm }) => {
+  const inputRef = useRef(null);
+  const autocompleteRef = useRef(null);
+  const [searchValue, setSearchValue] = useState(defaultValue || '');
+  const [tempLocation, setTempLocation] = useState(location);
+
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('overflow-hidden');
+      window.scrollTo(0, 0);
+      setTempLocation(location);
+      setSearchValue(defaultValue || '');
+
+      // Initialize autocomplete when modal opens
+      if (inputRef.current && window.google?.maps?.places?.Autocomplete && !autocompleteRef.current) {
+        autocompleteRef.current = new window.google.maps.places.Autocomplete(
+          inputRef.current,
+          {
+            types: ['(cities)'],
+            fields: ['place_id', 'geometry', 'name', 'formatted_address']
+          }
+        );
+
+        autocompleteRef.current.addListener('place_changed', () => {
+          const place = autocompleteRef.current.getPlace();
+          if (place && place.geometry) {
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            setTempLocation({ lat, lng });
+            const placeName = place.formatted_address || place.name || '';
+            setSearchValue(placeName);
+          }
+        });
+      }
     } else {
       document.body.classList.remove('overflow-hidden');
     }
 
     return () => {
-      document.body.classList.remove('overflow-hidden'); // Cleanup
+      document.body.classList.remove('overflow-hidden');
+      // Cleanup autocomplete listener
+      if (autocompleteRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+        autocompleteRef.current = null;
+      }
     };
-  }, [isOpen]);
-
-  // const { isLoaded } = useJsApiLoader({
-  //   googleMapsApiKey: import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY,
-  //   libraries: LIBRARIES
-  // });
-
-  const [searchValue, setSearchValue] = useState(null);
-
-  // Keep search input in sync with selected location
-  useEffect(() => {
-    if (!location) setSearchValue(null);
-  }, [location]);
+  }, [isOpen, location, defaultValue]);
 
   const handleMapClick = useCallback((event) => {
-    setLocation({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
-  }, [setLocation]);
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+    setTempLocation({ lat, lng });
+    setSearchValue(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+  }, []);
 
-  const handlePlaceSelect = (place) => {
-    const lat = place.value.geometry.location.lat();
-    const lng = place.value.geometry.location.lng();
-    const coords = { lat, lng };
-    setLocation(coords);
-    setSearchValue(place);
+  const handleConfirm = () => {
+    setLocation(tempLocation);
+    if (onConfirm) {
+      onConfirm(searchValue);
+    }
+    onClose();
+  };
+
+  const handleReset = () => {
+    setSearchValue('');
+    setTempLocation(defaultCenter);
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
   };
 
   if (!isOpen) return null;
@@ -64,48 +93,56 @@ export default function DestinationModal({ isOpen, onClose, location, setLocatio
           <X className="w-6 h-6" />
         </button>
 
-
         <div className="p-6 pt-10">
           <h2 className="text-2xl font-semibold text-center">Select Destination</h2>
           <p className="text-center text-gray-500 mb-4">Search or click on map to select a location</p>
 
-          {/* 🔍 Autocomplete Search */}
-          <div className="my-4 flex md:flex-row flex-col  w-full gap-2">
+          <div className="my-4 flex md:flex-row flex-col w-full gap-2">
             <div className="relative w-full justify-center">
               <input
-                ref={ref}
+                ref={inputRef}
                 type="text"
                 placeholder="Search a city, region"
-                className="p-3 pr-10 border  border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-                defaultValue={defaultValue}
+                className="p-3 pr-10 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
               />
-              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              {searchValue ? (
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all cursor-pointer"
+                  title="Clear location"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              ) : (
+                <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+              )}
             </div>
 
             <button
-              onClick={onClose}
+              onClick={handleConfirm}
               className="bg-blue-500 min-w-46 min-h-12 hover:bg-blue-600 transition-all cursor-pointer text-white px-6 rounded-md"
             >
               Confirm Location
             </button>
-
           </div>
 
-          {/* 🗺 Map Container */}
           <div className="w-full h-[400px] rounded-md overflow-hidden border">
             <GoogleMap
               mapContainerStyle={containerStyle}
-              center={location || defaultCenter}
+              center={tempLocation || defaultCenter}
               zoom={14}
               onClick={handleMapClick}
             >
-              {location && <Marker position={location} />}
+              {tempLocation && <Marker position={tempLocation} />}
             </GoogleMap>
           </div>
-
-
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default DestinationModal;

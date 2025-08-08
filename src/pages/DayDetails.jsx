@@ -65,15 +65,15 @@ const activities = [
 function DayDetails() {
     const router = useNavigate();
     return (
-        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen' data-aos="fade-in">
+        <div className='bg-gray-50 mt-10 px-4 py-16 sm:px-6 lg:px-8 min-h-screen'>
             <section
                 className="relative max-w-7xl mx-auto py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
-                data-aos="fade-up"
+                data-aos="fade-down"
                 data-aos-duration="1000"
             >
                 <div
                     className="flex md:flex-row flex-col md:justify-between gap-4 items-start  p-4 mb-8"
-                    data-aos="fade-up"
+                    data-aos="fade-in"
                     data-aos-delay="100"
                 >
                     <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={()=>router('/plan')}/>
@@ -92,7 +92,7 @@ function DayDetails() {
                         <div
                             key={activity.id}
                             className="bg-white rounded-2xl mb-10 transition-all duration-300 overflow-hidden"
-                            data-aos="fade-up"
+                            data-aos="fade-in"
                             data-aos-delay={index * 100}
                             data-aos-duration="800"
                         >

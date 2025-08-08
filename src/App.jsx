@@ -36,8 +36,8 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
+      <Navbar />
       <div className='bg-gray-50 text-gray-900 overflow-x-hidden '>
-        <Navbar />
         <Routes >
           <Route path='/' element={<Home />} />
           <Route path='/features' element={<Features />} />
@@ -52,12 +52,12 @@ function App() {
           <Route path='/edit' element={<EditDay />} />
           <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/terms' element={<TermsPage />} />
-          <Route path='/itinerary' element={<Itinerary/>} />
+          <Route path='/itinerary' element={<Itinerary />} />
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
         </Routes>
-        <ScrollToTop />
-        <Footer />
+      <ScrollToTop />
+      <Footer />
       </div>
     </BrowserRouter>
   )

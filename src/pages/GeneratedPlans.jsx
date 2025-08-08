@@ -8,53 +8,41 @@ function GeneratedPlans() {
 
     const router = useNavigate();
     return (
-        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen' data-aos="fade-in">
+        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h- mt-10'>
 
             <section
-                className="relative max-w-7xl mx-auto py-10 px-4 bg-white shadow-lg w-full rounded-lg"
-                data-aos="fade-up"
+                className="relative max-w-7xl mx-auto sm:py-10 py-4 px-4 bg-white shadow-lg w-full rounded-lg"
+                data-aos="fade-down"
                 data-aos-duration="1000"
             >
                 <div
-                    className="flex flex-row gap-2  p-4 mb-8"
-                    data-aos="fade-up"
-                    data-aos-delay="100"
+                    className="flex sm:flex-row flex-col sm:gap-2 gap-4 p-4 mb-8"
+                 
                 >
-                    <FaArrowLeftLong className='w-6 h-6 flex-1/10 flex justify-center  text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router("/generatedplans ")} />
+                    <FaArrowLeftLong className='w-6 h-6 sm:flex-1/10 flex justify-center  text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router("/itinerary ")} />
                     <div className='flex flex-col flex-8/10'>
                         <h1
                             className='text-center sm:text-5xl text-4xl mb-4 font-semibold text-gray-800'
-                            data-aos="zoom-in"
-                            data-aos-duration="800"
+
                         >
                             Generated Plans
                         </h1>
                         <p
-                            className='text-center sm:text-lg text-md mx-auto text-gray-700'
-                            data-aos="zoom-in"
-                            data-aos-delay="200"
+                            className='text-center sm:text-lg text- w-full mx-auto text-gray-700'
+                           
                         >
-                            Let's personalize your experience
-                        </p>
-                        <p
-                            className='text-center mx-auto sm:text-lg text-md text-gray-700'
-                            data-aos="zoom-in"
-                            data-aos-delay="300"
-                        >
-                            Your answers will help us design the perfect trip.
+                            Let's personalize your experience. <br className='hidden sm:block'/> Your answers will help us design the perfect trip.
                         </p>
                     </div>
                     <div className='flex-1/10 '></div>
                 </div>
 
-                <div className='flex flex-col gap-6 pt-10'>
+                <div className='flex flex-col gap-6 '>
                     {destinations.map((item, index) => (
                         <div
                             key={item.id}
                             className="flex flex-col mx-auto md:flex-row items-start md:items-center justify-between gap-4 py-4 sm:px-4 rounded-xl"
-                            data-aos="fade-up"
-                            data-aos-delay={index * 100}
-                            data-aos-duration="800"
+                           
                         >
                             {/* Left Section */}
                             <div className="flex flex-col md:flex-row w-full h-full gap-4">
@@ -108,8 +96,6 @@ function GeneratedPlans() {
                                                                 ? "bg-green-400"
                                                                 : "bg-yellow-400"
                                                             }`}
-                                                        data-aos="zoom-in"
-                                                        data-aos-delay={index * 100 + 350 + (tagIndex * 50)}
                                                     >
                                                         {tag}
                                                     </span>
@@ -119,11 +105,9 @@ function GeneratedPlans() {
                                     </div>
                                     <div
                                         className="w-full max-h-10 sm:w-64 mt-4 md:mt-0 flex"
-                                        data-aos="fade-left"
-                                        data-aos-delay={index * 100 + 400}
                                     >
                                         <button className="bg-blue-100 w-full text-blue-600 font-medium px-4 py-2 rounded-md hover:bg-blue-200 transition-all cursor-pointer" onClick={() => {
-                                            router('/itinerary')
+                                            router('/plan')
                                         }} >
                                             View itinerary
                                         </button>

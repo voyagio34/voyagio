@@ -32,11 +32,11 @@ const Navbar = () => {
         { name: 'Blog', href: '/blog' },
         { name: 'About', href: '/about' },
         { name: 'Contact Us', href: '/contactus' },
-        { name: 'Itinerary', href: '#' }
+        { name: 'Itinerary', href: '/generatedplans' }
     ]
 
     return (
-        <nav className={`w-full top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white shadow-2xl py-2' : 'bg-white/95 backdrop-blur-md shadow-lg py-2'}`}>
+        <nav className={`w-full fixed top-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white shadow-lg py-0' : 'bg-white/95 backdrop-blur-md shadow-sm py-1'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Logo Section */}
@@ -63,10 +63,10 @@ const Navbar = () => {
 
                     {/* Action Buttons */}
                     <div className="hidden lg:flex items-center space-x-4">
-                        <Link to="/" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="350">
+                        <Link to="/" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="250">
                             Download App
                         </Link>
-                        <Link to="/signup" className="xl:px-10 px-6 py-3  bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50  font-semibold transition-colors duration-300" data-aos="fade-down" data-aos-delay="400">
+                        <Link to="/signup" className="xl:px-10 px-6 py-2  bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50  font-semibold transition-colors duration-300" data-aos="fade-down" data-aos-delay="300">
                             Sign Up
                         </Link>
 

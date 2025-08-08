@@ -102,16 +102,16 @@ function PlanDetails() {
     ];
 
     return (
-        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen' data-aos="fade-in">
+        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10' >
             <section
                 className="relative max-w-7xl mx-auto py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
-                data-aos="fade-up"
+                data-aos="fade-in"
                 data-aos-duration="1000"
             >
                 {/* Header */}
                 <div
                     className="flex md:flex-row flex-col md:justify-between gap-4 items-start  p-4 mb-8"
-                    data-aos="fade-up"
+                    data-aos="fade-down"
                     data-aos-delay="100"
                 >
                     <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={()=>router("/itinerary")}/>
@@ -134,7 +134,7 @@ function PlanDetails() {
                         <div
                             key={day.id}
                             className='border border-gray-200 rounded-xl overflow-hidden'
-                            data-aos="fade-up"
+                            data-aos="fade-in"
                             data-aos-delay={200 + (index * 100)}
                         >
                             {/* Day Header */}
@@ -159,7 +159,7 @@ function PlanDetails() {
 
                             {/* Day Activities */}
                             {expandedDays[day.id] && (
-                                <div className='p-6 bg-white'>
+                                <div className='p-6 transition-all bg-white'>
                                     <div className='space-y-4'>
                                         {day.activities.map((activity, activityIndex) => (
                                             <div
@@ -167,6 +167,7 @@ function PlanDetails() {
                                                 className='flex gap-4 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all'
                                                 data-aos="fade-in"
                                                 data-aos-delay={50 * activityIndex}
+                                                data-aos-duration="600"
                                             >
                                                 <div className={`w-12 h-12 rounded-lg ${activity.color} flex items-center justify-center flex-shrink-0`}>
                                                     {activity.icon}
@@ -199,7 +200,7 @@ function PlanDetails() {
                     ))}
                 </div>
 
-                <div className='flex md:flex-row flex-col gap-4 border-1 justify-between rounded-2xl border-gray-300 mx-4 lg:px-10 md:px-8 sm:px-6 px-4 py-4 my-10' data-aos="fade-up" data-aos-delay={itineraryDays.length < 4 ? (itineraryDays.length * 100 + 100) : 200}>
+                <div className='flex md:flex-row flex-col gap-4 border-1 justify-between rounded-2xl border-gray-300 mx-4 lg:px-10 md:px-8 sm:px-6 px-4 py-4 my-10' data-aos="fade-in" data-aos-delay={itineraryDays.length < 4 ? (itineraryDays.length * 100 + 100) : 200}>
                     <div className="flex gap-4 items-center">
                         <FaListUl className='w-8 h-8 text-blue-500' />
                         <div className="flex flex-col ">

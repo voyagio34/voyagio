@@ -7,30 +7,20 @@ const Contact = () => {
             <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 py-20 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div 
                     className="absolute top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0"
-                    data-aos="fade-right"
-                    data-aos-duration="1500"
                 />
                 <div 
                     className="absolute sm:block hidden top-2 right-4 w-50 h-50 bg-gray-200 rounded-full z-0"
-                    data-aos="fade-left"
-                    data-aos-duration="1500"
                 />
                 <div 
                     className="absolute sm:bottom-20 bottom-10 sm:right-20 -right-5 w-26 h-26 bg-blue-500/60 rounded-full z-0"
-                    data-aos="fade-left"
-                    data-aos-delay="500"
                 />
                 <div 
                     className="absolute sm:block hidden bottom-10 left-10 w-20 h-20 bg-blue-200 rounded-full z-0"
-                    data-aos="fade-right"
-                    data-aos-delay="300"
                 />
 
                 <div className='flex md:items-center py-20 items-start max-w-7xl sm:mx-auto px-4 sm:px-6 lg:px-8 md:flex-row flex-col gap-8'>
                     <div 
                         className='flex flex-1/2 flex-col z-10'
-                        data-aos="fade-right"
-                        data-aos-duration="800"
                     >
                         <h1 className='font-bold flex sm:text-5xl text-4xl'>
                             Contact
@@ -42,26 +32,22 @@ const Contact = () => {
                     </div>
                     <div 
                         className='w-full flex-1/2 flex z-10 justify-end'
-                        data-aos="fade-left"
-                        data-aos-delay="200"
                     >
                         <img src="/FeaturesBg.webp" alt="Features" />
                     </div>
                 </div>
             </section>
 
-            <section className='relative  py-20'>
+            <section className='relative py-20' data-aos="fade-up">
                 <div className="max-w-7xl sm:px-6 lg:px-8 px-4 mx-auto flex flex-col lg:flex-row gap-8">
 
                     {/* Left: Contact Info */}
                     <div 
                         className="bg-white shadow-md py-10 p-6 rounded-xl w-full lg:w-1/3 space-y-8"
-                        data-aos="fade-up"
                     >
                         {/* Call */}
                         <div 
                             className="flex flex-col gap-4 items-start"
-                            data-aos="fade-up"
                         >
                             <div className="flex items-center gap-4">
                                 <div className="bg-blue-500 text-white p-3 rounded-full text-lg">
@@ -80,8 +66,6 @@ const Contact = () => {
                         {/* Email */}
                         <div 
                             className="flex flex-col gap-4 items-start"
-                            data-aos="fade-up"
-                            data-aos-delay="100"
                         >
                             <div className="flex items-center gap-4">
                                 <div className="bg-blue-500 text-white p-3 rounded-full text-lg">
@@ -102,9 +86,6 @@ const Contact = () => {
                     {/* Right: Contact Form */}
                     <div 
                         className="bg-white py-10 shadow-md p-6 rounded-xl w-full lg:w-2/3"
-                        data-aos="fade-up"
-                        data-aos-duration="1000"
-                        data-aos-delay="100"
                     >
                         <form className="space-y-6">
                             {/* Top 3 Inputs */}
@@ -113,22 +94,16 @@ const Contact = () => {
                                     type="text"
                                     placeholder="Your Name *"
                                     className="w-full px-4 py-3 rounded bg-gray-100 text-sm focus:outline-blue-400"
-                                    data-aos="fade-up"
-                                    data-aos-delay="200"
                                 />
                                 <input
                                     type="email"
                                     placeholder="Your Email *"
                                     className="w-full px-4 py-3 rounded bg-gray-100 text-sm focus:outline-blue-400"
-                                    data-aos="fade-up"
-                                    data-aos-delay="250"
                                 />
                                 <input
                                     type="tel"
                                     placeholder="Your Phone *"
                                     className="w-full px-4 py-3 rounded bg-gray-100 text-sm focus:outline-blue-400"
-                                    data-aos="fade-up"
-                                    data-aos-delay="300"
                                 />
                             </div>
 
@@ -137,15 +112,11 @@ const Contact = () => {
                                 placeholder="Your Message"
                                 rows="6"
                                 className="w-full px-4 py-3 rounded bg-gray-100 text-sm resize-none focus:outline-blue-400"
-                                data-aos="fade-up"
-                                data-aos-delay="350"
                             ></textarea>
 
                             {/* Submit */}
                             <div 
                                 className="flex justify-end"
-                                data-aos="fade-up"
-                                data-aos-delay="400"
                             >
                                 <button
                                     type="submit"
@@ -167,22 +138,17 @@ const Contact = () => {
                     <div className='flex flex-col'>
                         <span 
                             className="text-lg text-blue-500 font-bold"
-                            data-aos="fade-right"
                         >
                             🌍 Download the Voyagio AI™ App
                         </span>
                         <span 
                             className="text-md max-w-lg mt-2 px-1 text-gray-700 font-medium"
-                            data-aos="fade-right"
-                            data-aos-delay="200"
                         >
                             Plan, personalize, and book your entire trip in seconds with the power of AI — all from one smart, seamless app.
                         </span>
                     </div>
                     <div 
                         className="flex flex-col items-center gap-2"
-                        data-aos="fade-left"
-                        data-aos-delay="200"
                     >
                         <div className="flex gap-4">
                             <img src="/appstore.webp" alt="appstore" className='h-10' />
