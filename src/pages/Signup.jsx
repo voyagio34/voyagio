@@ -51,7 +51,7 @@ const SignUp = () => {
       if (result.success) {
         alert('Registration successful!')
         setLoading(false)
-        navigate('/signin')
+        navigate('/')
       }
       else{
         setError(result.error)

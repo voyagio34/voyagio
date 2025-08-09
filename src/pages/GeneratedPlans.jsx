@@ -19,7 +19,7 @@ function GeneratedPlans() {
                     className="flex sm:flex-row flex-col sm:gap-2 gap-4 p-4 mb-8"
                  
                 >
-                    <FaArrowLeftLong className='w-6 h-6 sm:flex-1/10 flex justify-center  text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router("/itinerary ")} />
+                    {/* <FaArrowLeftLong className='w-6 h-6 sm:flex-1/10 flex justify-center  text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router("/itinerary ")} /> */}
                     <div className='flex flex-col flex-8/10'>
                         <h1
                             className='text-center sm:text-5xl text-4xl mb-4 font-semibold text-gray-800'
@@ -34,7 +34,7 @@ function GeneratedPlans() {
                             Let's personalize your experience. <br className='hidden sm:block'/> Your answers will help us design the perfect trip.
                         </p>
                     </div>
-                    <div className='flex-1/10 '></div>
+                    {/* <div className='flex-1/10 '></div> */}
                 </div>
 
                 <div className='flex flex-col gap-6 '>
