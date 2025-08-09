@@ -9,8 +9,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-  lat: 28.6139, // New Delhi
-  lng: 77.2090,
+  lat: 0, // New Delhi
+  lng: 0,
 };
 
 const DestinationModal = ({ isOpen, onClose, location, setLocation, defaultValue, onConfirm }) => {

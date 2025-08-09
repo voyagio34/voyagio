@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const SignUp = () => {
   const [showPass, setShowPass] = useState(false);
   return (
-    <section className="relative min-h-screen overflow-x-hidden px-4 py-16 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
+    <section className="relative min-h-screen overflow-x-hidden px-4 py-16 sm:px-6 lg:px-8 w-full mt-10" data-aos="fade-in">
       <div 
         className="relative max-w-7xl mx-auto overflow-x-hidden bg-white rounded-2xl shadow-lg sm:px-10 px-6 h-full py-20 w-full text-center"
         data-aos="fade-down"

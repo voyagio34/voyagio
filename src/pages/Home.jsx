@@ -29,8 +29,8 @@ const Home = () => {
 
   const [onboardingPlace, setOnboardingPlace] = useState('');
   const [destinationPlace, setDestinationPlace] = useState('');
-  const [onboardingLocation, setOnboardingLocation] = useState({ lat: 51.1784, lng: -115.5708 });
-  const [destinationLocation, setDestinationLocation] = useState({ lat: 51.1784, lng: -115.5708 });
+  const [onboardingLocation, setOnboardingLocation] = useState({ lat: 0, lng: 0 });
+  const [destinationLocation, setDestinationLocation] = useState({ lat: 0, lng: 0 });
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -73,7 +73,7 @@ const Home = () => {
   }, [isLoaded]);
 
   const initializeAutocomplete = () => {
-    if (!window.google?.maps?.places?.Autocomplete) {
+    if (!window.google?.maps?.places?.PlaceAutocompleteElement) {
       console.error('Google Maps Places Autocomplete is not available');
       return;
     }
@@ -91,6 +91,7 @@ const Home = () => {
 
         onboardingAutocompleteRef.current.addListener('place_changed', () => {
           const place = onboardingAutocompleteRef.current.getPlace();
+          console.log(onboardingAutocompleteRef.current)
           console.log('--- Onboarding Place Changed ---');
           console.log('Place object:', place);
 
@@ -1026,7 +1027,7 @@ const Home = () => {
           </div>
 
           {/* Blog Posts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-10 gap-8 mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-10 gap-8 px-4 mx-auto">
             {blogPosts.map((post, index) => (
               <article key={post.id} className="bg-gray-50 cursor-pointer rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group max-w-96 mx-auto " data-aos="fade-right" data-aos-delay={index * 100}>
                 <div className="relative h-64 overflow-hidden">
