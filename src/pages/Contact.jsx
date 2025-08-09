@@ -4,7 +4,7 @@ import { FaEnvelope, FaPhoneAlt } from 'react-icons/fa'
 const Contact = () => {
     return (
         <div className='bg-gray-50'>
-            <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 py-20 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
+            <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 py-10 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div 
                     className="absolute top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0"
                 />

@@ -13,7 +13,7 @@ import TravelHub from './pages/TravelHub'
 import GeneratedPlans from './pages/GeneratedPlans'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import YourSmart from './pages/YourSmart'
 import BlogDetails from './pages/BlogDetails'
 import PlanDetails from './pages/PlanDetails'
@@ -22,23 +22,42 @@ import EditDay from './pages/EditDay'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import Itinerary from './pages/Itinerary'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+import AuthRoutes from './components/AuthRoutes'
+import ProtectedRoutes from './components/ProtectedRoutes'
+import Profile from './pages/Profile'
 
-function App() {
+// Create a separate component for the app content
+function AppContent() {
+  const { session } = useAuth();
+
   useEffect(() => {
     AOS.init({
-
-      duration: 1000, // Animation duration
-      once: true, // Whether animation should happen only once
-      offset: 0, // Offset from the original trigger point
-      delay: 0, // Delay before animation starts
-      easing: 'ease-in-out', // Easing function
+      duration: 1000,
+      once: true,
+      offset: 0,
+      delay: 0,
+      easing: 'ease-in-out',
     });
   }, []);
+
+  // // Show loading screen while auth is loading
+  // if (loading) {
+  //   return (
+  //     <div className='fixed inset-0 flex items-center justify-center bg-white z-50'>
+  //       <div className="flex flex-col items-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+  //         <p className="mt-4 text-gray-600">Loading...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
-      <div className='bg-gray-50 text-gray-900 overflow-x-hidden '>
-        <Routes >
+      <div className='bg-gray-50 text-gray-900 overflow-x-hidden'>
+        <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/features' element={<Features />} />
           <Route path='/about' element={<About />} />
@@ -53,14 +72,39 @@ function App() {
           <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/terms' element={<TermsPage />} />
           <Route path='/itinerary' element={<Itinerary />} />
-          <Route path='/signin' element={<SignIn />} />
-          <Route path='/signup' element={<SignUp />} />
+          <Route path='/profile' element={
+            <ProtectedRoutes>
+              <Profile />
+            </ProtectedRoutes>
+          } />
+
+          <Route path='/signin' element={
+            <AuthRoutes>
+              <SignIn />
+            </AuthRoutes>
+          } />
+          <Route path='/signup' element={
+            <AuthRoutes>
+              <SignUp />
+            </AuthRoutes>
+          } />
         </Routes>
-      <ScrollToTop />
-      <Footer />
+        <ScrollToTop />
+        <Footer />
       </div>
+    </>
+  );
+}
+
+// Main App component
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }
 
 export default App
