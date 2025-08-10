@@ -119,7 +119,6 @@ const TravelHub = () => {
                                     className="cursor-pointer flex flex-col items-start justify-start rounded-md bg max-w-md white shadow-md transition-all hover:shadow-lg"
                                     data-aos="fade-up"
                                     data-aos-delay={index * 50}
-                                    data-aos-duration="800"
                                 >
                                     <img
                                         src={data.img}

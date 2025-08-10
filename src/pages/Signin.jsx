@@ -3,6 +3,7 @@ import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase/Client'
 import { useAuth } from '../contexts/AuthContext'
+import RoundLoader from '../components/RoundLoader'
 
 const SignIn = () => {
   const [showPass, setShowPass] = useState(false)
@@ -66,9 +67,8 @@ const SignIn = () => {
   // Show loading spinner while checking auth
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
+      <RoundLoader />
+
     )
   }
 

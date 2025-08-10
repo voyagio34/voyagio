@@ -14,8 +14,7 @@ const Navbar = () => {
     const { session, signOut } = useAuth();
 
     useEffect(() => {
-        // Handle scroll effect
-        console.log(session)
+        // Handle scroll effect]
         const handleScroll = () => {
             setScrolled(window.scrollY > 20)
         }
@@ -47,7 +46,6 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         try {
-            console.log('Logout clicked');
             await signOut();
             console.log('SignOut completed');
             setShowDropdown(false);
@@ -63,7 +61,7 @@ const Navbar = () => {
         { name: 'Blog', href: '/blog' },
         { name: 'About', href: '/about' },
         { name: 'Contact Us', href: '/contactus' },
-        { name: 'Itinerary', href: '/generatedplans' }
+        { name: 'Itinerary', href: '/generated-plans' }
     ]
 
 
@@ -95,7 +93,7 @@ const Navbar = () => {
 
                     {/* Action Buttons */}
                     <div className="hidden lg:flex items-center space-x-2">
-                        <Link to="/" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="250">
+                        <Link to="/yoursmart" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="250">
                             Download App
                         </Link>
                         {!session ? (
@@ -190,7 +188,7 @@ const Navbar = () => {
                                 )
                             }
 
-                            <Link to="/" className="block w-full py-3 text-center bg-gray-100 text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
+                            <Link to="/yoursmart" className="block w-full py-3 text-center bg-gray-100 text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
                                 Download App
                             </Link>
 

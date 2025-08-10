@@ -3,6 +3,7 @@ import { FaEnvelope, FaEye, FaEyeSlash, FaLock, FaUser, FaUserAlt } from 'react-
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase/Client'
 import { useAuth } from '../contexts/AuthContext'
+import RoundLoader from '../components/RoundLoader'
 
 const SignUp = () => {
   const [showPass, setShowPass] = useState(false)
@@ -15,10 +16,6 @@ const SignUp = () => {
   })
   const navigate = useNavigate()
   const { signUp } = useAuth();
-  // useEffect(() => {
-  //   if (!authLoading && user) navigate('/');
-  // }, [user])
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -53,7 +50,7 @@ const SignUp = () => {
         setLoading(false)
         navigate('/')
       }
-      else{
+      else {
         setError(result.error)
       }
 
@@ -64,6 +61,11 @@ const SignUp = () => {
     }
   }
 
+  if (loading) {
+    return (
+      <RoundLoader />
+    )
+  }
   return (
     <section className="relative min-h-screen overflow-x-hidden px-4 py-16 sm:px-6 lg:px-8 w-full mt-10" data-aos="fade-in">
       <div

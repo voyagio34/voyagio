@@ -13,7 +13,6 @@ function GeneratedPlans() {
             <section
                 className="relative max-w-7xl mx-auto sm:py-10 py-4 px-4 bg-white shadow-lg w-full rounded-lg"
                 data-aos="fade-down"
-                data-aos-duration="1000"
             >
                 <div
                     className="flex sm:flex-row flex-col sm:gap-2 gap-4 p-4 mb-8"

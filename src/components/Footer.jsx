@@ -46,13 +46,13 @@ const Footer = () => {
           <div
             className="flex-1 flex flex-wrap justify-start md:justify-end gap-x-6 gap-y-2 text-gray-400"
             data-aos="fade-in"
-            data-aos-duration="800"
+            data-aos-duration="600"
           >
             <Link
               to="/"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="100"
+              data-aos-delay="0"
             >
               Home
             </Link>
@@ -60,7 +60,7 @@ const Footer = () => {
               to="/features"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="150"
+              data-aos-delay="50"
             >
               Features
             </Link>
@@ -68,7 +68,7 @@ const Footer = () => {
               to="/about"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="200"
+              data-aos-delay="100"
             >
               About
             </Link>
@@ -76,7 +76,7 @@ const Footer = () => {
               to="/contactus"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="250"
+              data-aos-delay="150"
             >
               Contact Us
             </Link>
@@ -84,7 +84,7 @@ const Footer = () => {
               to="/terms"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="300"
+              data-aos-delay="200"
             >
               Terms & Conditions
             </Link>
@@ -92,7 +92,7 @@ const Footer = () => {
               to="/privacy"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="350"
+              data-aos-delay="250"
             >
               Privacy Policy
             </Link>
@@ -100,7 +100,7 @@ const Footer = () => {
               to="/affiliate"
               className="hover:text-white transition-all"
               data-aos="fade-up"
-              data-aos-delay="400"
+              data-aos-delay="300"
             >
               (Affiliate Disclosure)
             </Link>
@@ -110,7 +110,6 @@ const Footer = () => {
         <hr
           className='text-gray-700 mb-6'
           data-aos="fade-in"
-          data-aos-duration="1500"
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 mb-20 flex flex-col sm:flex-row sm:justify-between justify-start sm:items-center items-start gap-4">
@@ -118,7 +117,6 @@ const Footer = () => {
           <p
             className="text-gray-400"
             data-aos="fade-up"
-            data-aos-delay="100"
           >
             © 2025 Travila Inc. All rights reserved.
           </p>
@@ -127,27 +125,27 @@ const Footer = () => {
           <div
             className="flex items-center gap-4 text-white"
             data-aos="fade-up"
-            data-aos-delay="200"
+            data-aos-delay="100"
           >
             <span className="text-gray-300">Follow us :</span>
             <a
               href="#"
               data-aos="zoom-in"
-              data-aos-delay="300"
+              data-aos-delay="150"
             >
               <FaYoutube className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
             </a>
             <a
               href="#"
               data-aos="zoom-in"
-              data-aos-delay="400"
+              data-aos-delay="200"
             >
               <FaInstagram className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
             </a>
             <a
               href="#"
               data-aos="zoom-in"
-              data-aos-delay="500"
+              data-aos-delay="250"
             >
               <FaTiktok className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
             </a>

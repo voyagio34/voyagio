@@ -14,18 +14,23 @@ import { blogPosts } from '../data/BlogPosts';
 import { Mail, MailIcon, X } from 'lucide-react';
 import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useJsApiLoader } from '@react-google-maps/api';
 
 const STEP = 100;
 const MIN = 2000;
-const MAX = 15000;
+const MAX = 20000;
 const LIBRARIES = ['places'];
 
 const Home = () => {
-  const [values, setValues] = useState([2000, 15000]);
+  const [values, setValues] = useState([MIN, MAX]);
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
+
+  const [travelStyle, setTravelStyle] = useState(null);
+  const [people, setPeople] = useState(null)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
 
   const [onboardingPlace, setOnboardingPlace] = useState('');
   const [destinationPlace, setDestinationPlace] = useState('');
@@ -42,22 +47,6 @@ const Home = () => {
   const onboardingAutocompleteRef = useRef(null);
   const destinationAutocompleteRef = useRef(null);
 
-  useEffect(() => {
-    console.log('=== LOCATION UPDATE ===');
-    console.log('Onboarding Location:', {
-      place: onboardingPlace,
-      lat: onboardingLocation.lat,
-      lng: onboardingLocation.lng,
-      fullLocation: onboardingLocation
-    });
-    console.log('Destination Location:', {
-      place: destinationPlace,
-      lat: destinationLocation.lat,
-      lng: destinationLocation.lng,
-      fullLocation: destinationLocation
-    });
-    console.log('=====================');
-  }, [onboardingLocation, destinationLocation, onboardingPlace, destinationPlace]);
 
   // Use useJsApiLoader for Google Maps
   const { isLoaded } = useJsApiLoader({
@@ -91,21 +80,21 @@ const Home = () => {
 
         onboardingAutocompleteRef.current.addListener('place_changed', () => {
           const place = onboardingAutocompleteRef.current.getPlace();
-          console.log(onboardingAutocompleteRef.current)
-          console.log('--- Onboarding Place Changed ---');
-          console.log('Place object:', place);
+          // console.log(onboardingAutocompleteRef.current)
+          // console.log('--- Onboarding Place Changed ---');
+          // console.log('Place object:', place);
 
           if (place && place.geometry) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
             const locationName = place.formatted_address || place.name || '';
 
-            console.log('Onboarding - New Location:', {
-              name: locationName,
-              lat: lat,
-              lng: lng,
-              placeId: place.place_id
-            });
+            // console.log('Onboarding - New Location:', {
+            //   name: locationName,
+            //   lat: lat,
+            //   lng: lng,
+            //   placeId: place.place_id
+            // });
 
             setOnboardingLocation({ lat, lng });
             setOnboardingPlace(locationName);
@@ -128,20 +117,20 @@ const Home = () => {
 
         destinationAutocompleteRef.current.addListener('place_changed', () => {
           const place = destinationAutocompleteRef.current.getPlace();
-          console.log('--- Destination Place Changed ---');
-          console.log('Place object:', place);
+          // console.log('--- Destination Place Changed ---');
+          // console.log('Place object:', place);
 
           if (place && place.geometry) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
             const locationName = place.formatted_address || place.name || '';
 
-            console.log('Destination - New Location:', {
-              name: locationName,
-              lat: lat,
-              lng: lng,
-              placeId: place.place_id
-            });
+            // console.log('Destination - New Location:', {
+            //   name: locationName,
+            //   lat: lat,
+            //   lng: lng,
+            //   placeId: place.place_id
+            // });
 
             setDestinationLocation({ lat, lng });
             setDestinationPlace(locationName);
@@ -157,7 +146,6 @@ const Home = () => {
   };
 
 
-  // Add a debug function to manually check current locations
   const debugLocations = () => {
     console.table({
       'Onboarding': {
@@ -247,18 +235,31 @@ const Home = () => {
     console.log('Toggle like for experience:', experienceId);
   };
 
+  const handleGenerate = async (e) => {
+    e.preventDefault();
+    const formData = {
+      travelStyle,
+      values,
+      people,
+      startDate,
+      endDate,
+      boarding: { place: onboardingPlace, location: onboardingLocation },
+      destination: { place: destinationPlace, location: destinationLocation }
+    }
+
+    // alert("Data: " + formData.travelStyle + " | " + formData.values + " | " + formData.people + " | " + formData.destination.place + " | " + formData.startDate + " | " + formData.endDate);
+    router("/generate-itinerary", { state: formData });
+
+  }
+
   return (
     <div className='bg-gray-50 overflow-x-hidden pt-10  '>
       {/* Hero section */}
       <section className="relative bg-cover bg-center bg-[url('/Hero_bg.webp')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
-        <div className="w-full max-w-7xl overflow-hidden mx-auto flex flex-col xl:flex-row justify-around items-center gap-12">
+        <div className="w-full max-w-7xl  mx-auto flex flex-col xl:flex-row justify-around items-center gap-12">
 
           {/* Left: Form Section */}
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            router('/itinerary');
-
-          }} className="rounded-xl lg:w-1/2 w-full max-w-lg space-y-2"
+          <form onSubmit={handleGenerate} className="rounded-xl lg:w-1/2 w-full max-w-lg space-y-2"
             data-aos="fade-right"
             data-aos-delay="200"
           >
@@ -270,11 +271,16 @@ const Home = () => {
                 <span className='text-sm text-gray-400'>Select all that interest you</span>
               </div>
               <div className="relative w-full">
-                <select className="w-full appearance-none bg-gray-50 text-gray-800 font-medium px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
-                  <option>Select</option>
-                  <option>Adventure</option>
-                  <option>Culture</option>
-                  <option>Relaxation</option>
+                <select
+                  required
+                  name='travelStyle'
+                  value={travelStyle}
+                  onChange={(e) => setTravelStyle(e.target.value)}
+                  className="w-full appearance-none bg-gray-50 text-gray-800 font-medium px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
+                  <option value={null}>Select</option>
+                  <option value={"adventure"}>Adventure</option>
+                  <option value={"culture"}>Culture</option>
+                  <option value={"relaxation"}>Relaxation</option>
                 </select>
 
                 {/* Down Arrow */}
@@ -288,10 +294,10 @@ const Home = () => {
 
             {/* Budget Slider */}
             <div className='bg-white px-6 py-4 rounded-2xl flex flex-row w-auto'>
-              <div className='flex flex-col w-full justify-center'>
+              <div className='flex-2/5 flex items-center  w-full justify-start'>
                 <span className='text-md text-gray-900 font-semibold'>Budget</span>
               </div>
-              <div className="w-full max-w-md">
+              <div className="w-full flex flex-3/5 items-end max-w-md">
 
 
                 <Range
@@ -353,11 +359,7 @@ const Home = () => {
                   }}
                 />
 
-                {/* Output (optional) */}
-                <div className="flex justify-between text-sm text-gray-500">
-                  <span>{MIN}</span>
-                  <span>{MAX}</span>
-                </div>
+
               </div>
             </div>
 
@@ -367,15 +369,17 @@ const Home = () => {
 
               <input
                 type="number"
+                name="people"
+                required
+                value={people}
+                onChange={(e) => setPeople(e.target.value)}
                 placeholder="Enter number of peoples"
                 className="p-3 border border-gray-300 rounded w-full focus:outline-none no-spinner focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
-
             {/* Location */}
             <div className='bg-white px-6 py-4 space-y-3 rounded-2xl flex-col w-auto'>
-              {/* Boarding Location */}
               {/* Boarding Location */}
               <div className='flex sm:flex-row flex-col gap-2'>
                 <div className='flex flex-col w-full'>
@@ -388,6 +392,7 @@ const Home = () => {
                       ref={onboardingInputRef}
                       type="text"
                       id='onboard'
+                      required
                       placeholder="Search a city, region"
                       className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                       defaultValue={onboardingPlace}
@@ -438,6 +443,7 @@ const Home = () => {
                     <input
                       ref={destinationInputRef}
                       type="text"
+                      required
                       id='destination'
                       placeholder="Search a city, region"
                       className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -484,6 +490,7 @@ const Home = () => {
                 <p className="text-sm text-gray-500 text-center">Loading location search...</p>
               )}
             </div>
+
             {/* Travel Period */}
             <div className="bg-white px-6 py-4 space-y-3 rounded-2xl flex flex-col w-auto">
               <label className="block text-md font-semibold text-gray-900">Travel Period</label>
@@ -496,6 +503,10 @@ const Home = () => {
                   <div className="relative w-full">
                     <input
                       type="date"
+                      name='startDate'
+                      required
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
                     />
                   </div>
@@ -507,6 +518,10 @@ const Home = () => {
                   <div className="relative w-full">
                     <input
                       type="date"
+                      name='endDate'
+                      value={endDate}
+                      required
+                      onChange={(e) => setEndDate(e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
                     />
                   </div>
@@ -540,7 +555,7 @@ const Home = () => {
           onClose={() => setOnboardingOpen(false)}
           location={onboardingLocation}
           setLocation={(loc) => {
-            console.log('Onboarding Location Set from Modal:', loc);
+            // console.log('Onboarding Location Set from Modal:', loc);
             setOnboardingLocation(loc);
             if (onboardingInputRef.current) {
               onboardingInputRef.current.value = onboardingPlace;
@@ -548,7 +563,7 @@ const Home = () => {
           }}
           defaultValue={onboardingPlace}
           onConfirm={(place) => {
-            console.log('Onboarding Modal Confirmed:', place);
+            // console.log('Onboarding Modal Confirmed:', place);
             setOnboardingPlace(place);
             if (onboardingInputRef.current) {
               onboardingInputRef.current.value = place;
@@ -561,7 +576,7 @@ const Home = () => {
           onClose={() => setDestinationOpen(false)}
           location={destinationLocation}
           setLocation={(loc) => {
-            console.log('Destination Location Set from Modal:', loc);
+            // console.log('Destination Location Set from Modal:', loc);
             setDestinationLocation(loc);
             if (destinationInputRef.current) {
               destinationInputRef.current.value = destinationPlace;
@@ -569,7 +584,7 @@ const Home = () => {
           }}
           defaultValue={destinationPlace}
           onConfirm={(place) => {
-            console.log('Destination Modal Confirmed:', place);
+            // console.log('Destination Modal Confirmed:', place);
             setDestinationPlace(place);
             if (destinationInputRef.current) {
               destinationInputRef.current.value = place;
@@ -617,7 +632,7 @@ const Home = () => {
 
       {/* Top Restaurant cards */}
       <section className='relative py-20 bg-blue-200/35 '>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col '  data-aos="fade-right">
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  w-full flex flex-col ' data-aos="fade-right">
 
           <h1 className='sm:text-5xl text-4xl font-bold mb-10' data-aos="fade-right">Top Restaurants</h1>
 

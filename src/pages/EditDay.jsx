@@ -34,14 +34,14 @@ function EditDay() {
     return (
         <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10' >
             <section
-                className="relative max-w-7xl mx-auto py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
-                data-aos="fade-right"
+                className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
+                data-aos="fade-in"
             >
                 <div
                     className="flex md:flex-row flex-col md:justify-between gap-4 items-start  p-4 mb-8"
 
                 >
-                    <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router('/day')} />
+                    <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={() => router(-1)} />
 
                     <div className='flex flex-8/10 flex-col gap-2 md:items-center'>
                         <h1 className='sm:text-4xl text-3xl text-gray-800 font-semibold'>Edit your day</h1>

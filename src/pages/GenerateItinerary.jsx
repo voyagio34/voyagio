@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { FaHeart, FaRegHeart, FaClock, FaStar, FaPlus } from 'react-icons/fa'
+import { FaHeart, FaRegHeart, FaClock, FaStar, FaPlus, FaCheck } from 'react-icons/fa'
 import { FaArrowLeftLong } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import RoundLoader from '../components/RoundLoader';
 
 
 
@@ -75,13 +76,20 @@ const activities = [
 ];
 
 
-function Itinerary() {
+function GenerateItinerary() {
     const [likedItems, setLikedItems] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
+    const [loading, setLoading] = useState(true);
     const router = useNavigate();
+    const { state } = useLocation();
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        if (!state) {
+            router("/")
+        }
+        setLoading(false)
+        console.log(state)
     }, [])
 
     const toggleLike = (id) => {
@@ -99,6 +107,29 @@ function Itinerary() {
                 : [...prev, id]
         );
     };
+
+    const handleGenerate = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const data = {
+            formData: state,
+            preference: addedItems
+        }
+        try {
+            console.log("data:", data);
+        } catch (error) {
+
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    if (loading) {
+        return (
+            <RoundLoader />
+        )
+    }
 
 
     return (
@@ -176,15 +207,16 @@ function Itinerary() {
                                             </p>
                                         )}
 
-                                        {/* Add to Itinerary Button */}
+                                        {/* Add to GenerateItinerary Button */}
                                         <button
                                             onClick={() => toggleAdded(activity.id)}
                                             className={`w-full py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${addedItems.includes(activity.id)
-                                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                : 'bg-blue-500 text-white hover:bg-blue-600'
+                                                ? 'bg-blue-500 text-blue-50 hover:bg-blue-600'
+                                                : 'bg-white text-blue-500 hover:bg-blue-50 border-1 border-blue-500'
                                                 }`}
                                         >
-                                            <FaPlus className="w-4 h-4 " />
+
+                                            {addedItems.includes(activity.id) ? <FaCheck className='w-4 h-4' /> : <FaPlus className="w-4 h-4 " />}
                                             {addedItems.includes(activity.id) ? 'Added to itinerary' : 'Add to itinerary'}
                                         </button>
                                     </div>
@@ -195,7 +227,7 @@ function Itinerary() {
 
                     {/* Generate Trip Plan Button */}
                     <div className="flex justify-center pb-10">
-                        <button className="max-w-lg w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl" onClick={() => { router('/plan') }}>
+                        <button className="max-w-lg w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl" onClick={handleGenerate}>
                             Generate My Trip Plan
                         </button>
                     </div>
@@ -205,4 +237,4 @@ function Itinerary() {
     )
 }
 
-export default Itinerary
+export default GenerateItinerary

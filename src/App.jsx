@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Footer from './components/Footer'
 import SignIn from './pages/Signin'
@@ -21,19 +21,21 @@ import DayDetails from './pages/DayDetails'
 import EditDay from './pages/EditDay'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
-import Itinerary from './pages/Itinerary'
+import Itinerary from './pages/GenerateItinerary'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import AuthRoutes from './components/AuthRoutes'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import Profile from './pages/Profile'
+import GenerateItinerary from './pages/GenerateItinerary'
 
 // Create a separate component for the app content
 function AppContent() {
   const { session } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     AOS.init({
-      duration: 1000,
+      duration: 700,
       once: true,
       offset: 0,
       delay: 0,
@@ -64,14 +66,18 @@ function AppContent() {
           <Route path='/contactus' element={<Contact />} />
           <Route path='/blog' element={<BlogDetails />} />
           <Route path='/travelhub' element={<TravelHub />} />
-          <Route path='/generatedplans' element={<GeneratedPlans />} />
           <Route path='/plan' element={<PlanDetails />} />
           <Route path='/yoursmart' element={<YourSmart />} />
           <Route path='/day' element={<DayDetails />} />
           <Route path='/edit' element={<EditDay />} />
           <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/terms' element={<TermsPage />} />
-          <Route path='/itinerary' element={<Itinerary />} />
+          <Route path='/generate-itinerary' element={<GenerateItinerary />} />
+          <Route path='/generated-plans' element={
+            <ProtectedRoutes>
+              <GeneratedPlans />
+            </ProtectedRoutes>
+          } />
           <Route path='/profile' element={
             <ProtectedRoutes>
               <Profile />
@@ -88,6 +94,7 @@ function AppContent() {
               <SignUp />
             </AuthRoutes>
           } />
+          
         </Routes>
         <ScrollToTop />
         <Footer />

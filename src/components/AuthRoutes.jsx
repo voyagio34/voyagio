@@ -6,7 +6,7 @@ function AuthRoutes({ children }) {
     const { session } = useAuth();
     return (
         <>
-            {!session ? <> {children} </> : <Navigate to="/" />}
+            {!session ? <> {children} </> : <Navigate to="/"/>}
         </>
     )
 }

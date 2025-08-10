@@ -45,13 +45,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      console.log('Session:', session)
-
     })
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       console.log('Session:', session)
-
     })
 
   }, [])
