@@ -27,6 +27,7 @@ import AuthRoutes from './components/AuthRoutes'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import Profile from './pages/Profile'
 import GenerateItinerary from './pages/GenerateItinerary'
+import toast, { Toaster } from 'react-hot-toast';
 
 // Create a separate component for the app content
 function AppContent() {
@@ -94,9 +95,37 @@ function AppContent() {
               <SignUp />
             </AuthRoutes>
           } />
-          
+
         </Routes>
         <ScrollToTop />
+         <Toaster
+        position="top-center"
+        gutter={10}
+        toastOptions={{
+          // Base style: glass card, soft shadow, rounded
+          className:
+            "rounded-2xl shadow-lg backdrop-blur-md border border-white/20 !text-slate-800",
+          style: {
+            background: "rgba(255,255,255,0.85)",
+            color: "#0f172a", // slate-900
+          },
+          duration: 4000,
+          success: {
+            iconTheme: { primary: "#2563eb", secondary: "#ffffff" }, // blue-600
+            className:
+              "border-blue-200/70 bg-white/90 [&>div]:font-semibold",
+          },
+          error: {
+            iconTheme: { primary: "#ef4444", secondary: "#ffffff" }, // red-500
+            className: "border-red-200/70 bg-white/90",
+            duration: 5000,
+          },
+          loading: {
+            className: "border-blue-200/70 bg-white/90",
+            duration: Infinity,
+          },
+        }}
+      />
         <Footer />
       </div>
     </>

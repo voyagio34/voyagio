@@ -1,93 +1,32 @@
 import { useEffect, useState } from 'react'
-import { FaHeart, FaRegHeart, FaClock, FaStar, FaPlus, FaCheck } from 'react-icons/fa'
+import { FaHeart, FaRegHeart, FaClock, FaStar, FaStarHalfAlt, FaRegStar, FaPlus, FaCheck } from 'react-icons/fa'
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import RoundLoader from '../components/RoundLoader';
 
 
 
-const activities = [
-    {
-        id: 1,
-        title: "Mountain Spa Escape",
-        description: "Relax and rejuvenate in a serene alpine setting.",
-        duration: "2 hrs",
-        reviews: 120,
-        rating: 4.5,
-        type: "Premium",
-        image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop",
-        tip: "Visit after 4 PM to avoid crowds"
-    },
-    {
-        id: 2,
-        title: "Art Gallery Tour",
-        description: "Explore contemporary Canadian art with a guided session.",
-        duration: "3 hrs",
-        reviews: 120,
-        rating: 4.2,
-        type: "Paid",
-        image: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=300&fit=crop",
-        tip: "Visit after 4 PM to avoid crowds"
-    },
-    {
-        id: 3,
-        title: "Banff Gondola Viewpoint",
-        description: "Capture stunning panoramic views of the Canadian Rockies.",
-        duration: "3 hrs",
-        reviews: 120,
-        rating: 4.8,
-        type: "Free",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-        tip: null
-    },
-    {
-        id: 4,
-        title: "Café Hopping in Downtown Banff",
-        description: "Discover cozy cafés and local brews in the heart of town.",
-        duration: "1.5 hrs",
-        reviews: 120,
-        rating: 4.3,
-        type: "Paid",
-        image: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&h=300&fit=crop",
-        tip: null
-    },
-    {
-        id: 5,
-        title: "Café Hopping in Downtown Banff",
-        description: "Discover cozy cafés and local brews in the heart of town.",
-        duration: "1.5 hrs",
-        reviews: 120,
-        rating: 4.3,
-        type: "Paid",
-        image: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=400&h=300&fit=crop",
-        tip: null
-    },
-    {
-        id: 6,
-        title: "Café Hopping in Downtown Banff",
-        description: "Discover cozy cafés and local brews in the heart of town.",
-        duration: "1.5 hrs",
-        reviews: 120,
-        rating: 4.5,
-        type: "Paid",
-        image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop",
-        tip: null
-    }
-];
-
 
 function GenerateItinerary() {
+    const INITIAL_VISIBLE = 6;
+    const LOAD_MORE_STEP = 6;
     const [likedItems, setLikedItems] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const router = useNavigate();
     const { state } = useLocation();
+    const [activities, setActivites] = useState([])
+
+
+    const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+    const displayedActivities = activities.slice(0, visibleCount);
 
     useEffect(() => {
         window.scrollTo(0, 0)
         if (!state) {
             router("/")
         }
+        setActivites(state);
         setLoading(false)
         console.log(state)
     }, [])
@@ -124,6 +63,26 @@ function GenerateItinerary() {
             setLoading(false)
         }
     }
+    const renderStars = (rating = 0) => {
+        const safe = Math.max(0, Math.min(5, Number(rating) || 0));
+        const rounded = Math.round(safe * 2) / 2; // nearest 0.5
+        const full = Math.floor(rounded);
+        const half = rounded % 1 ? 1 : 0;
+        const empty = 5 - full - half;
+
+        return (
+            <>
+                {[...Array(full)].map((_, i) => (
+                    <FaStar key={`f-${i}`} className="w-4 h-4 text-yellow-400" />
+                ))}
+                {half === 1 && <FaStarHalfAlt className="w-4 h-4 text-yellow-400" />}
+                {[...Array(empty)].map((_, i) => (
+                    <FaRegStar key={`e-${i}`} className="w-4 h-4 text-yellow-400" />
+                ))}
+            </>
+        );
+    };
+
 
     if (loading) {
         return (
@@ -146,89 +105,122 @@ function GenerateItinerary() {
                 </div>
                 <div className="max-w-7xl mx-auto">
                     {/* Cards Grid */}
-                    <div className="flex flex-wrap sm:mx-3 mb-8">
-                        {activities.map((activity, index) => (
-                            <div key={activity.id} className="w-full md:w-1/2 lg:w-1/3 px-2 mb-6">
+                    <div className="flex flex-wrap sm:mx-3 mb-2 ">
+                        {displayedActivities.map((activity, index) => (
+                            <div key={index} className="w-full transition-all md:w-1/2 lg:w-1/3 px-2 mb-6">
                                 <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden h-full flex flex-col">
                                     {/* Image Container */}
                                     <div className="relative">
                                         <img
-                                            src={activity.image}
-                                            alt={activity.title}
+                                            src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${activity.photos[0].photo_reference}&key=${import.meta.env.VITE_REACT_GOOGLE_PHOTO_API_KEY}`}
+                                            alt={activity.name}
                                             className="w-full h-48 object-cover"
                                         />
 
                                         {/* Type Badge */}
-                                        <div className={`absolute top-4 left-4 px-4 py-1.5 rounded-full text-white text-sm font-medium bg-blue-500`}>
-                                            {activity.type}
+                                        <div className={`absolute top-4 left-4 px-4 py-1.5 rounded-full text-white text-sm font-medium bg-blue-500 capitalize`}>
+                                            {activity.types[0]}
                                         </div>
 
                                         {/* Heart Icon */}
                                         <button
-                                            onClick={() => toggleLike(activity.id)}
+                                            onClick={() => toggleLike(activity.place_id)}
                                             className="absolute top-4 right-4 bg-white/90 p-2 rounded-full hover:bg-white transition-colors duration-200 cursor-pointer"
                                         >
-                                            {likedItems.includes(activity.id) ? (
+                                            {likedItems.includes(activity.place_id) ? (
                                                 <FaHeart className="w-5 h-5 text-red-500" />
                                             ) : (
                                                 <FaRegHeart className="w-5 h-5 text-gray-700" />
                                             )}
                                         </button>
 
-                                        {/* Rating Badge */}
-                                        <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1.5 rounded-full flex items-center gap-1">
-                                            <FaStar className="w-4 h-4 text-yellow-400" />
-                                            <span className="text-sm font-medium">{activity.rating}</span>
-                                        </div>
+
                                     </div>
 
                                     {/* Content */}
                                     <div className="p-5 flex-1 flex flex-col">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                            {activity.title}
+                                            {activity.name}
                                         </h3>
                                         <p className="text-gray-600 text-sm mb-4 flex-1">
-                                            {activity.description}
+                                            {(activity.formatted_address).trim(10)}
                                         </p>
 
                                         {/* Meta Info */}
                                         <div className="flex justify-between items-center gap-6 text-sm text-gray-500 mb-4">
-                                            <div className="flex items-center gap-1">
-                                                <FaClock className="w-4 h-4" />
-                                                <span>{activity.duration}</span>
+
+                                            <div className=" rounded-full flex items-center gap-1" title={`${activity.rating ?? 0} / 5`}>
+                                                {renderStars(activity.rating)}
+                                                <span className="font-medium">{(activity.rating ?? 0).toFixed(1)}</span>
                                             </div>
-                                            <span>{activity.reviews} reviews</span>
+
+                                            <span>{activity.user_ratings_total} reviews</span>
                                         </div>
 
-                                        {/* Tip (if exists) */}
-                                        {activity.tip && (
-                                            <p className="text-sm text-gray-600 mb-4">
-                                                Tip: {activity.tip}
-                                            </p>
-                                        )}
 
                                         {/* Add to GenerateItinerary Button */}
                                         <button
-                                            onClick={() => toggleAdded(activity.id)}
-                                            className={`w-full py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${addedItems.includes(activity.id)
+                                            onClick={() => toggleAdded(activity.place_id)}
+                                            className={`w-full py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${addedItems.includes(activity.place_id)
                                                 ? 'bg-blue-500 text-blue-50 hover:bg-blue-600'
                                                 : 'bg-white text-blue-500 hover:bg-blue-50 border-1 border-blue-500'
                                                 }`}
                                         >
 
-                                            {addedItems.includes(activity.id) ? <FaCheck className='w-4 h-4' /> : <FaPlus className="w-4 h-4 " />}
-                                            {addedItems.includes(activity.id) ? 'Added to itinerary' : 'Add to itinerary'}
+                                            {addedItems.includes(activity.place_id) ? <FaCheck className='w-4 h-4' /> : <FaPlus className="w-4 h-4 " />}
+                                            {addedItems.includes(activity.place_id) ? 'Added to itinerary' : 'Add to itinerary'}
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
+                    {activities.length > INITIAL_VISIBLE && (
+                        <div className="flex items-center justify-center gap-3 pb-6">
+                            {visibleCount < activities.length && (
+                                <button
+                                    onClick={() =>
+                                        setVisibleCount((c) => Math.min(c + LOAD_MORE_STEP, activities.length))
+                                    }
+                                    className="px-5 py-3 rounded-xl border border-blue-500 text-blue-600 bg-white hover:bg-blue-50 transition cursor-pointer"
+                                >
+                                    View more ({activities.length - visibleCount} left)
+                                </button>
+                            )}
 
+                            {visibleCount > INITIAL_VISIBLE && (
+                                <button
+                                    onClick={() => {
+                                        window.scrollTo({
+                                            top: 0,
+                                            behavior: 'smooth'
+                                        });
+                                        setVisibleCount(INITIAL_VISIBLE);
+                                    }}
+                                    className="px-5 py-3 rounded-xl  border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer"
+                                >
+                                    Show less
+                                </button>
+                            )}
+                        </div>
+                    )}
                     {/* Generate Trip Plan Button */}
                     <div className="flex justify-center pb-10">
-                        <button className="max-w-lg w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl" onClick={handleGenerate}>
+                        <button
+                            onClick={handleGenerate}
+                            className="relative max-w-lg w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl"
+                        >
                             Generate My Trip Plan
+
+                            {/* Badge (top-right corner) */}
+                            {addedItems.length > 0 && (
+                                <span
+                                    className="absolute -top-2 -right-2 h-6 min-w-6 px-1.5 rounded-full bg-white text-blue-600 text-xs font-bold flex items-center justify-center shadow ring-1 ring-blue-200"
+                                    aria-label={`Selected ${addedItems.length} items`}
+                                >
+                                    {addedItems.length > 9 ? "9+" : addedItems.length} Selected
+                                </span>
+                            )}
                         </button>
                     </div>
                 </div>

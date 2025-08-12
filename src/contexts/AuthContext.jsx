@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     })
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      console.log('Session:', session)
+      // console.log('Session:', session)
     })
 
   }, [])

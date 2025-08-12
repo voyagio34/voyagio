@@ -16,6 +16,8 @@ import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useJsApiLoader } from '@react-google-maps/api';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const STEP = 100;
 const MIN = 2000;
@@ -46,6 +48,9 @@ const Home = () => {
   const destinationInputRef = useRef(null);
   const onboardingAutocompleteRef = useRef(null);
   const destinationAutocompleteRef = useRef(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
 
 
   // Use useJsApiLoader for Google Maps
@@ -237,18 +242,57 @@ const Home = () => {
 
   const handleGenerate = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true)
+
+    const location = destinationPlace;
+    const parts = location.split(",").map(part => part.trim());
+    const region = parts[1];
+
+
+    // alert("region:" + region)
+    const toastId = toast.loading("Generating itinerary…");
+
     const formData = {
-      travelStyle,
-      values,
-      people,
-      startDate,
+      budgetMax: values[1],
+      travelStyles: travelStyle,
+      budgetMin: values[0],
+      preferredRegion: region | null,
       endDate,
-      boarding: { place: onboardingPlace, location: onboardingLocation },
-      destination: { place: destinationPlace, location: destinationLocation }
+      destination: destinationPlace,
+      energylevel: 5,
+      explorationRadius: 50000,
+      paceType: 4,
+      budgetRange: "medium",
+      startLocation: onboardingPlace
+    }
+
+    //TODO: HERE ADD TO API FOR SUGGESTION GENERATION WHICH WILL GO TO THE NEXT PAGE IN STATE
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/api/getTripDestination`, formData, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (response) {
+        console.log(response)
+        // throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+
+      
+      toast.success("Your itinerary is ready!", { id: toastId });
+      console.log("Trip destination result:", response.data);
+      router("/generate-itinerary", { state: response.data });
+    } catch (error) {
+      toast.error(error.message, { id: toastId });
+      console.error("Error fetching trip destination:", error);
+    }
+    finally {
+      setIsSubmitting(false);
     }
 
     // alert("Data: " + formData.travelStyle + " | " + formData.values + " | " + formData.people + " | " + formData.destination.place + " | " + formData.startDate + " | " + formData.endDate);
-    router("/generate-itinerary", { state: formData });
 
   }
 
@@ -273,11 +317,12 @@ const Home = () => {
               <div className="relative w-full">
                 <select
                   required
+                  disabled={isSubmitting}
                   name='travelStyle'
                   value={travelStyle}
                   onChange={(e) => setTravelStyle(e.target.value)}
                   className="w-full appearance-none bg-gray-50 text-gray-800 font-medium px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
-                  <option value={null}>Select</option>
+                  <option value={""}>Select</option>
                   <option value={"adventure"}>Adventure</option>
                   <option value={"culture"}>Culture</option>
                   <option value={"relaxation"}>Relaxation</option>
@@ -302,6 +347,7 @@ const Home = () => {
 
                 <Range
                   values={values}
+                  disabled={isSubmitting}
                   step={STEP}
                   min={MIN}
                   max={MAX}
@@ -372,6 +418,7 @@ const Home = () => {
                 name="people"
                 required
                 value={people}
+                disabled={isSubmitting}
                 onChange={(e) => setPeople(e.target.value)}
                 placeholder="Enter number of peoples"
                 className="p-3 border border-gray-300 rounded w-full focus:outline-none no-spinner focus:ring-2 focus:ring-blue-400"
@@ -396,7 +443,7 @@ const Home = () => {
                       placeholder="Search a city, region"
                       className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                       defaultValue={onboardingPlace}
-                      disabled={!isLoaded}
+                      disabled={!isLoaded || isSubmitting}
                     />
                     {onboardingPlace ? (
                       <button
@@ -409,7 +456,7 @@ const Home = () => {
                             onboardingInputRef.current.value = '';
                           }
                         }}
-                        className='absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 px-2 py-2 hover:text-gray-600 transition-all cursor-pointer z-30'
+                        className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 px-2 py-2 hover:text-gray-600 transition-all cursor-pointer z-30 ${isSubmitting ? " hidden" : " block"}`}
                         title="Clear location"
                       >
                         <X className='w-5 h-5' />
@@ -427,7 +474,9 @@ const Home = () => {
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
                       className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all'
-                      onClick={() => setOnboardingOpen(true)}
+                      onClick={() => {
+                        if (!isSubmitting) setDestinationOpen(true)
+                      }}
                     />
                   </div>
                 </div>
@@ -448,7 +497,7 @@ const Home = () => {
                       placeholder="Search a city, region"
                       className="p-3 pr-10 border min-w-4xs border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                       defaultValue={destinationPlace}
-                      disabled={!isLoaded}
+                      disabled={!isLoaded || isSubmitting}
                     />
                     {destinationPlace ? (
                       <button
@@ -461,10 +510,10 @@ const Home = () => {
                             destinationInputRef.current.value = '';
                           }
                         }}
-                        className='absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 px-2 py-2 hover:text-gray-600 transition-all cursor-pointer z-30'
+                        className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 px-2 py-2 hover:text-gray-600 transition-all cursor-pointer z-30 ${isSubmitting ? " hidden" : " block"}`}
                         title="Clear location"
                       >
-                        <X className='w-5 h-5' />
+                        <X className={`h-5 w-5`} />
                       </button>
                     ) : (
                       <button
@@ -479,7 +528,9 @@ const Home = () => {
                   <div className='flex items-center'>
                     <FaMapMarkedAlt
                       className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all'
-                      onClick={() => setDestinationOpen(true)}
+                      onClick={() => {
+                        if (!isSubmitting) setDestinationOpen(true)
+                      }}
                     />
                   </div>
                 </div>
@@ -505,6 +556,7 @@ const Home = () => {
                       type="date"
                       name='startDate'
                       required
+                      disabled={isSubmitting}
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
@@ -520,6 +572,7 @@ const Home = () => {
                       type="date"
                       name='endDate'
                       value={endDate}
+                      disabled={isSubmitting}
                       required
                       onChange={(e) => setEndDate(e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
@@ -532,8 +585,8 @@ const Home = () => {
 
 
             {/* Button */}
-            <button type='submit' className="w-full mt-4 h-14 rounded-2xl py-3 bg-blue-500 text-white text-md   hover:bg-blue-600 font-bold transition-all cursor-pointer" >
-              Generate Itinerary
+            <button type='submit' className={`w-full mt-4 h-14 rounded-2xl py-3 bg-blue-500 text-white text-md font-bold cursor-pointer transition-all ${isSubmitting ? "opacity-70" : "opacity-100 curosor-pointer hover:bg-blue-600"}`} disabled={isSubmitting}>
+              {isSubmitting ? "Generating Itinerary..." : "Generate Itinerary"}
             </button>
           </form>
 
