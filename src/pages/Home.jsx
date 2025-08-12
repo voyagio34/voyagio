@@ -475,7 +475,7 @@ const Home = () => {
                     <FaMapMarkedAlt
                       className='w-8 h-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-all'
                       onClick={() => {
-                        if (!isSubmitting) setDestinationOpen(true)
+                        if (!isSubmitting) setOnboardingOpen(true)
                       }}
                     />
                   </div>
