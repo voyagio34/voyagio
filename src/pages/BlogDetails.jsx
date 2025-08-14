@@ -165,13 +165,13 @@ function BlogDetails() {
                             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-gray-900">
                                 {post.title}
                             </h1>
-                            {splitParagraphs(post.sections?.[0]?.content)
+                            {/* {splitParagraphs(post.sections?.[0]?.content)
                                 .slice(0, 1)
                                 .map((p, i) => (
                                     <p key={i} className="text-gray-600 text-justify leading-relaxed mb-4">
                                         {p}
                                     </p>
-                                ))}
+                                ))} */}
                         </div>
                     </article>
 
@@ -180,7 +180,7 @@ function BlogDetails() {
                         {/* Main Content */}
                         <div className="lg:col-span-2">
                             <div className="rounded-2xl">
-                                {(post.sections || []).map((sec, idx) => (
+                                {(post.sections || []).map((sec, idx) =>  (
                                     <section key={idx} className="mb-10">
                                         {sec.subtitle ? (
                                             <h2 className="text-2xl font-bold mb-4 text-gray-900">

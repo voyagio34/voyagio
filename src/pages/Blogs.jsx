@@ -43,7 +43,7 @@ export default function BlogList() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     // query state from URL
-    const pageSize = 9;
+    const pageSize = 10;
     const [page, setPage] = useState(Number(searchParams.get('page') || 1));
     const [q, setQ] = useState(searchParams.get('q') || '');
     const [category, setCategory] = useState(searchParams.get('category') || 'All');
@@ -55,6 +55,7 @@ export default function BlogList() {
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
 
+ 
     // keep URL in sync
     useEffect(() => {
         const s = new URLSearchParams();
@@ -234,7 +235,7 @@ export default function BlogList() {
                     <div className="lg:col-span-6 md:col-span-4">
                         {loading ? (
                             <div className="flex flex-wrap gap-6">
-                                {Array.from({ length: 9 }).map((_, i) => (
+                                {Array.from({ length: 10 }).map((_, i) => (
                                     <div key={i} className="flex-[1_1_320px] min-w-[320px] max-w-[420px]">
                                         <CardSkeleton />
                                     </div>
@@ -258,7 +259,7 @@ export default function BlogList() {
                                                     <img src={img} alt={p.title} className="w-full h-48 object-cover" />
                                                 </Link>
 
-                                                <div className="p-5 flex flex-col flex-1">
+                                                <div className="p-5 flex h-full flex-col flex-1">
                                                     <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-3">
                                                         <span className="flex items-center gap-1">
                                                             <FaCalendarAlt className="w-3 h-3" />
@@ -293,7 +294,7 @@ export default function BlogList() {
                                                                 ))}
                                                             </div>
 
-                                                            <div className="mt-4 flex  gap-4 justify-between items-center pt-4 border-t">
+                                                            <div className="mt-4 flex h-full gap-4 justify-between items-end pt-4 border-t">
                                                                 <div className="flex items-center gap-2">
                                                                     <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
                                                                         <img src="/agent.webp" alt="user" />
