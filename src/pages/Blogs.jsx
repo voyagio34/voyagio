@@ -55,7 +55,7 @@ export default function BlogList() {
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
 
- 
+
     // keep URL in sync
     useEffect(() => {
         const s = new URLSearchParams();
@@ -259,7 +259,8 @@ export default function BlogList() {
                                                     <img src={img} alt={p.title} className="w-full h-48 object-cover" />
                                                 </Link>
 
-                                                <div className="p-5 flex h-full flex-col flex-1">
+                                                {/* content column that grows */}
+                                                <div className="p-5 flex flex-col flex-1">
                                                     <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-3">
                                                         <span className="flex items-center gap-1">
                                                             <FaCalendarAlt className="w-3 h-3" />
@@ -269,10 +270,7 @@ export default function BlogList() {
                                                             <FaRegClock className="w-3 h-3" />
                                                             ~6 mins
                                                         </span>
-                                                        <span className="flex items-center gap-1">
-                                                            <FaRegMessage className="w-3 h-3" />
-                                                            0 comments
-                                                        </span>
+                                                       
                                                     </div>
 
                                                     <Link to={`/blog/${p.id}`}>
@@ -281,45 +279,46 @@ export default function BlogList() {
                                                         </h3>
                                                     </Link>
 
+                                                    {/* optional tags */}
                                                     {p.tags && p.tags.length > 0 && (
-                                                        <>
-                                                            <div className="flex flex-wrap gap-2 mt-3">
-                                                                {p.tags.slice(0, 3).map((t) => (
-                                                                    <span
-                                                                        key={t}
-                                                                        className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full"
-                                                                    >
-                                                                        {t}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-
-                                                            <div className="mt-4 flex h-full gap-4 justify-between items-end pt-4 border-t">
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
-                                                                        <img src="/agent.webp" alt="user" />
-                                                                    </div>
-                                                                    <span className="text-sm font-medium text-gray-700">
-                                                                        {p.author || 'Editorial Team'}
-                                                                    </span>
-                                                                </div>
-
-                                                                <div className="flex">
-                                                                    <Link
-                                                                        to={`/blog/${p.id}`}
-                                                                        className="text-sm bg-gray-200 max-w-32 text-center px-4 py-2 rounded-full font-semibold text-gray-900 hover:text-blue-600"
-                                                                    >
-                                                                        Keep Reading
-                                                                    </Link>
-                                                                </div>
-                                                            </div>
-                                                        </>
+                                                        <div className="flex flex-wrap gap-2 mb-3">
+                                                            {p.tags.slice(0, 3).map((t) => (
+                                                                <span
+                                                                    key={t}
+                                                                    className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full"
+                                                                >
+                                                                    {t}
+                                                                </span>
+                                                            ))}
+                                                        </div>
                                                     )}
+
+                                                    {/* footer: ALWAYS render; pinned to bottom */}
+                                                    <div className="mt-auto pt-4 border-t flex justify-between items-center">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
+                                                                <img src="/agent.webp" alt="user" />
+                                                            </div>
+                                                            <span className="text-sm font-medium text-gray-700">
+                                                                {p.author || 'Editorial Team'}
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="flex">
+                                                            <Link
+                                                                to={`/blog/${p.id}`}
+                                                                className="text-sm bg-gray-200 max-w-32 text-center px-4 py-2 rounded-full font-semibold text-gray-900 hover:text-blue-600"
+                                                            >
+                                                                Keep Reading
+                                                            </Link>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </article>
                                         );
                                     })}
                                 </div>
+
 
                                 {/* Pagination */}
                                 <div className="flex items-center justify-center gap-3 mt-10">

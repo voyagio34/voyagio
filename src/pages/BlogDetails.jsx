@@ -47,7 +47,7 @@ function BlogDetails() {
             // 2) recent posts (other published ones)
             const { data: recentRows } = await supabase
                 .from('blog_posts')
-                .select('id,title,author,published_date,main_image,sections,category')
+                .select('id,title,author,published_date,main_image,sections,category,tags')
                 .eq('status', 'published')
                 .neq('id', id)
                 .order('published_date', { ascending: false })
@@ -180,7 +180,7 @@ function BlogDetails() {
                         {/* Main Content */}
                         <div className="lg:col-span-2">
                             <div className="rounded-2xl">
-                                {(post.sections || []).map((sec, idx) =>  (
+                                {(post.sections || []).map((sec, idx) => (
                                     <section key={idx} className="mb-10">
                                         {sec.subtitle ? (
                                             <h2 className="text-2xl font-bold mb-4 text-gray-900">
@@ -279,21 +279,21 @@ function BlogDetails() {
                                 <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
                             </button>
                         </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-10 items-stretch">
                             {(recent || []).map((p) => {
                                 const img = resolveHeroImage(p);
-                                const d = p.published_date
-                                    ? new Date(p.published_date).toLocaleDateString()
-                                    : '';
+                                const d = p.published_date ? new Date(p.published_date).toLocaleDateString() : '';
                                 return (
                                     <article
                                         key={p.id}
-                                        className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer"
+                                        className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer
+                   h-full flex flex-col"
                                         onClick={() => router(`/blog/${p.id}`)}
                                     >
                                         <img src={img} alt={p.title} className="w-full h-48 object-cover" />
-                                        <div className="p-5">
+
+                                        {/* make content a flex column that grows */}
+                                        <div className="p-5 flex flex-col flex-1">
                                             <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-3">
                                                 <span className="flex items-center gap-1">
                                                     <FaCalendarAlt className="w-3 h-3" />
@@ -303,17 +303,30 @@ function BlogDetails() {
                                                     <FaRegClock className="w-3 h-3" />
                                                     ~6 mins
                                                 </span>
-                                                <span className="flex items-center gap-1">
+                                                {/* <span className="flex items-center gap-1">
                                                     <FaRegMessage className="w-3 h-3" />
                                                     0 comments
-                                                </span>
+                                                </span> */}
                                             </div>
 
                                             <h3 className="text-lg font-semibold text-gray-900 mb-4 line-clamp-2">
                                                 {p.title}
                                             </h3>
 
-                                            <div className="flex justify-between items-center pt-4 border-t">
+                                            {p.tags && p.tags.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mb-3">
+                                                    {p.tags.slice(0, 3).map((t) => (
+                                                        <span
+                                                            key={t}
+                                                            className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full"
+                                                        >
+                                                            {t}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {/* footer sticks to bottom */}
+                                            <div className="mt-auto pt-4 border-t flex justify-between items-center">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
                                                         <img src="/agent.webp" alt="user" />
@@ -331,6 +344,7 @@ function BlogDetails() {
                                 );
                             })}
                         </div>
+
                     </div>
                 </div>
             </section>
