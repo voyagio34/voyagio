@@ -207,10 +207,8 @@ export default function BlogList() {
             </section>
 
 
-            {/* Content */}
             <section className="min-h-screen mt-6">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-8 gap-8">
-                    {/* Sidebar categories */}
                     <aside className="lg:col-span-2 md:col-span-2">
                         <div className="rounded-2xl sm:px-6 px-4 py-6 sticky top-8 bg-white shadow-sm">
                             <h2 className="text-xl font-bold mb-6 text-gray-900">Categories</h2>

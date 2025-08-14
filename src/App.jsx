@@ -60,7 +60,7 @@ function AppContent() {
   return (
     <>
       <Navbar />
-      <div className='bg-gray-50 text-gray-900 overflow-x-hidden'>
+      <div className='bg-gray-50 pt-16 text-gray-900 overflow-x-hidden'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/features' element={<Features />} />
@@ -100,34 +100,36 @@ function AppContent() {
 
         </Routes>
         <ScrollToTop />
-         <Toaster
-        position="top-center"
-        gutter={10}
-        toastOptions={{
-          // Base style: glass card, soft shadow, rounded
-          className:
-            "rounded-2xl shadow-lg backdrop-blur-md border border-white/20 !text-slate-800",
-          style: {
-            background: "rgba(255,255,255,0.85)",
-            color: "#0f172a", // slate-900
-          },
-          duration: 4000,
-          success: {
-            iconTheme: { primary: "#2563eb", secondary: "#ffffff" }, // blue-600
+        <Toaster
+          position="top-center"
+          gutter={10}
+          containerStyle={{
+            top: '6rem', // push it down ≈72px to sit below navbar
+          }}
+          toastOptions={{
             className:
-              "border-blue-200/70 bg-white [&>div]:font-semibold",
-          },
-          error: {
-            iconTheme: { primary: "#ef4444", secondary: "#ffffff" }, // red-500
-            className: "border-red-200/70 bg-white",
-            duration: 5000,
-          },
-          loading: {
-            className: "border-blue-200/70 bg-white",
-            duration: Infinity,
-          },
-        }}
-      />
+              "rounded-2xl text-lg shadow-lg backdrop-blur-md border border-white/20 !text-slate-800",
+            style: {
+              background: "rgba(255,255,255,0.95)",
+              color: "#0f172a", // slate-900,
+            },
+            duration: 4000,
+            success: {
+              iconTheme: { primary: "#2563eb", secondary: "#ffffff" }, // blue-600
+              className:
+                "border-blue-200/70 bg-white [&>div]:font-semibold",
+            },
+            error: {
+              iconTheme: { primary: "#ef4444", secondary: "#ffffff" }, // red-500
+              className: "border-red-200/70 bg-white",
+              duration: 5000,
+            },
+            loading: {
+              className: "border-blue-200/70 bg-white",
+              duration: Infinity,
+            },
+          }}
+        />
         <Footer />
       </div>
     </>

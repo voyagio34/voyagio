@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase/Client'
 import { useAuth } from '../contexts/AuthContext'
 import RoundLoader from '../components/RoundLoader'
+import toast from 'react-hot-toast'
 
 const SignIn = () => {
   const [showPass, setShowPass] = useState(false)
@@ -41,9 +42,11 @@ const SignIn = () => {
     }
     setLoading(true)
     setError('')
+    // const toastId = toast.loading("Signig in...");
     try {
       const result = await signIn(formData.email, formData.password);
       if (result.success) {
+        toast.success("Signed in successfully!");
         navigate("/");
       }
       else {
@@ -58,9 +61,11 @@ const SignIn = () => {
       } else if (error.message.includes('Email not confirmed')) {
         setError('Please verify your email before signing in')
       } else {
-        setError(error.message || 'An error occurred during sign in')
+        setError(error.message || 'An error occurred during sign in');
       }
-      setLoading(false)
+      setLoading(false);
+      // toast.error(error, { id: toastId });
+
     }
   }
 

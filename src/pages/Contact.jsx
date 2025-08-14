@@ -41,11 +41,9 @@ const Contact = () => {
             <section className='relative py-20' data-aos="fade-up">
                 <div className="max-w-7xl sm:px-6 lg:px-8 px-4 mx-auto flex flex-col lg:flex-row gap-8">
 
-                    {/* Left: Contact Info */}
                     <div 
                         className="bg-white shadow-md py-10 p-6 rounded-xl w-full lg:w-1/3 space-y-8"
                     >
-                        {/* Call */}
                         <div 
                             className="flex flex-col gap-4 items-start"
                         >
@@ -63,7 +61,6 @@ const Contact = () => {
 
                         <hr className="border-gray-200" />
 
-                        {/* Email */}
                         <div 
                             className="flex flex-col gap-4 items-start"
                         >
@@ -83,12 +80,11 @@ const Contact = () => {
                         </div>
                     </div>
 
-                    {/* Right: Contact Form */}
                     <div 
                         className="bg-white py-10 shadow-md p-6 rounded-xl w-full lg:w-2/3"
                     >
                         <form className="space-y-6">
-                            {/* Top 3 Inputs */}
+                           
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <input
                                     type="text"
@@ -107,14 +103,12 @@ const Contact = () => {
                                 />
                             </div>
 
-                            {/* Message */}
                             <textarea
                                 placeholder="Your Message"
                                 rows="6"
                                 className="w-full px-4 py-3 rounded bg-gray-100 text-sm resize-none focus:outline-blue-400"
                             ></textarea>
 
-                            {/* Submit */}
                             <div 
                                 className="flex justify-end"
                             >

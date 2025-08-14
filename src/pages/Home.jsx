@@ -3,22 +3,25 @@ import { getTrackBackground, Range } from 'react-range';
 import SmallCarousel from '../components/SmallCarousel';
 import { AppFeatures } from '../data/AppFeatures';
 import { TopRestaurants } from '../data/TopRestaurants';
-import { FaArrowRight, FaCalendar, FaCalendarAlt, FaClock, FaHeart, FaInbox, FaMailchimp, FaMap, FaMapMarked, FaMapMarkedAlt, FaRegClock, FaRegStar, FaSearch, FaStar, FaVoicemail } from 'react-icons/fa';
+import { FaArrowRight, FaCalendarAlt, FaClock, FaHeart, FaMapMarkedAlt, FaRegClock, FaSearch, FaStar } from 'react-icons/fa';
 import { InfoCards } from '../data/InfoCards';
 import { Deals } from '../data/Deals';
 import { Experiences } from '../data/Experience';
 import { images, steps } from '../data/Steps';
-import { FaCircleLeft, FaCircleRight, FaFolderClosed, FaMessage, FaRegMessage } from 'react-icons/fa6';
+import { FaCircleLeft, FaCircleRight, FaRegMessage } from 'react-icons/fa6';
 import { testimonialsData } from '../data/Reviews';
 import { blogPosts } from '../data/BlogPosts';
-import { Mail, MailIcon, X } from 'lucide-react';
+import { Mail, X } from 'lucide-react';
 import OnboardingModal from '../components/OnboardModal';
 import DestinationModal from '../components/DestinationModal';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useJsApiLoader } from '@react-google-maps/api';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import Select from "react-select";
+import RoundLoader from '../components/RoundLoader';
+import { useAuth } from '../contexts/AuthContext';
+import {  AuthRequiredError } from '../lib/CustomErrors/AuthRequiredError';
 
 
 const STEP = 100;
@@ -30,26 +33,22 @@ const Home = () => {
   const [values, setValues] = useState([MIN, MAX]);
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
-
   const [travelStyle, setTravelStyle] = useState([]);
   const [people, setPeople] = useState(null)
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
-
   const [onboardingPlace, setOnboardingPlace] = useState('');
   const [destinationPlace, setDestinationPlace] = useState('');
   const [onboardingLocation, setOnboardingLocation] = useState({ lat: 28.6139, lng: 77.2090 });
   const [destinationLocation, setDestinationLocation] = useState({ lat: 28.6139, lng: 77.2090 });
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-
   const router = useNavigate();
-
   const onboardingInputRef = useRef(null);
   const destinationInputRef = useRef(null);
   const onboardingAutocompleteRef = useRef(null);
   const destinationAutocompleteRef = useRef(null);
+  const { session } = useAuth();
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -102,21 +101,12 @@ const Home = () => {
 
         onboardingAutocompleteRef.current.addListener('place_changed', () => {
           const place = onboardingAutocompleteRef.current.getPlace();
-          // console.log(onboardingAutocompleteRef.current)
-          // console.log('--- Onboarding Place Changed ---');
-          // console.log('Place object:', place);
 
           if (place && place.geometry) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
             const locationName = place.formatted_address || place.name || '';
 
-            // console.log('Onboarding - New Location:', {
-            //   name: locationName,
-            //   lat: lat,
-            //   lng: lng,
-            //   placeId: place.place_id
-            // });
 
             setOnboardingLocation({ lat, lng });
             setOnboardingPlace(locationName);
@@ -261,15 +251,14 @@ const Home = () => {
     e.preventDefault();
     setIsSubmitting(true)
 
+
     const location = destinationPlace;
     const parts = location.split(",").map(part => part.trim());
     const region = parts[1];
 
 
-    // alert("region:" + region)
     const toastId = toast.loading("Generating itinerary…");
     const travelStyles = travelStyle.join(",");
-    // console.log(travelStyle)
 
     const formData = {
       budgetMax: values[1],
@@ -286,18 +275,21 @@ const Home = () => {
     }
     console.log(formData);
 
-
-    //TODO: HERE ADD TO API FOR SUGGESTION GENERATION WHICH WILL GO TO THE NEXT PAGE IN STATE
     try {
+      if (!session?.user) {
+        setIsSubmitting(false)
+        throw new AuthRequiredError("Please Login First!");
+      }
+
       const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/api/getTripDestination`, formData, {
         headers: {
           "Content-Type": "application/json"
         }
       });
 
-      if (response) {
+      if (!response.length > 0) {
         console.log(response)
-        // throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`No any data available for selected place!`);
       }
 
       toast.success("Your itinerary is ready!", { id: toastId });
@@ -305,18 +297,24 @@ const Home = () => {
       router("/generate-itinerary", { state: response.data });
     } catch (error) {
       toast.error(error.message, { id: toastId });
-      console.error("Error fetching trip destination:", error);
+      if(error.name == "AuthRequiredError"){
+        router("/signin");
+      }
+  
     }
     finally {
       setIsSubmitting(false);
     }
+  }
 
-    // alert("Data: " + formData.travelStyle + " | " + formData.values + " | " + formData.people + " | " + formData.destination.place + " | " + formData.startDate + " | " + formData.endDate);
-
+  if (isSubmitting) {
+    return (
+      <RoundLoader message="Generating Itinerary..." />
+    )
   }
 
   return (
-    <div className='bg-gray-50 overflow-x-hidden pt-10  '>
+    <div className='bg-gray-50 overflow-x-hidden '>
       {/* Hero section */}
       <section className="relative bg-cover bg-center bg-[url('/Hero_bg.webp')] min-h-screen px-4 py-16 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
         <div className="w-full max-w-7xl  mx-auto flex flex-col xl:flex-row justify-around items-center gap-12">

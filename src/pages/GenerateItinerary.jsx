@@ -50,6 +50,11 @@ function GenerateItinerary() {
         e.preventDefault();
         setLoading(true);
 
+        if(session?.user){
+            throw new Error("Please Login First!");
+            
+        }
+
         const selectedData = state.filter(item =>
             addedItems.includes(item.place_id)
         );

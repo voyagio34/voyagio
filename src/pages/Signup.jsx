@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase/Client'
 import { useAuth } from '../contexts/AuthContext'
 import RoundLoader from '../components/RoundLoader'
+import toast from 'react-hot-toast'
 
 const SignUp = () => {
   const [showPass, setShowPass] = useState(false)
@@ -27,7 +28,6 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     // Validation
     if (!formData.name || !formData.email || !formData.password) {
       setError('Please fill in all fields')
@@ -38,24 +38,25 @@ const SignUp = () => {
       setError('Password must be at least 6 characters')
       return
     }
-
-    setLoading(true)
+    // const toastId = toast.loading("Signin up...")
+    setLoading(true);
     setError('')
 
     try {
       const result = await signUp(formData.name, formData.email, formData.password);
-
       if (result.success) {
-        alert('Registration successful!')
+        toast.success("Sign up successful");
         setLoading(false)
         navigate('/')
       }
       else {
-        setError(result.error)
+        setError(result.error || 'User exist!')
+        // toast.error(result.error, { id: toastId })
       }
 
     } catch (error) {
-      setError(error.message || 'An error occurred during registration')
+      setError(error.message || 'An error occurred during registration');
+      // toast.error(error.message, { id: toastId })
     } finally {
       setLoading(false)
     }

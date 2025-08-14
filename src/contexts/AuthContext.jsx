@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
     })
 
     if (error) {
-      console.error("Error from signup function", error);
-      return { success: false, error };
+      console.error("Error from signup function", error.message);
+      return { success: false, error:error.message };
     }
     return { success: true, data }
   }
@@ -65,7 +65,6 @@ export const AuthProvider = ({ children }) => {
 
 
   const value = {
-
     session,
     signIn,
     signUp,
