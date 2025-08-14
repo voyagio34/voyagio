@@ -142,7 +142,7 @@ function GenerateItinerary() {
                                             className="w-full h-48 object-cover"
                                             onError={(e) => {
                                                 e.target.onerror = null; // prevent infinite loop in case fallback also fails
-                                                e.target.src = "/icon4.webp";
+                                                e.target.src = "/placeholder.webp";
                                             }}
                                         />
 
