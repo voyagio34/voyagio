@@ -1,77 +1,104 @@
-import React from 'react'
-import { FaArrowRight, FaCalendarAlt, FaCity, FaNewspaper, FaPlaneDeparture, FaRegClock, FaUmbrellaBeach } from 'react-icons/fa';
-import { FaBowlFood, FaCow, FaRegMessage } from 'react-icons/fa6';
+// BlogDetails.jsx
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
+import { FaArrowRight, FaCalendarAlt, FaRegClock } from 'react-icons/fa';
+import { FaRegMessage } from 'react-icons/fa6';
+import { supabase } from '../lib/supabase/Client';
 
-const categories = [
-    { icon: <FaCity />, name: 'City Tour' },
-    { icon: <FaUmbrellaBeach/>, name: 'Beach Tour' },
-    { icon: <FaCow /> , name: 'Wildlife Tour' },
-    { icon: <FaNewspaper />, name: 'News & Tips' },
-    { icon: <FaPlaneDeparture />, name: 'Adventure Tours' },
-    { icon: <FaBowlFood />, name: 'Food Tours' },
-];
+function splitParagraphs(text) {
+    return (text || '').split(/\r?\n\r?\n/).filter(Boolean);
+}
 
-const recentPosts = [
-    {
-        id: 1,
-        title: 'Top 10 Travel Hacks for Budget-Conscious Adventurers',
-        date: '19 Sep 2024',
-        image: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=100&h=100&fit=crop'
-    },
-    {
-        id: 2,
-        title: 'Top 10 Travel Hacks for Budget-Conscious Adventurers',
-        date: '19 Sep 2024',
-        image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=100&h=100&fit=crop'
-    },
-    {
-        id: 3,
-        title: 'Top 10 Travel Hacks for Budget-Conscious Adventurers',
-        date: '19 Sep 2024',
-        image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=100&h=100&fit=crop'
-    },
-    {
-        id: 4,
-        title: 'Top 10 Travel Hacks for Budget-Conscious Adventurers',
-        date: '19 Sep 2024',
-        image: 'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=100&h=100&fit=crop'
+function resolveHeroImage(post, fallback = '/images/default-hero.jpg') {
+    if (post?.main_image) return post.main_image;
+    const secs = post?.sections || [];
+    for (const s of secs) {
+        const first = s?.images?.[0];
+        if (first) return first;
     }
-];
-
-const blogPosts = [
-    {
-        id: 1,
-        title: 'Ultimate Travel Planning Guide: 10 Tips for a Seamless Journey',
-        date: '18 Sep 2024',
-        readTime: '6 mins',
-        comments: 16,
-        author: 'Jimmy Dave',
-        image: 'https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=400&h=300&fit=crop'
-    },
-    {
-        id: 2,
-        title: 'Top 10 Travel Hacks for Budget-Conscious Adventurers',
-        date: '18 Sep 2024',
-        readTime: '6 mins',
-        comments: 26,
-        author: 'Jimmy Dave',
-        image: 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=400&h=300&fit=crop'
-    },
-    {
-        id: 3,
-        title: 'Discovering Hidden Gems: 10 Off-the-Beaten-Path Travel Tips',
-        date: '18 Sep 2024',
-        readTime: '6 mins',
-        comments: 28,
-        author: 'Jimmy Dave',
-        image: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=400&h=300&fit=crop'
-    }
-];
-
-
+    return fallback;
+}
 function BlogDetails() {
+    const { id } = useParams(); // expects /blog/:id
+    const router = useNavigate();
+
+    const [post, setPost] = useState(null);
+    const [recent, setRecent] = useState([]);
+    const [cats, setCats] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        let alive = true;
+        (async () => {
+            setLoading(true);
+
+            // 1) fetch the current post
+            const { data: row, error: postErr } = await supabase
+                .from('blog_posts')
+                .select('*')
+                .eq('id', id)
+                .maybeSingle();
+
+            if (!alive) return;
+            if (postErr) console.error(postErr);
+            setPost(row || null);
+
+            // 2) recent posts (other published ones)
+            const { data: recentRows } = await supabase
+                .from('blog_posts')
+                .select('id,title,author,published_date,main_image,sections,category')
+                .eq('status', 'published')
+                .neq('id', id)
+                .order('published_date', { ascending: false })
+                .limit(3);
+
+            if (!alive) return;
+            setRecent(recentRows || []);
+
+            // 3) categories (distinct)
+            const { data: catRows } = await supabase
+                .from('blog_posts')
+                .select('category')
+                .not('category', 'is', null);
+
+            if (!alive) return;
+            const uniq = Array.from(new Set((catRows || []).map(r => r.category)));
+            setCats(uniq);
+
+            setLoading(false);
+        })();
+
+        return () => {
+            alive = false;
+        };
+    }, [id]);
+
+    const hero = useMemo(() => resolveHeroImage(post), [post]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-gray-600">
+                Loading blog…
+            </div>
+        );
+    }
+
+    if (!post) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-gray-600">
+                Blog not found.
+            </div>
+        );
+    }
+
+    const dateLabel = post.published_date
+        ? new Date(post.published_date).toLocaleDateString()
+        : '';
+
     return (
-        <div className='bg-gray-50 pt-10'>
+        <div className="bg-gray-50 pt-10">
+            {/* Header hero */}
             <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div
                     className="absolute top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0"
@@ -95,7 +122,7 @@ function BlogDetails() {
                             <span className='ml-4 text-blue-500'>Details</span>
                         </h1>
                         <span className='ml-1 font-normal text-lg text-gray-700 mt-2'>
-                            Home / Blog
+                            Home / Blog Details
                         </span>
                     </div>
                     <div
@@ -106,167 +133,147 @@ function BlogDetails() {
                 </div>
             </section>
 
-            <section className="min-h-screen mt-10" data-aos="fade-up">
+            {/* Body */}
+            <section className="min-h-screen mt-10" data-aos="fade-in">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-                    {/* Main Article */}
-                    <article
-                        className="rounded-2xl overflow-hidden mb-10"
-                    >
+                    {/* Article meta + big hero */}
+                    <article className="rounded-2xl overflow-hidden mb-10">
                         <img
-                            src="/blog3.webp"
-                            alt="Travel Journey"
+                            src={hero}
+                            alt="hero"
                             className="w-full h-full rounded-2xl sm:h-96 object-cover"
                         />
 
-                        <div
-                            className="flex flex-wrap gap-4 sm:gap-6 pt-6 text-md text-gray-600"
-                        >
-                            <span className="flex items-center gap-2">
-                                <FaCalendarAlt className="w-4 h-4" />
-                                10 Aug 2025
-                            </span>
+                        <div className="flex flex-wrap gap-4 sm:gap-6 pt-6 text-md text-gray-600">
+                            {dateLabel && (
+                                <span className="flex items-center gap-2">
+                                    <FaCalendarAlt className="w-4 h-4" />
+                                    {dateLabel}
+                                </span>
+                            )}
                             <span className="flex items-center gap-2">
                                 <FaRegClock className="w-4 h-4" />
-                                6 mins
+                                ~6 mins
                             </span>
                             <span className="flex items-center gap-2">
                                 <FaRegMessage className="w-4 h-4" />
-                                16 comments
+                                0 comments
                             </span>
                         </div>
 
-                        <div className=" py-6">
-                            <h1
-                                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-gray-900"
-                            >
-                                Ultimate Travel Planning Guide: 10 Tips for a Seamless Journey
+                        <div className="py-6">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-gray-900">
+                                {post.title}
                             </h1>
-                            <p
-                                className="text-gray-600 text-justify leading-relaxed mb-4"
-                            >
-                                Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                            </p>
-                            <p
-                                className="text-gray-600 text-justify leading-relaxed"
-                            >
-                                Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                            </p>
+                            {splitParagraphs(post.sections?.[0]?.content)
+                                .slice(0, 1)
+                                .map((p, i) => (
+                                    <p key={i} className="text-gray-600 text-justify leading-relaxed mb-4">
+                                        {p}
+                                    </p>
+                                ))}
                         </div>
                     </article>
 
                     {/* Two Column Layout */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-
                         {/* Main Content */}
                         <div className="lg:col-span-2">
-                            <div
-                                className=" rounded-2xl  "
-                            >
-                                <h2
-                                    className="text-2xl font-bold mb-6 text-gray-900"
-                                >
-                                    Ultimate Travel Planning Guide: 10 Tips for a Seamless Journey
-                                </h2>
-                                <img
-                                    src="/blog3.webp"
-                                    alt="Travel Journey"
-                                    className="w-full h-full rounded-2xl sm:h-96 mb-10 object-cover"
-                                />
+                            <div className="rounded-2xl">
+                                {(post.sections || []).map((sec, idx) => (
+                                    <section key={idx} className="mb-10">
+                                        {sec.subtitle ? (
+                                            <h2 className="text-2xl font-bold mb-4 text-gray-900">
+                                                {sec.subtitle}
+                                            </h2>
+                                        ) : null}
 
-                                <p
-                                    className="text-gray-600 text-justify leading-relaxed mb-4"
-                                >
-                                    Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                </p>
+                                        {splitParagraphs(sec.content).map((p, i) => (
+                                            <p key={i} className="text-gray-600 text-justify leading-relaxed mb-4">
+                                                {p}
+                                            </p>
+                                        ))}
 
-                                <p
-                                    className="text-gray-600 text-justify leading-relaxed mb-4"
-                                >
-                                    It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem ipsum.
-                                </p>
+                                        {(sec.images || []).length > 0 && (
 
-                                <p
-                                    className="text-gray-600 text-justify leading-relaxed"
-                                >
-                                    Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                                </p>
+                                            <img
+                                                src={sec.images[0]}
+                                                alt={sec.subtitle || `section-${idx}-img-${0}`}
+                                                className="w-full max-h-72 object-cover rounded-2xl"
+                                            />
+
+                                        )}
+                                    </section>
+                                ))}
                             </div>
                         </div>
 
                         {/* Sidebar */}
                         <aside className="lg:col-span-1">
-                            <div
-                                className=" rounded-2xl sm:px-6 px-2 py-6 sticky top-8"
-                            >
-                                <h2
-                                    className="text-xl font-bold mb-6 text-gray-900"
-                                >
-                                    Categories :
-                                </h2>
+                            <div className="rounded-2xl sm:px-6 px-2 py-6 sticky top-8">
+                                <h2 className="text-xl font-bold mb-6 text-gray-900">Categories :</h2>
                                 <ul className="space-y-1">
-                                    {categories.map((category, index) => (
+                                    {cats.map((c) => (
                                         <li
-                                            key={index}
+                                            key={c}
                                             className="flex flex-row items-center gap-3 py-3 sm:px-4 border-b border-gray-100 last:border-0 cursor-pointer group"
+                                            onClick={() => router(`/blog?category=${encodeURIComponent(c)}`)}
                                         >
-                                            <span className="text-xl  group-hover:text-blue-500 group-hover:translate-x-1 duration-200  ">{category.icon}</span>
-                                            <span className="text-md font-medium  group-hover:text-blue-500 group-hover:translate-x-1 duration-200  ">{category.name}</span>
+                                            <span className="text-md font-medium group-hover:text-blue-500 group-hover:translate-x-1 duration-200">
+                                                {c}
+                                            </span>
                                         </li>
                                     ))}
                                 </ul>
 
                                 {/* Recent Posts */}
                                 <div className="mt-8">
-                                    <h3
-                                        className="text-lg font-bold mb-6 text-gray-900"
-                                    >
-                                        Recent Posts :
-                                    </h3>
+                                    <h3 className="text-lg font-bold mb-6 text-gray-900">Recent Posts :</h3>
                                     <div className="space-y-4">
-                                        {recentPosts.map((post, index) => (
-                                            <div
-                                                key={post.id}
-                                                className="flex flex-row gap-3 transition-all group hover:translate-x-1 duration-200 cursor-pointer"
-                                            >
-                                                <img
-                                                    src={post.image}
-                                                    alt={post.title}
-                                                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0  group-hover:translate-x-1 duration-200  "
-                                                />
-                                                <div className="flex-1 group-hover:text-blue-500 group-hover:translate-x-1 duration-200  ">
-                                                    <h4 className="text-sm font-medium text-gray-800 group-hover:text-blue-600  transition-colors line-clamp-2">
-                                                        {post.title}
-                                                    </h4>
-                                                    <p className="text-xs text-gray-500 mt-1">{post.date}</p>
+                                        {recent.map((p) => {
+                                            const img = resolveHeroImage(p);
+                                            const d = p.published_date
+                                                ? new Date(p.published_date).toLocaleDateString()
+                                                : '';
+                                            return (
+                                                <div
+                                                    key={p.id}
+                                                    className="flex flex-row gap-3 transition-all group hover:translate-x-1 duration-200 cursor-pointer"
+                                                    onClick={() => router(`/blog/${(p.id)}`)}
+                                                >
+                                                    <img
+                                                        src={img}
+                                                        alt={p.title}
+                                                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <h4 className="text-sm font-medium text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                                            {p.title}
+                                                        </h4>
+                                                        <p className="text-xs text-gray-500 mt-1">{d}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>
                         </aside>
                     </div>
 
-
-                    <div className='relative py-20' data-aos="fade-up">
+                    {/* “Our Blogs” grid (optional): reuse `recent` or fetch paginated list */}
+                    <div className="relative py-20">
                         <div className="flex sm:flex-row flex-col justify-between sm:items-center mb-8">
-                            <div className='flex flex-col gap-2'>
-
-                                <h2
-                                    className="text-2xl sm:text-3xl font-bold text-gray-900"
-                                >
-                                    Our Blogs
-                                </h2>
-                                <p
-                                    className="text-gray-600 text-justify leading-relaxed"
-                                >
-                                    Lorem ipsum is simply dummy text of the printing and typesetting industry.
+                            <div className="flex flex-col gap-2">
+                                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Our Blogs</h2>
+                                <p className="text-gray-600 leading-relaxed">
+                                    Explore more posts from our editors.
                                 </p>
                             </div>
 
                             <button
                                 className="mt-6 md:mt-0 bg-black text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-800 transition-colors duration-200 max-w-40 justify-center group cursor-pointer"
+                                onClick={() => router('/blog')}
                             >
                                 View More
                                 <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
@@ -274,88 +281,83 @@ function BlogDetails() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-10">
-                            {blogPosts.map((post, index) => (
-                                <article
-                                    key={post.id}
-                                    className=" rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all"
-                                >
-                                    <img
-                                        src={post.image}
-                                        alt={post.title}
-                                        className="w-full h-48 object-cover"
-                                    />
-                                    <div className="p-5">
-                                        <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-3">
-                                            <span className="flex items-center gap-1">
-                                                <FaCalendarAlt className="w-3 h-3" />
-                                                {post.date}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <FaRegClock className="w-3 h-3" />
-                                                {post.readTime}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <FaRegMessage className="w-3 h-3" />
-                                                {post.comments} comments
-                                            </span>
-                                        </div>
-
-                                        <h3 className="text-lg font-semibold text-gray-900 mb-4 line-clamp-2">
-                                            {post.title}
-                                        </h3>
-
-                                        <div className="flex justify-between items-center pt-4 border-t">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
-                                                    <img src='/agent.webp' alt='user'/> 
-                                                </div>
-                                                <span className="text-sm font-medium text-gray-700">{post.author}</span>
+                            {(recent || []).map((p) => {
+                                const img = resolveHeroImage(p);
+                                const d = p.published_date
+                                    ? new Date(p.published_date).toLocaleDateString()
+                                    : '';
+                                return (
+                                    <article
+                                        key={p.id}
+                                        className="rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer"
+                                        onClick={() => router(`/blog/${p.id}`)}
+                                    >
+                                        <img src={img} alt={p.title} className="w-full h-48 object-cover" />
+                                        <div className="p-5">
+                                            <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-3">
+                                                <span className="flex items-center gap-1">
+                                                    <FaCalendarAlt className="w-3 h-3" />
+                                                    {d}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <FaRegClock className="w-3 h-3" />
+                                                    ~6 mins
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <FaRegMessage className="w-3 h-3" />
+                                                    0 comments
+                                                </span>
                                             </div>
-                                            <button className="text-sm bg-gray-200 px-4 py-2 rounded-full font-semibold  text-gray-900 cursor-pointer hover:text-blue-600 transition-colors">
-                                                Keep Reading
-                                            </button>
+
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-4 line-clamp-2">
+                                                {p.title}
+                                            </h3>
+
+                                            <div className="flex justify-between items-center pt-4 border-t">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
+                                                        <img src="/agent.webp" alt="user" />
+                                                    </div>
+                                                    <span className="text-sm font-medium text-gray-700">
+                                                        {p.author || 'Editorial Team'}
+                                                    </span>
+                                                </div>
+                                                <span className="text-sm bg-gray-200 px-4 py-2 rounded-full font-semibold text-gray-900">
+                                                    Keep Reading
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </article>
-                            ))}
+                                    </article>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section
-                className="relative bg-gray-200 py-10"
-                data-aos="fade-in"
-            >
-                <div className='max-w-7xl px-4 mx-auto sm:px-6 lg:px-8 w-full flex flex-col md:flex-row justify-between gap-8'>
-                    <div className='flex flex-col'>
-                        <span
-                            className="text-lg text-blue-500 font-bold"
-                        >
-                            🌍 Download the Voyagio AI™ App
-                        </span>
-                        <span
-                            className="text-md max-w-lg mt-2 px-1 text-gray-700 font-medium"
-                        >
+            {/* CTA footer */}
+            <section className="relative bg-gray-200 py-10">
+                <div className="max-w-7xl px-4 mx-auto sm:px-6 lg:px-8 w-full flex flex-col md:flex-row justify-between gap-8">
+                    <div className="flex flex-col">
+                        <span className="text-lg text-blue-500 font-bold">🌍 Download the Voyagio AI™ App</span>
+                        <span className="text-md max-w-lg mt-2 px-1 text-gray-700 font-medium">
                             Plan, personalize, and book your entire trip in seconds with the power of AI — all from one smart, seamless app.
                         </span>
                     </div>
-                    <div
-                        className="flex flex-col items-center gap-2"
-                    >
+                    <div className="flex flex-col items-center gap-2">
                         <div className="flex gap-4">
-                            <img src="/appstore.webp" alt="appstore" className='h-10' />
-                            <img src="/qrcode.webp" alt="qrcode" className='h-10' />
+                            <img src="/appstore.webp" alt="appstore" className="h-10" />
+                            <img src="/qrcode.webp" alt="qrcode" className="h-10" />
                         </div>
                         <div className="flex gap-4">
-                            <img src="/playstore.webp" alt="appstore" className='h-10' />
-                            <img src="/qrcode.webp" alt="qrcode" className='h-10' />
+                            <img src="/playstore.webp" alt="appstore" className="h-10" />
+                            <img src="/qrcode.webp" alt="qrcode" className="h-10" />
                         </div>
                     </div>
                 </div>
             </section>
         </div>
-    )
+    );
 }
 
-export default BlogDetails
+export default BlogDetails;

@@ -72,7 +72,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <div className="flex items-center" data-aos="fade-down">
                         <Link to="/" className="flex items-center space-x-3 group">
-                            <img src='/icon.webp' alt='LOGO' />
+                            <img src='/icon.webp' alt='LOGO' className='w-46'/>
                         </Link>
                     </div>
 

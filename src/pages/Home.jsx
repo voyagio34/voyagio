@@ -18,6 +18,8 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useJsApiLoader } from '@react-google-maps/api';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import Select from "react-select";
+
 
 const STEP = 100;
 const MIN = 2000;
@@ -29,15 +31,15 @@ const Home = () => {
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
 
-  const [travelStyle, setTravelStyle] = useState(null);
+  const [travelStyle, setTravelStyle] = useState([]);
   const [people, setPeople] = useState(null)
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
 
   const [onboardingPlace, setOnboardingPlace] = useState('');
   const [destinationPlace, setDestinationPlace] = useState('');
-  const [onboardingLocation, setOnboardingLocation] = useState({ lat: 0, lng: 0 });
-  const [destinationLocation, setDestinationLocation] = useState({ lat: 0, lng: 0 });
+  const [onboardingLocation, setOnboardingLocation] = useState({ lat: 28.6139, lng: 77.2090 });
+  const [destinationLocation, setDestinationLocation] = useState({ lat: 28.6139, lng: 77.2090 });
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -50,6 +52,21 @@ const Home = () => {
   const destinationAutocompleteRef = useRef(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const TRAVEL_OPTIONS = [
+    { value: "adventure", label: "Adventure" },
+    { value: "wellness", label: "Wellness" },
+    { value: "culture", label: "Culture" },
+    { value: "relaxation", label: "Relaxation" },
+    { value: "shopping", label: "Shopping" },
+    { value: "relaxed", label: "Relaxed" },
+    { value: "luxury", label: "Luxury" },
+    { value: "gastronomy", label: "Gastronomy" },
+    { value: "wine", label: "Wine" },
+    { value: "photospots", label: "Photospots" },
+    { value: "spiritual", label: "Spiritual" }
+  ];
+
 
 
 
@@ -251,12 +268,14 @@ const Home = () => {
 
     // alert("region:" + region)
     const toastId = toast.loading("Generating itinerary…");
+    const travelStyles = travelStyle.join(",");
+    // console.log(travelStyle)
 
     const formData = {
       budgetMax: values[1],
-      travelStyles: travelStyle,
+      travelStyles,
       budgetMin: values[0],
-      preferredRegion: region | null,
+      preferredRegion: region || null,
       endDate,
       destination: destinationPlace,
       energylevel: 5,
@@ -265,6 +284,8 @@ const Home = () => {
       budgetRange: "medium",
       startLocation: onboardingPlace
     }
+    console.log(formData);
+
 
     //TODO: HERE ADD TO API FOR SUGGESTION GENERATION WHICH WILL GO TO THE NEXT PAGE IN STATE
     try {
@@ -273,14 +294,12 @@ const Home = () => {
           "Content-Type": "application/json"
         }
       });
-      
+
       if (response) {
         console.log(response)
         // throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-
-      
       toast.success("Your itinerary is ready!", { id: toastId });
       console.log("Trip destination result:", response.data);
       router("/generate-itinerary", { state: response.data });
@@ -314,28 +333,49 @@ const Home = () => {
                 <span className='text-md text-gray-900 font-semibold'>Select Travel Style</span>
                 <span className='text-sm text-gray-400'>Select all that interest you</span>
               </div>
-              <div className="relative w-full">
-                <select
-                  required
-                  disabled={isSubmitting}
-                  name='travelStyle'
-                  value={travelStyle}
-                  onChange={(e) => setTravelStyle(e.target.value)}
-                  className="w-full appearance-none bg-gray-50 text-gray-800 font-medium px-4 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer">
-                  <option value={""}>Select</option>
-                  <option value={"adventure"}>Adventure</option>
-                  <option value={"culture"}>Culture</option>
-                  <option value={"relaxation"}>Relaxation</option>
-                </select>
 
-                {/* Down Arrow */}
-                <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-600">
-                  <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
-                  </svg>
-                </div>
+              <div className="w-full">
+                <Select
+                  isMulti
+                  isDisabled={isSubmitting}
+                  name="travelStyle"
+                  options={TRAVEL_OPTIONS}
+                  placeholder="Select one or more…"
+                  closeMenuOnSelect={false}
+                  // map array of strings <-> array of option objects
+                  value={TRAVEL_OPTIONS.filter(o => travelStyle.includes(o.value))}
+                  onChange={(selected) => setTravelStyle((selected || []).map(o => o.value))}
+                  className="react-select-container"
+                  classNamePrefix="rs"
+                  // Tailwind-friendly classNames API (v5.7+)
+                  classNames={{
+                    control: ({ isFocused, isDisabled }) =>
+                      `rounded-2xl border ${isFocused ? 'ring-2 ring-blue-400 border-blue-300' : 'border-gray-200'} bg-gray-50 ${isDisabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} px-2`,
+                    multiValue: () => "bg-blue-100 text-blue-700 rounded-md",
+                    multiValueLabel: () => "text-sm px-1",
+                    multiValueRemove: () => "hover:bg-blue-200 rounded-md",
+                    placeholder: () => "text-gray-400",
+                    input: () => "text-gray-800",
+                    menu: () => "mt-2 border border-gray-200 shadow-lg rounded-2xl overflow-hidden",
+                    option: ({ isFocused, isSelected }) =>
+                      `px-3 py-2 text-sm cursor-pointer ${isSelected ? 'bg-blue-100 text-blue-700' : isFocused ? 'bg-gray-50' : ''}`,
+                  }}
+                  // compact styles tweak (optional)
+                  styles={{
+                    control: (base) => ({ ...base, minHeight: 48, borderRadius: 16 }),
+                    menu: (base) => ({ ...base, borderRadius: 16 }),
+                  }}
+                />
+
+                {/* Tiny count badge (optional) */}
+                {travelStyle.length > 0 && (
+                  <div className="mt-2 text-xs inline-flex items-center bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                    {travelStyle.length} selected
+                  </div>
+                )}
               </div>
             </div>
+
 
             {/* Budget Slider */}
             <div className='bg-white px-6 py-4 rounded-2xl flex flex-row w-auto'>

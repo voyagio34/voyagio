@@ -3,16 +3,15 @@ import { FaHeart, FaRegHeart, FaClock, FaStar, FaStarHalfAlt, FaRegStar, FaPlus,
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import RoundLoader from '../components/RoundLoader';
-
-
-
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 function GenerateItinerary() {
     const INITIAL_VISIBLE = 6;
     const LOAD_MORE_STEP = 6;
     const [likedItems, setLikedItems] = useState([]);
     const [addedItems, setAddedItems] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const router = useNavigate();
     const { state } = useLocation();
     const [activities, setActivites] = useState([])
@@ -47,17 +46,43 @@ function GenerateItinerary() {
         );
     };
 
-    const handleGenerate = (e) => {
+    const handleGenerate = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const data = {
-            formData: state,
-            preference: addedItems
-        }
-        try {
-            console.log("data:", data);
-        } catch (error) {
 
+        const selectedData = state.filter(item =>
+            addedItems.includes(item.place_id)
+        );
+        console.log(selectedData);
+        if (selectedData?.length == 0) {
+            toast.error("Select an initerary to generate plan!");
+            setLoading(false);
+            return;
+        }
+
+        const toastId = toast.loading("Generating Trip Plans..");
+        try {
+            selectedData.forEach(async (data, index) => {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_BUILDSHIP_API_URL}/getItineraryRecommendation?string=${encodeURIComponent(data.formatted_address)}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                if (!response) {
+                    throw new Error("Error occurred while generating plan!");
+                }
+
+                console.log(response);
+            })
+            router("/plan",state)
+            // toast.success("Plans Generated Successfully", { id: toastId });
+        } catch (error) {
+            toast.error(error.message || "Something went wrong!", { id: toastId });
+            console.log(error);
         }
         finally {
             setLoading(false)
@@ -112,9 +137,13 @@ function GenerateItinerary() {
                                     {/* Image Container */}
                                     <div className="relative">
                                         <img
-                                            src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${activity.photos[0].photo_reference}&key=${import.meta.env.VITE_REACT_GOOGLE_PHOTO_API_KEY}`}
+                                            src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${activity.photos?.[0]?.photo_reference}&key=${import.meta.env.VITE_REACT_GOOGLE_PHOTO_API_KEY}`}
                                             alt={activity.name}
                                             className="w-full h-48 object-cover"
+                                            onError={(e) => {
+                                                e.target.onerror = null; // prevent infinite loop in case fallback also fails
+                                                e.target.src = "/icon4.webp";
+                                            }}
                                         />
 
                                         {/* Type Badge */}
@@ -146,6 +175,13 @@ function GenerateItinerary() {
                                             {(activity.formatted_address).trim(10)}
                                         </p>
 
+                                        <div className="flex flex-wrap space-x-2 mb-2 ">
+                                            {activity.types.map((type, index) => (
+                                                <div key={index} className='text-xs border-1 border-blue-500 capitalize flex justify-center items-center text-blue-500 px-2 py-1 rounded-full mb-1'>
+                                                    {type.replaceAll("_", " ")}
+                                                </div>
+                                            ))}
+                                        </div>
                                         {/* Meta Info */}
                                         <div className="flex justify-between items-center gap-6 text-sm text-gray-500 mb-4">
 
@@ -210,7 +246,7 @@ function GenerateItinerary() {
                             onClick={handleGenerate}
                             className="relative max-w-lg w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-xl text-lg transition-colors duration-200 cursor-pointer shadow-lg hover:shadow-xl"
                         >
-                            Generate My Trip Plan
+                            {loading ? "Generating plans.." : "Generate My Trip Plan"}
 
                             {/* Badge (top-right corner) */}
                             {addedItems.length > 0 && (

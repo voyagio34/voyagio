@@ -28,6 +28,7 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 import Profile from './pages/Profile'
 import GenerateItinerary from './pages/GenerateItinerary'
 import toast, { Toaster } from 'react-hot-toast';
+import BlogList from './pages/Blogs'
 
 // Create a separate component for the app content
 function AppContent() {
@@ -65,7 +66,8 @@ function AppContent() {
           <Route path='/features' element={<Features />} />
           <Route path='/about' element={<About />} />
           <Route path='/contactus' element={<Contact />} />
-          <Route path='/blog' element={<BlogDetails />} />
+          <Route path='/blog' element={<BlogList />} />
+          <Route path='/blog/:id' element={<BlogDetails />} />
           <Route path='/travelhub' element={<TravelHub />} />
           <Route path='/plan' element={<PlanDetails />} />
           <Route path='/yoursmart' element={<YourSmart />} />
@@ -113,15 +115,15 @@ function AppContent() {
           success: {
             iconTheme: { primary: "#2563eb", secondary: "#ffffff" }, // blue-600
             className:
-              "border-blue-200/70 bg-white/90 [&>div]:font-semibold",
+              "border-blue-200/70 bg-white [&>div]:font-semibold",
           },
           error: {
             iconTheme: { primary: "#ef4444", secondary: "#ffffff" }, // red-500
-            className: "border-red-200/70 bg-white/90",
+            className: "border-red-200/70 bg-white",
             duration: 5000,
           },
           loading: {
-            className: "border-blue-200/70 bg-white/90",
+            className: "border-blue-200/70 bg-white",
             duration: Infinity,
           },
         }}
