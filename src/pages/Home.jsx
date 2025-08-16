@@ -21,7 +21,7 @@ import axios from 'axios';
 import Select from "react-select";
 import RoundLoader from '../components/RoundLoader';
 import { useAuth } from '../contexts/AuthContext';
-import {  AuthRequiredError } from '../lib/CustomErrors/AuthRequiredError';
+import { AuthRequiredError } from '../lib/CustomErrors/AuthRequiredError';
 
 
 const STEP = 100;
@@ -34,9 +34,9 @@ const Home = () => {
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [destinationOpen, setDestinationOpen] = useState(false);
   const [travelStyle, setTravelStyle] = useState([]);
-  const [people, setPeople] = useState(null)
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
+  const [people, setPeople] = useState("")
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
   const [onboardingPlace, setOnboardingPlace] = useState('');
   const [destinationPlace, setDestinationPlace] = useState('');
   const [onboardingLocation, setOnboardingLocation] = useState({ lat: 28.6139, lng: 77.2090 });
@@ -129,20 +129,15 @@ const Home = () => {
 
         destinationAutocompleteRef.current.addListener('place_changed', () => {
           const place = destinationAutocompleteRef.current.getPlace();
-          // console.log('--- Destination Place Changed ---');
-          // console.log('Place object:', place);
+          // 
+          // 
 
           if (place && place.geometry) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
             const locationName = place.formatted_address || place.name || '';
 
-            // console.log('Destination - New Location:', {
-            //   name: locationName,
-            //   lat: lat,
-            //   lng: lng,
-            //   placeId: place.place_id
-            // });
+            // 
 
             setDestinationLocation({ lat, lng });
             setDestinationPlace(locationName);
@@ -244,20 +239,29 @@ const Home = () => {
 
   const toggleLike = (experienceId) => {
     // Implement like functionality if needed
-    console.log('Toggle like for experience:', experienceId);
+
   };
 
   const handleGenerate = async (e) => {
     e.preventDefault();
     setIsSubmitting(true)
+    const toastId = toast.loading("Generating itinerary…");
 
+    if (travelStyle == "") {
+      toast.error("Please select a travel style", { id: toastId });
+      setIsSubmitting(false);
+      return;
+    }
+    if (!destinationPlace) {
+      toast.error("Please select a destination", { id: toastId });
+      setIsSubmitting(false);
+      return;
+    }
 
     const location = destinationPlace;
     const parts = location.split(",").map(part => part.trim());
     const region = parts[1];
 
-
-    const toastId = toast.loading("Generating itinerary…");
     const travelStyles = travelStyle.join(",");
 
     const formData = {
@@ -266,6 +270,7 @@ const Home = () => {
       budgetMin: values[0],
       preferredRegion: region || null,
       endDate,
+      startDate,
       destination: destinationPlace,
       energylevel: 5,
       explorationRadius: 50000,
@@ -273,7 +278,7 @@ const Home = () => {
       budgetRange: "medium",
       startLocation: onboardingPlace
     }
-    console.log(formData);
+
 
     try {
       if (!session?.user) {
@@ -287,20 +292,26 @@ const Home = () => {
         }
       });
 
-      if (!response.length > 0) {
-        console.log(response)
+      if (!response.data.length > 0) {
         throw new Error(`No any data available for selected place!`);
       }
 
-      toast.success("Your itinerary is ready!", { id: toastId });
-      console.log("Trip destination result:", response.data);
-      router("/generate-itinerary", { state: response.data });
-    } catch (error) {
-      toast.error(error.message, { id: toastId });
-      if(error.name == "AuthRequiredError"){
+      toast.success("Places fetched according to destination!", { id: toastId });
+      router("/generate-itinerary", { state: { response: response.data, formData: formData } });
+    } 
+    catch (error) {
+      console.log(error.name)
+      if (error.name == "AxiosError") {
+        toast.error("Server failed, try again later!", { id: toastId });
+      }
+      else if (error.name == "AuthRequiredError") {
+        toast.error("Please Login First!", { id: toastId });
         router("/signin");
       }
-  
+      else {
+        toast.error(error.message, { id: toastId });
+      }
+
     }
     finally {
       setIsSubmitting(false);
@@ -309,7 +320,7 @@ const Home = () => {
 
   if (isSubmitting) {
     return (
-      <RoundLoader message="Generating Itinerary..." />
+      <RoundLoader />
     )
   }
 
@@ -487,7 +498,7 @@ const Home = () => {
                       <button
                         type="button"
                         onClick={() => {
-                          console.log('Clearing onboarding location');
+
                           setOnboardingPlace('');
                           setOnboardingLocation({ lat: 51.1784, lng: -115.5708 });
                           if (onboardingInputRef.current) {
@@ -541,7 +552,7 @@ const Home = () => {
                       <button
                         type="button"
                         onClick={() => {
-                          console.log('Clearing destination location');
+
                           setDestinationPlace('');
                           setDestinationLocation({ lat: 51.1784, lng: -115.5708 });
                           if (destinationInputRef.current) {
@@ -596,7 +607,16 @@ const Home = () => {
                       required
                       disabled={isSubmitting}
                       value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
+                      min={new Date().toISOString().split("T")[0]}
+                      max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)} onChange={(e) => {
+                        const value = e.target.value;
+                        setStartDate(value);
+
+                        // Reset endDate if it's before new startDate
+                        if (endDate && value && new Date(endDate) <= new Date(value)) {
+                          setEndDate("");
+                        }
+                      }}
                       className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
                     />
                   </div>
@@ -612,6 +632,8 @@ const Home = () => {
                       value={endDate}
                       disabled={isSubmitting}
                       required
+                      min={startDate || new Date().toISOString().split("T")[0]}
+                      max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)}
                       onChange={(e) => setEndDate(e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded text-gray-500 focus:outline-blue-400"
                     />
@@ -646,7 +668,7 @@ const Home = () => {
           onClose={() => setOnboardingOpen(false)}
           location={onboardingLocation}
           setLocation={(loc) => {
-            // console.log('Onboarding Location Set from Modal:', loc);
+            // 
             setOnboardingLocation(loc);
             if (onboardingInputRef.current) {
               onboardingInputRef.current.value = onboardingPlace;
@@ -654,7 +676,7 @@ const Home = () => {
           }}
           defaultValue={onboardingPlace}
           onConfirm={(place) => {
-            // console.log('Onboarding Modal Confirmed:', place);
+            // 
             setOnboardingPlace(place);
             if (onboardingInputRef.current) {
               onboardingInputRef.current.value = place;
@@ -667,7 +689,7 @@ const Home = () => {
           onClose={() => setDestinationOpen(false)}
           location={destinationLocation}
           setLocation={(loc) => {
-            // console.log('Destination Location Set from Modal:', loc);
+            // 
             setDestinationLocation(loc);
             if (destinationInputRef.current) {
               destinationInputRef.current.value = destinationPlace;
@@ -675,7 +697,7 @@ const Home = () => {
           }}
           defaultValue={destinationPlace}
           onConfirm={(place) => {
-            // console.log('Destination Modal Confirmed:', place);
+            // 
             setDestinationPlace(place);
             if (destinationInputRef.current) {
               destinationInputRef.current.value = place;

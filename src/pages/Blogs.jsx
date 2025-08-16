@@ -132,7 +132,7 @@ export default function BlogList() {
     };
 
     return (
-        <div className="bg-gray-50 pt-10">
+        <div className="bg-gray-50">
             {/* Header */}
             <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div

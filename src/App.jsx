@@ -29,6 +29,7 @@ import Profile from './pages/Profile'
 import GenerateItinerary from './pages/GenerateItinerary'
 import toast, { Toaster } from 'react-hot-toast';
 import BlogList from './pages/Blogs'
+import { PlanProvider } from './contexts/PlanContext'
 
 // Create a separate component for the app content
 function AppContent() {
@@ -141,7 +142,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
+        <PlanProvider>
+          <AppContent />
+        </PlanProvider>
       </AuthProvider>
     </BrowserRouter>
   );

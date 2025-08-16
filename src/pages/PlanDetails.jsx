@@ -1,126 +1,161 @@
-import React, { useState } from 'react'
-import { FaArrowLeftLong, FaRepeat, FaChevronDown, FaChevronUp } from 'react-icons/fa6'
-import { FaHiking, FaUtensils, FaCamera, FaUmbrellaBeach, FaCalendarAlt, FaClock, FaListUl, FaCalendar, FaCoffee } from 'react-icons/fa'
+import React, { useEffect, useMemo, useState } from 'react';
+import { FaArrowLeftLong, FaRepeat, FaChevronUp } from 'react-icons/fa6';
+import {
+    FaHiking, FaUtensils, FaCamera, FaUmbrellaBeach,
+    FaCalendarAlt, FaListUl, FaCoffee, FaShoppingBag, FaUniversity, FaTree
+} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { usePlan } from '../contexts/PlanContext';
+import { useAuth } from '../contexts/AuthContext';
+import { demoItinerary } from '../data/DemoItinerary'; // keep as fallback if no draft
+import RoundLoader from '../components/RoundLoader';
 
 function PlanDetails() {
-    const [expandedDays, setExpandedDays] = useState({});
     const router = useNavigate();
+    const [expandedDays, setExpandedDays] = useState({ 1: true });
+    const [isLoading, setIsLoading] = useState(true)
+    const { draftPlan } = usePlan();
+    const { session } = useAuth();
+
+    useEffect(() => {
+        setIsLoading(false)
+        console.log(draftPlan)
+    }, [draftPlan])
+    // Use draft plan if present; otherwise render the demo data
+    const looksLikeItinerary = (obj) =>
+        obj && typeof obj === 'object' &&
+        Object.values(obj).some(d => Array.isArray(d?.activities));
+
+    // Prefer draftPlan.data; if someone accidentally set draftPlan itself to an itinerary,
+    // we still handle it; otherwise fall back to demoItinerary.
+    const data = looksLikeItinerary(draftPlan?.data) ? draftPlan.data : looksLikeItinerary(draftPlan) ? draftPlan : demoItinerary;
+
+    const planTitle = draftPlan?.title || 'Trip Plan';
+    const planDates = draftPlan?.dates || '';
 
     const toggleDay = (dayId) => {
-        setExpandedDays(prev => ({
-            ...prev,
-            [dayId]: !prev[dayId]
-        }));
+        setExpandedDays(prev => ({ ...prev, [dayId]: !prev[dayId] }));
     };
 
-    const itineraryDays = [
-        {
-            id: 1,
-            title: "Day 1 - Adventure day",
-            date: "Monday, June 30",
-            activities: [
-                {
-                    time: "7:00 AM",
-                    title: "Hike at the Marsh Loop",
-                    duration: "Duration: 3hrs",
-                    icon: <FaHiking className="w-5 h-5" />,
-                    color: "bg-orange-100 text-orange-600"
-                },
-                {
-                    time: "12:30 PM",
-                    title: "Lunch at The Bison Banff",
-                    type: "Traditional Tapas • Local cuisine",
-                    icon: <FaUtensils className="w-5 h-5" />,
-                    color: "bg-yellow-100 text-yellow-600"
-                },
-                {
-                    time: "03:00 PM",
-                    title: "Wild Flour Bakery",
-                    type: "Best Cafe in the town",
-                    icon: <FaCoffee className="w-5 h-5" />,
-                    color: "bg-blue-100 text-blue-600"
-                },
-                {
-                    time: "05:00 PM",
-                    title: "Shuttle to Moraine Lake",
-                    type: "Panoramic city view • Best at golden hour",
-                    icon: <FaCamera className="w-5 h-5" />,
-                    color: "bg-green-100 text-green-600"
-                }
-            ]
-        },
-        {
-            id: 2,
-            title: "Day 2 - Culture day",
-            date: "Tuesday, July 1",
-            activities: [
-                {
-                    time: "10:00 AM",
-                    title: "Visit Sagrada Familia",
-                    duration: "Duration: 3hrs",
-                    icon: <FaCamera className="w-5 h-5" />,
-                    color: "bg-purple-100 text-purple-600"
-                },
-                {
-                    time: "01:30 PM",
-                    title: "Lunch at Disfrutar",
-                    type: "Michelin Star • Modern Mediterranean",
-                    icon: <FaUtensils className="w-5 h-5" />,
-                    color: "bg-yellow-100 text-yellow-600"
-                },
-                {
-                    time: "05:00 PM",
-                    title: "Photoshoot at lake",
-                    type: "Best photoshoot spot",
-                    icon: <FaCamera className="w-5 h-5" />,
-                    color: "bg-green-100 text-green-600"
-                }
-            ]
-        },
-        {
-            id: 3,
-            title: "Day 3 - Relaxed day",
-            date: "Tuesday, July 2",
-            activities: [
-                {
-                    time: "5:00 AM",
-                    title: "Beach day at Barceloneta",
-                    duration: "Duration: 3hrs",
-                    icon: <FaUmbrellaBeach className="w-5 h-5" />,
-                    color: "bg-blue-100 text-blue-600"
-                },
-                {
-                    time: "09:00 PM",
-                    title: "Dinner at Beach",
-                    type: "Best experience for candle light dinner",
-                    icon: <FaUtensils className="w-5 h-5" />,
-                    color: "bg-yellow-100 text-yellow-600"
-                }
-            ]
-        }
-    ];
+    // Icon + color (text-* class); use border-current so the border matches text color
+    const pickVisuals = (title = '', location = '', description = '') => {
+        const text = `${title} ${location} ${description}`.toLowerCase();
+        if (/coffee|cafe|brunch/.test(text)) return { icon: <FaCoffee className="w-5 h-5" />, color: 'text-blue-500' };
+        if (/lunch|dinner|restaurant|ristorante/.test(text)) return { icon: <FaUtensils className="w-5 h-5" />, color: 'text-yellow-500' };
+        if (/beach/.test(text)) return { icon: <FaUmbrellaBeach className="w-5 h-5" />, color: 'text-cyan-500' };
+        if (/park|garden|nature|walk/.test(text)) return { icon: <FaTree className="w-5 h-5" />, color: 'text-green-500' };
+        if (/museum|fort|castle|aquarium|planetarium|centre|center/.test(text)) return { icon: <FaUniversity className="w-5 h-5" />, color: 'text-purple-500' };
+        if (/shop|market/.test(text)) return { icon: <FaShoppingBag className="w-5 h-5" />, color: 'text-pink-500' };
+        if (/hike|trail|loop/.test(text)) return { icon: <FaHiking className="w-5 h-5" />, color: 'text-orange-500' };
+        return { icon: <FaCamera className="w-5 h-5" />, color: 'text-gray-500' };
+    };
+
+    // Turn the object of days into an array the UI can map
+    const itineraryDays = useMemo(() => {
+        if (!data) return [];
+        return Object.entries(data).map(([dayLabel, dayObj], idx) => {
+            const activities = (dayObj?.activities || []).map(a => {
+                const { icon, color } = pickVisuals(a.activity, a.location, a.description);
+                return {
+                    time: a.time || 'aasa',
+                    title: a.activity || '',
+                    location: a.location || '',
+                    description: a.description || '',
+                    icon,
+                    color
+                };
+            });
+
+            return {
+                id: idx + 1,
+                title: dayLabel,
+                name: dayObj?.name,
+                date: dayObj?.date || '',
+                activities
+            };
+        });
+    }, [data]);
+
+    const totalactivities = useMemo(
+        () => itineraryDays.reduce((sum, d) => sum + d.activities.length, 0),
+        [itineraryDays]
+    );
+
+    const handleRegenerate = async () => {
+        alert("Regenerate");
+    }
+
+    const handleConfirm = async () => {
+        // Wire this to Supabase when ready. Example (pseudo):
+        // if (!draftPlan) return;
+        // if (!session?.user?.id) { toast.error("Please login first"); return; }
+        // setSaving(true);
+        // const { data: row, error } = await supabase
+        //   .from('plans')
+        //   .insert({ user_id: session.user.id, title: draftPlan.title, dates: draftPlan.dates, plan: draftPlan.data })
+        //   .select('id').single();
+        // if (error) { toast.error(error.message); setSaving(false); return; }
+        // toast.success("Plan confirmed!");
+        // clearPlan();
+        // router(`/plans/${row.id}`);
+        alert('/Confirmed'); // placeholder  while you wire the DB
+    };
+
+    // If absolutely nothing to show, nudge user back
+    if (!itineraryDays.length) {
+        return (
+            <div className="px-4 py-20">
+                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-6 text-center">
+                    <h2 className="text-xl font-semibold mb-2">No plan found</h2>
+                    <p className="text-gray-600 mb-6">Go pick a few places to generate your trip.</p>
+                    <button
+                        onClick={() => router(-1)}
+                        className="px-5 py-3 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                    >
+                        Generate Itinerary
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <RoundLoader />
+        )
+    }
 
     return (
-        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10' >
+        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10'>
             <section
                 className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
                 data-aos="fade-in"
             >
                 {/* Header */}
-                <div
-                    className="flex md:flex-row flex-col md:justify-between gap-4 items-start  p-4 mb-8"
-                    data-aos="fade-in"
-                    data-aos-delay="100"
-                >
-                    <FaArrowLeftLong className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1' onClick={()=>router(-1)}/>
-
-                    <div className='flex flex-8/10 flex-col gap-2 md:items-center'>
-                        <h1 className='sm:text-4xl text-3xl text-gray-800 font-semibold'>Trip Plan for Banff, Canada</h1>
-                        <span className='text-md text-gray-500 font-medium'>3 days • June 30 - July 2</span>
+                <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start p-4 mb-8" data-aos="fade-in" data-aos-delay="100">
+                    <div className='flex sm:flex-row w-full flex-col gap-4 sm:flex-8/10'>
+                        <FaArrowLeftLong
+                            className='w-8 flex sm:flex-1/10 h-6 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1'
+                            onClick={() => router(-1)}
+                        />
+                        <div className='flex sm:flex-9/10 w-full flex-col gap-2 md:items-center'>
+                            <h1 className='sm:text-4xl text-3xl text-gray-800 font-semibold'>{planTitle}</h1>
+                            {planDates ? (
+                                <span className='text-md text-gray-500 font-medium'>
+                                    {`${itineraryDays.length} ${itineraryDays.length === 1 ? 'day' : 'days'} • ${planDates}`}
+                                </span>
+                            ) : (
+                                <span className='text-md text-gray-500 font-medium'>
+                                    {`${itineraryDays.length} ${itineraryDays.length === 1 ? 'day' : 'days'}`}
+                                </span>
+                            )}
+                        </div>
                     </div>
+
                     <button
-                        className="bg-blue-500 min-w-46 min-h-12 hover:bg-blue-600 transition-all cursor-pointer flex flex-1/10 items-center gap-4 justify-center text-white px-6 rounded-md"
+                        className="bg-blue-500 sm:max-w-40 w-full flex-2/10 min-h-12 hover:bg-blue-600 transition-all cursor-pointer flex items-center gap-4 justify-center text-white px-6 rounded-md"
+                        onClick={handleRegenerate}
+                        title="Regenerate from suggestions"
                     >
                         <FaRepeat />
                         Regenerate
@@ -147,39 +182,60 @@ function PlanDetails() {
                                             <FaCalendarAlt className='w-5 h-5' />
                                         </div>
                                         <div>
-                                            <h3 className='text-xl font-semibold text-gray-800'>{day.title}</h3>
-                                            <p className='text-sm text-gray-600'>{day.date}</p>
+                                            <h3 className='text-xl font-semibold text-gray-800'>
+                                                {day.title}{day.name ? ` - ${day.name}` : ''}
+                                            </h3>
+                                            {day.date ? <p className='text-sm text-gray-500'>{day.date}</p> : null}
                                         </div>
                                     </div>
-                                    <FaChevronUp className={ `w-5 h-5 text-gray-500 transition-all duration-300 ${expandedDays[day.id] ? ('rotate-0'):('rotate-180')}`}/>
-                                  
+                                    <FaChevronUp
+                                        className={`w-5 h-5 text-gray-500 transition-all duration-300 ${expandedDays[day.id] ? 'rotate-0' : 'rotate-180'}`}
+                                    />
                                 </div>
                             </div>
 
-                            {/* Day Activities */}
+                            {/* Day activities */}
                             {expandedDays[day.id] && (
                                 <div className='p-6 transition-all bg-white'>
-                                    <div className='space-y-4'>
+                                    <div className='space-y-2'>
                                         {day.activities.map((activity, activityIndex) => (
                                             <div
                                                 key={activityIndex}
-                                                className='flex gap-4 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all'
+                                                className='flex gap-4 border-b-1 border-gray-300 p-4 bg-transparent hover:bg-gray-50 transition-all'
                                                 data-aos="fade-in"
                                                 data-aos-delay={50 * activityIndex}
-                                                data-aos-duration="600"
+                                                data-aos-duration="500"
                                             >
-                                                <div className={`w-12 h-12 rounded-lg ${activity.color} flex items-center justify-center flex-shrink-0`}>
+                                                <div className={`w-12 hidden sm:flex h-12 rounded-full bg-transparent border border-current ${activity.color}  items-center justify-center flex-shrink-0`}>
                                                     {activity.icon}
                                                 </div>
                                                 <div className='flex-1'>
-                                                    <div className='flex items-start justify-between'>
-                                                        <div>
-                                                            <h4 className='font-semibold text-gray-800 mb-1'>{activity.title}</h4>
-                                                            <p className='text-sm text-gray-600'>
-                                                                {activity.duration || activity.type}
-                                                            </p>
+                                                    <div className='flex sm:flex-row gap-2 flex-col items-start justify-between'>
+                                                        <div className='sm:hidden mb-2 flex w-full items-center justify-between '>
+                                                            <div className={`w-12 h-12 rounded-full bg-transparent border border-current ${activity.color} flex items-center justify-center flex-shrink-0`}>
+                                                                {activity.icon}
+
+                                                            </div>
+                                                            {activity.time && (
+                                                                <span className='text-sm text-gray-500 font-medium whitespace-nowrap'>
+                                                                    {activity.time}
+                                                                </span>
+                                                            )}
                                                         </div>
-                                                        <span className='text-sm text-gray-500 font-medium'>{activity.time}</span>
+                                                        <div className='cursor-default'>
+                                                            <h4 className='font-semibold text-gray-800  mb-1'>
+                                                                {activity.title}
+                                                                {activity.location && <span className="text-gray-500">{" "}({activity.location})</span>}
+                                                            </h4>
+                                                            {activity.description && (
+                                                                <p className='text-sm text-gray-500'>{activity.description}</p>
+                                                            )}
+                                                        </div>
+                                                        {activity.time && (
+                                                            <span className='text-sm sm:block hidden text-gray-500 font-medium whitespace-nowrap'>
+                                                                {activity.time}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -191,7 +247,7 @@ function PlanDetails() {
                             {/* View Day Button */}
                             <button
                                 className='w-full bg-blue-500 rounded-lg cursor-pointer text-white py-4 hover:bg-blue-600 transition-all font-semibold'
-                                onClick={() => router("/day")}
+                                onClick={() => router("/day", { state: { dayKey: day.title } })}
                             >
                                 View Day
                             </button>
@@ -199,23 +255,33 @@ function PlanDetails() {
                     ))}
                 </div>
 
-                <div className='flex md:flex-row flex-col gap-4 border-1 justify-between rounded-2xl border-gray-300 mx-4 lg:px-10 md:px-8 sm:px-6 px-4 py-4 my-10' data-aos="fade-in" data-aos-delay={itineraryDays.length < 4 ? (itineraryDays.length * 100 + 100) : 200}>
+                {/* Summary Footer */}
+                <div
+                    className='flex md:flex-row flex-col gap-4 justify-between rounded-2xl border border-gray-300 mx-4 lg:px-10 md:px-8 sm:px-6 px-4 py-4 my-10'
+                    data-aos="fade-in"
+                    data-aos-delay={itineraryDays.length < 4 ? (itineraryDays.length * 100 + 100) : 200}
+                >
                     <div className="flex gap-4 items-center">
                         <FaListUl className='w-8 h-8 text-blue-500' />
-                        <div className="flex flex-col ">
-                            <span className='text-md text-gray-700 '> {itineraryDays.length + ' days and 8 activities'}</span>
-                            <span className='text-md text-gray-600'>Selected</span>
+                        <div className="flex flex-col">
+                            <span className='text-md text-gray-700'>
+                                {`${itineraryDays.length} ${itineraryDays.length === 1 ? 'day' : 'days'} and ${totalactivities} activities`}
+                            </span>
+                            <span className='text-md text-gray-500'>Selected</span>
                         </div>
                     </div>
                     <button
                         className="bg-blue-500 min-w-46 min-h-12 hover:bg-blue-600 transition-all cursor-pointer flex items-center gap-4 justify-center text-white px-6 rounded-md"
+                        onClick={handleConfirm}
+                        disabled={!draftPlan} // only confirm when it's a generated draft
+                        title={!draftPlan ? "Generate a plan first" : "Confirm & save"}
                     >
                         Confirm Itinerary
                     </button>
                 </div>
             </section>
         </div>
-    )
+    );
 }
 
-export default PlanDetails
+export default PlanDetails;

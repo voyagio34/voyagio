@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { FaArrowRight, FaCalendarAlt, FaRegClock } from 'react-icons/fa';
 import { FaRegMessage } from 'react-icons/fa6';
 import { supabase } from '../lib/supabase/Client';
+import RoundLoader from '../components/RoundLoader';
 
 function splitParagraphs(text) {
     return (text || '').split(/\r?\n\r?\n/).filter(Boolean);
@@ -78,9 +79,7 @@ function BlogDetails() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-gray-600">
-                Loading blog…
-            </div>
+           <RoundLoader/>
         );
     }
 
@@ -97,7 +96,7 @@ function BlogDetails() {
         : '';
 
     return (
-        <div className="bg-gray-50 pt-10">
+        <div className="bg-gray-50">
             {/* Header hero */}
             <section className="relative overflow-x-hidden bg-cover bg-center bg-blue-200/30 px-4 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div
