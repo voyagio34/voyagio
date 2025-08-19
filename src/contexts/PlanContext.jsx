@@ -30,9 +30,7 @@ export function PlanProvider({ children }) {
             }
         }
     }, [draftPlan]);
-    useEffect(() => {
-
-    }, [draftPlan])
+  
 
     const updatePlan = (updater) => {
         setDraftPlan((prev) => {
@@ -43,10 +41,10 @@ export function PlanProvider({ children }) {
 
     const removeActivity = (dayKey, index) => {
         setDraftPlan((prev) => {
-            if (!prev?.data?.[dayKey]) return prev;
+            if (!prev?.plan?.[dayKey]) return prev;
             const copy = JSON.parse(JSON.stringify(prev));
-            if (index < 0 || index >= copy.data[dayKey].Activities.length) return prev;
-            copy.data[dayKey].Activities.splice(index, 1);
+            if (index < 0 || index >= copy.plan[dayKey].Activities.length) return prev;
+            copy.plan[dayKey].Activities.splice(index, 1);
             return copy;
         });
     };

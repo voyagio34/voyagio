@@ -6,18 +6,18 @@ import {
 import { FaArrowLeftLong, FaRegClock, FaSun } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlan } from '../contexts/PlanContext';
-import { demoItinerary } from '../data/DemoItinerary';
 
 function DayDetails() {
     const router = useNavigate();
     const { state } = useLocation(); // expects { dayKey: "Day 1" }
     const { draftPlan, removeActivity } = usePlan();
 
-    const plan = draftPlan?.data || demoItinerary;
+    console.log(draftPlan)
+    const plan = draftPlan?.plan;
     const dayKey = state?.dayKey || 'Day 1';
     const day = plan?.[dayKey];
 
-    const activities = useMemo(() => day?.activities || [], [day]);
+    const activities = useMemo(() => day?.activities || day?.Activities || [], [day]);
 
     const [confirm, setConfirm] = useState({ open: false, index: null, title: '' });
 
@@ -75,7 +75,7 @@ function DayDetails() {
     }
 
     return (
-        <div className='bg-gray-50 mt-10 px-4 py-16 sm:px-6 lg:px-8 min-h-screen'>
+        <div className='bg-gray-50 my-10 px-4 py-16 sm:px-6 lg:px-8 min-h-screen'>
             <section className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg" data-aos="fade-in">
                 {/* Header */}
                 <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start p-4 mb-8" data-aos="fade-in" data-aos-delay="100">

@@ -3,17 +3,20 @@ import { FaArrowLeftLong, FaImage, FaUpload } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlan } from '../contexts/PlanContext';
 import { demoItinerary } from '../data/DemoItinerary';
+import { uploadActivityImage } from '../lib/supabase/Storage';
+import toast from 'react-hot-toast';
 
 function EditDay() {
   const router = useNavigate();
   const { state } = useLocation();           // expects { dayKey, index }
   const { draftPlan, updateActivity } = usePlan();
+  const [isUploading, setIsUploading] = useState(false)
 
   const dayKey = state?.dayKey || 'Day 1';
   const index = state?.index ?? 0;
 
   // Source: draft -> demo fallback
-  const planData = draftPlan?.data || demoItinerary;
+  const planData = draftPlan?.plan || demoItinerary;
   const item = planData?.[dayKey]?.Activities?.[index];
 
   // Parse a "time" like "08:30 PM - 09:30 PM" into start/end inputs
@@ -30,10 +33,10 @@ function EditDay() {
       typeof item?.weather === 'string'
         ? item.weather
         : item?.weather
-        ? [item.weather.summary, item.weather.tempC !== undefined ? `${item.weather.tempC}°C` : '']
+          ? [item.weather.summary, item.weather.tempC !== undefined ? `${item.weather.tempC}°C` : '']
             .filter(Boolean)
             .join(', ')
-        : '';
+          : '';
 
     return {
       title: item?.activity || '',
@@ -58,17 +61,41 @@ function EditDay() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Convert image to base64 so it can live in context (no File objects)
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!['image/png', 'image/jpeg'].includes(file.type)) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setFormData(prev => ({ ...prev, imageUrl: reader.result })); // base64 data URL
-    };
-    reader.readAsDataURL(file);
+    if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) {
+      alert("Please select a PNG, JPG, or WEBP image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Max file size is 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const { url /*, path*/ } = await uploadActivityImage(file, {
+        // userId: user?.id,
+        tripId: (draftPlan)?.id ?? "draft",
+        activityKey: `${dayKey}-${index}`,
+        isPublic: true, // bucket set to Public
+      });
+
+      setFormData((prev) => ({ ...prev, imageUrl: url }));
+      toast.success("Uploaded")
+      console.log(url)
+      // OPTIONAL: show a toast here
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Upload failed");
+    } finally {
+      console.log(formData.imageUrl)
+      setIsUploading(false);
+      // reset input value so the same file can be re-selected if needed
+      // e.currentTarget.value = undefined;
+    }
   };
 
   const buildTime = (start, end) => {
@@ -230,30 +257,32 @@ function EditDay() {
           {/* Image Upload */}
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8">
             <div className="text-center">
-              <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4 overflow-hidden">
                 {formData.imageUrl ? (
-                  <img src={formData.imageUrl} alt="Preview" className="w-20 h-20 object-cover rounded-full" />
+                  <img src={formData.imageUrl} alt="Preview" className="w-20 h-20 object-cover" />
                 ) : (
                   <FaImage className="w-10 h-10 text-blue-500" />
                 )}
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                Select picture to upload
-              </h3>
-              <p className="text-sm text-gray-500 mb-4">Supported format: PNG, JPG</p>
-              <label className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors cursor-pointer">
+              <h3 className="text-lg font-medium text-gray-900 mb-1">Select picture to upload</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Supported formats: JPG, PNG, WEBP. Max 5MB.
+              </p>
+
+              <label className={`inline-flex items-center gap-2 px-6 py-2 rounded-full transition-colors cursor-pointer ${isUploading ? "bg-gray-400 text-white" : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}>
                 <input
                   type="file"
-                  accept=".png,.jpg,.jpeg"
+                  accept="image/png,image/jpeg,image/webp"
                   onChange={handleImageUpload}
                   className="hidden"
+                  disabled={isUploading}
                 />
-                Select
+                {isUploading ? "Uploading..." : "Select"}
                 <FaUpload className="w-4 h-4" />
               </label>
             </div>
           </div>
-
           {/* Outfit */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">

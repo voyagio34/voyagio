@@ -298,11 +298,16 @@ const Home = () => {
 
       toast.success("Places fetched according to destination!", { id: toastId });
       router("/generate-itinerary", { state: { response: response.data, formData: formData } });
-    } 
+    }
     catch (error) {
-      console.log(error.name)
+      console.log(error)
       if (error.name == "AxiosError") {
-        toast.error("Server failed, try again later!", { id: toastId });
+        if (error.code == "ERR_BAD_RESPONSE") {
+          toast.error("Not enough places found!", { id: toastId });
+        }
+        else {
+          toast.error("Server failed, try again later!", { id: toastId });
+        }
       }
       else if (error.name == "AuthRequiredError") {
         toast.error("Please Login First!", { id: toastId });

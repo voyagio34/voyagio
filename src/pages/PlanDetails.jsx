@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { usePlan } from '../contexts/PlanContext';
 import { useAuth } from '../contexts/AuthContext';
-import { demoItinerary } from '../data/DemoItinerary'; // keep as fallback if no draft
+// import { demoItinerary } from '../data/DemoItinerary'; // keep as fallback if no draft
 import RoundLoader from '../components/RoundLoader';
 
 function PlanDetails() {
@@ -21,14 +21,12 @@ function PlanDetails() {
         setIsLoading(false)
         console.log(draftPlan)
     }, [draftPlan])
-    // Use draft plan if present; otherwise render the demo data
-    const looksLikeItinerary = (obj) =>
-        obj && typeof obj === 'object' &&
-        Object.values(obj).some(d => Array.isArray(d?.activities));
+   
+
 
     // Prefer draftPlan.data; if someone accidentally set draftPlan itself to an itinerary,
     // we still handle it; otherwise fall back to demoItinerary.
-    const data = looksLikeItinerary(draftPlan?.data) ? draftPlan.data : looksLikeItinerary(draftPlan) ? draftPlan : demoItinerary;
+    const data = draftPlan?.plan ||null ;
 
     const planTitle = draftPlan?.title || 'Trip Plan';
     const planDates = draftPlan?.dates || '';
@@ -54,7 +52,7 @@ function PlanDetails() {
     const itineraryDays = useMemo(() => {
         if (!data) return [];
         return Object.entries(data).map(([dayLabel, dayObj], idx) => {
-            const activities = (dayObj?.activities || []).map(a => {
+            const activities = (dayObj?.Activities ||dayObj?.activities || []).map(a => {
                 const { icon, color } = pickVisuals(a.activity, a.location, a.description);
                 return {
                     time: a.time || 'aasa',
@@ -82,7 +80,7 @@ function PlanDetails() {
     );
 
     const handleRegenerate = async () => {
-        alert("Regenerate");
+        router(-1);
     }
 
     const handleConfirm = async () => {

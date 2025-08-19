@@ -109,19 +109,20 @@ function GenerateItinerary() {
       }
       console.log(data)
       // TODO: call your backend with selectedData to generate a real plan
-      const response = await axios.post(`${import.meta.env.VITE_MY_BUILDSHIP_API}/generate`, data, {
+      const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/generatePlan`, data, {
+      // const response = await axios.post(`https://xsng2q.buildship.run/generate`, data, {
         headers: "application/json"
       })
       if (!response) {
         throw new Error("Something went wrong");
       }
-      const result = await response.data.message.json();
-      // console.log(response.data.message.title)
-      await setDraftPlan(result); // demo is already {title, dates, data}
+      const result = await response.data;
+      console.log(response)
+      await setDraftPlan(result.data); 
       toast.success('Your Plans Generated!', { id: toastId });
       router('/plan');
     } catch (error) {
-      console.error(error);
+      console.error({error});
       toast.error(error?.message || 'Something went wrong!', { id: toastId });
     } finally {
       setLoading(false);
