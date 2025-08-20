@@ -172,7 +172,10 @@ const TravelHub = () => {
                         </div>
                     </div>
                 </div>
+                
             </section>
+
+             
         </div>
     )
 }
