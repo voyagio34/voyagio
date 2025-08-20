@@ -1012,7 +1012,7 @@ const Home = () => {
         <div className='max-w-7xl mx-auto px-4  items-center  sm:px-6 lg:px-8  w-full flex flex-col ' data-aos="fade-right">
           <h1 className='sm:text-5xl text-4xl font-bold mb-4 '>How it Works</h1>
           <span className='text-gray-500 text-center flex items-center mb-14'>Competitive fares for your route-specific searches.</span>
-          <div className="flex flex-col lg:flex-row gap-8 lg:items-start mt-10">
+          <div className="flex flex-col xl:flex-row gap-8 xl:items-start mt-10">
             {/* Left Side - Images */}
             <div className="grid grid-cols-1 gap-4" data-aos="fade-right" data-aos-delay="200">
               {/* Main Large Image */}
@@ -1025,7 +1025,7 @@ const Home = () => {
               </div>
 
               {/* Two Smaller Images */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols- gap-4">
                 <div className="col-span-1">
                   <img
                     src={images[1].src}
@@ -1048,7 +1048,7 @@ const Home = () => {
             </div>
 
             {/* Right Side - Steps */}
-            <div className="flex flex-col gap-6 overflow-y-hidden lg:w-1/2" data-aos="fade-right" data-aos-delay={100}>
+            <div className="flex flex-col gap-6 overflow-y-hidden xl:w-1/2" data-aos="fade-right" data-aos-delay={100}>
               {steps.map((step, index) => (
                 <div
                   key={step.id}
