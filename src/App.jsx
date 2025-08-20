@@ -93,7 +93,7 @@ function AppContent() {
               <GenerateItinerary />
             </ProtectedRoutes>
           } />
-          <Route path='/generated-plans' element={
+          <Route path='/itinerary' element={
             <ProtectedRoutes>
               <GeneratedPlans />
             </ProtectedRoutes>

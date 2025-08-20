@@ -46,7 +46,7 @@ const About = () => {
     }, [paused]);
 
     return (
-        <div className='bg-gray-50 overflow-x-hidden sm:mt-16'>
+        <div className='bg-gray-50 overflow-x-hidden'>
             <section className="relative bg-cover bg-center bg-blue-200/30 px-2 py-20 sm:px-6 lg:px-8 w-full" data-aos="fade-in">
                 <div
                     className="absolute sm:block hidden top-20 -left-20 w-46 h-46 bg-gray-200 rounded-full z-0"

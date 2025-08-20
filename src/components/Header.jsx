@@ -61,7 +61,7 @@ const Navbar = () => {
         { name: 'Blog', href: '/blog' },
         { name: 'About', href: '/about' },
         { name: 'Contact Us', href: '/contactus' },
-        { name: 'Itinerary', href: '/generated-plans' }
+        { name: 'Itinerary', href: '/itinerary' }
     ]
 
 
@@ -72,7 +72,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <div className="flex items-center" data-aos="fade-down">
                         <Link to="/" className="flex items-center space-x-3 group">
-                            <img src='/icon.webp' alt='LOGO' className='w-46'/>
+                            <img src='/assets/mdlogo.webp' alt='LOGO' className='w-46'/>
                         </Link>
                     </div>
 
@@ -93,9 +93,9 @@ const Navbar = () => {
 
                     {/* Action Buttons */}
                     <div className="hidden lg:flex items-center space-x-2">
-                        <Link to="/yoursmart" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="250">
+                        {/* <Link to="/yoursmart" className="px-4 py-2.5 text-gray-600 font-semibold transition-all duration-300 transform hover:text-gray-900" data-aos="fade-down" data-aos-delay="250">
                             Download App
-                        </Link>
+                        </Link> */}
                         {!session ? (
                             <Link to="/signup" className="xl:px-10 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full text-gray-50 font-semibold transition-colors duration-300" data-aos="fade-down" data-aos-delay="300">
                                 Sign Up
@@ -121,14 +121,14 @@ const Navbar = () => {
                                             <p className="text-sm text-gray-500 truncate">{session?.user?.email}</p>
                                         </div>
 
-                                        <Link
+                                        {/* <Link
                                             to="/profile"
                                             onClick={() => setShowDropdown(false)}
                                             className="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                                         >
                                             <User className="w-4 h-4 mr-3" />
                                             Profile
-                                        </Link>
+                                        </Link> */}
 
 
                                         <div className="border-t cursor-pointer border-gray-100 mt-2 pt-2">
@@ -176,7 +176,8 @@ const Navbar = () => {
                         <div className="pt-4 border-t w-auto border-gray-200 space-y-3 px-6">
                             {
                                 session?.user && (
-                                    <div onClick={()=>navigate("/profile")} className='flex items-center'>
+                                    // <div onClick={()=>navigate("/profile")} className='flex items-center'>
+                                    <div  className='flex items-center'>
                                         <div className='border border-gray-500 p-3 rounded-full'>
                                             <User className='w-5 h-5 text-gray-500 ' />
                                         </div>
@@ -188,9 +189,9 @@ const Navbar = () => {
                                 )
                             }
 
-                            <Link to="/yoursmart" className="block w-full py-3 text-center bg-gray-100 text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
+                            {/* <Link to="/yoursmart" className="block w-full py-3 text-center bg-gray-100 text-gray-600 hover:text-gray-900 rounded-lg transition-all duration-300">
                                 Download App
-                            </Link>
+                            </Link> */}
 
                             {!session?.user ? (
                                 <Link to="/signup" className="block w-full cursor-pointer text-center py-3 text-gray-50 transition-colors duration-300 bg-blue-500 hover:bg-blue-700 rounded-lg">

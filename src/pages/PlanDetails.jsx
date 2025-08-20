@@ -82,12 +82,12 @@ function PlanDetails() {
                 setIsViewOnly(true); // This is a saved itinerary, not editable
             } else {
                 toast.error('Itinerary not found');
-                router('/generated-plans');
+                router('/itinerary');
             }
         } catch (error) {
             console.error('Error loading itinerary:', error);
             toast.error('Failed to load itinerary');
-            router('/generated-plans');
+            router('/itinerary');
         } finally {
             setIsLoading(false);
         }
@@ -170,7 +170,7 @@ function PlanDetails() {
     const handleRegenerate = async () => {
         if (isViewOnly) {
             // If viewing a saved itinerary, go back to list
-            router('/generated-plans');
+            router('/itinerary');
         } else {
             // If creating new, go back to suggestions
             router(-1);
@@ -194,7 +194,7 @@ function PlanDetails() {
             const { data, generatedAt } = await saveItinerary(draftPlan, session);
             toast.success('Itinerary saved successfully!');
             clearPlan();
-            router('/generated-plans');
+            router('/itinerary');
         } catch (error) {
             console.error('Error saving itinerary:', error);
             toast.error(error.message || 'Failed to save itinerary');
@@ -266,6 +266,9 @@ function PlanDetails() {
                                     Viewing saved itinerary
                                 </span>
                             )}
+                        </div>
+                        <div className='sm:flex w-8'>
+
                         </div>
                     </div>
 

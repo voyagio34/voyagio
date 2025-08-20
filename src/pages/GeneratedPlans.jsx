@@ -130,7 +130,7 @@ function GeneratedPlans() {
                 <div className="flex sm:flex-row flex-col sm:gap-2 gap-4 p-4 sm:mb-8">
                     <div className='flex flex-col flex-8/10'>
                         <h1 className='text-center sm:text-5xl text-4xl mb-4 font-semibold text-gray-800'>
-                            Your Saved Itineraries
+                           Generated Plans
                         </h1>
                         <p className='text-center sm:text-lg text- w-full mx-auto text-gray-700'>
                             View and manage all your generated trip plans
@@ -159,7 +159,7 @@ function GeneratedPlans() {
                         </button>
                     </div>
                 ) : (
-                    <div className='flex flex-col gap-6 pb-6'>
+                    <div className='flex max-w-5xl mx-auto flex-col gap-6 pb-6'>
                         {itineraries.map((trip, index) => (
                             <div
                                 key={trip.generated_at}
@@ -209,12 +209,12 @@ function GeneratedPlans() {
                                             >
                                                 View itinerary
                                             </button>
-                                            <button 
+                                            {/* <button 
                                                 className="bg-red-100 text-red-600 font-medium px-4 py-2 rounded-md hover:bg-red-200 transition-all cursor-pointer"
                                                 onClick={() => handleDeleteItinerary(trip.generated_at, trip.trip_name)}
                                             >
                                                 Delete
-                                            </button>
+                                            </button> */}
                                         </div>
                                     </div>
                                 </div>

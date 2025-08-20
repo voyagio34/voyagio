@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { FaInstagram, FaPhone, FaPhoneAlt, FaTiktok, FaYoutube } from 'react-icons/fa'
-import { FaPhoneFlip } from 'react-icons/fa6'
+import { FaFacebook, FaPhoneFlip } from 'react-icons/fa6'
 import { Link, useNavigate } from 'react-router-dom'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -129,25 +129,36 @@ const Footer = () => {
           >
             <span className="text-gray-300">Follow us :</span>
             <a
-              href="#"
+              href="https://www.youtube.com/@GoVoyagio"
+              target='_blank'
               data-aos="zoom-in"
               data-aos-delay="150"
             >
               <FaYoutube className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/voyagio.ai/"
+              target='_blank'
               data-aos="zoom-in"
               data-aos-delay="200"
             >
               <FaInstagram className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
             </a>
             <a
-              href="#"
+              href="https://www.tiktok.com/@voyagio.ai"
+              target='_blank'
               data-aos="zoom-in"
               data-aos-delay="250"
             >
               <FaTiktok className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61576409515090"
+              target='_blank'
+              data-aos="zoom-in"
+              data-aos-delay="300"
+            >
+              <FaFacebook className='w-5 h-5 hover:text-white text-gray-300 transition-all' />
             </a>
           </div>
         </div>
