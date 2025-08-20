@@ -106,6 +106,7 @@ function GenerateItinerary() {
         travel_styles: formData.travelStyles,
         added_places: selectedData
       }
+
       console.log(data)
       // TODO: call your backend with selectedData to generate a real plan
       const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/generatePlan`, data, {
@@ -150,9 +151,9 @@ function GenerateItinerary() {
   return (
     <div className="relative bg-gray-50 sm:px-4 sm:py-20 lg:px-8 min-h-screen">
       <section className="relative max-w-7xl mx-auto pt-4 px-4 bg-white shadow-lg w-full rounded-lg" data-aos="fade-right">
-        <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start my-8 p-4" data-aos="fade-in" data-aos-delay="100">
+        <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start my-4 p-4" data-aos="fade-in" data-aos-delay="100">
           <FaArrowLeftLong className="w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer hover:-translate-x-1" onClick={() => router('/')} />
-          <div className="flex flex-8/10 flex-col gap-2 md:items-center mb-8">
+          <div className="flex flex-8/10 flex-col gap-2 md:items-center sm:mb-8">
             <h1 className="sm:text-4xl text-3xl text-gray-800 font-semibold">Suggested Activities</h1>
           </div>
           <div className="flex flex-1/10" />

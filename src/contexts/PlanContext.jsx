@@ -29,7 +29,7 @@ export function PlanProvider({ children }) {
             }
         }
     }, [draftPlan]);
-  
+
 
     const updatePlan = (updater) => {
         setDraftPlan((prev) => {
@@ -50,20 +50,68 @@ export function PlanProvider({ children }) {
 
     const updateActivity = (dayKey, index, patch) => {
         setDraftPlan((prev) => {
-            if (!prev?.data?.[dayKey]) return prev;
+            if (!prev?.plan?.[dayKey]) return prev;
             const copy = JSON.parse(JSON.stringify(prev));
-            const list = copy.data[dayKey].Activities;
-            if (index < 0 || index >= list.length) return prev;
-            const current = list[index];
+
+            // Check for both 'activities' and 'Activities'
+            const activities = copy.plan[dayKey].activities || copy.plan[dayKey].Activities;
+            if (!activities || index < 0 || index >= activities.length) return prev;
+
+            const current = activities[index];
             // Keep existing time unless explicitly changed
-            list[index] = { ...current, ...patch, time: patch?.time ?? current.time };
+            activities[index] = { ...current, ...patch, time: patch?.time ?? current.time };
+
+            // Update the correct property name
+            if (copy.plan[dayKey].activities) {
+                copy.plan[dayKey].activities = activities;
+            } else {
+                copy.plan[dayKey].Activities = activities;
+            }
+
             return copy;
         });
     };
 
-    const savePlan = async () => {
-        // const { data, error } = await supabase.
-    }
+    const saveItinerary = async (draftPlan, session) => {
+        if (!session?.user) {
+            throw new Error('User not authenticated');
+        }
+
+        if (!draftPlan?.plan || Object.keys(draftPlan.plan).length === 0) {
+            throw new Error('No itinerary data to save');
+        }
+
+        const generatedAt = new Date().toISOString();
+
+        const records = [];
+
+        Object.entries(draftPlan.plan).forEach(([dayLabel, dayData]) => {
+            const dayNumber = parseInt(dayLabel.replace(/[^0-9]/g, ''));
+
+            const activities = dayData.Activities || dayData.activities || [];
+
+            records.push({
+                user_id: session.user.id,
+                generated_at: generatedAt,
+                updated_at:generatedAt,
+                day: dayNumber,
+                activities: activities,
+                trip_name: draftPlan.title || 'My Trip'
+            });
+        });
+
+        // Insert all records
+        const { data, error } = await supabase
+            .from('itineraries')
+            .insert(records)
+            .select();
+
+        if (error) {
+            throw error;
+        }
+
+        return { data, generatedAt };
+    };
 
     const clearPlan = () => {
         setDraftPlan(null);
@@ -75,6 +123,7 @@ export function PlanProvider({ children }) {
         <PlanContext.Provider value={{
             draftPlan,
             // setPlan,
+            saveItinerary,
             updatePlan,
             removeActivity,
             updateActivity,

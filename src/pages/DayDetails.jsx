@@ -7,20 +7,80 @@ import {
 import { FaArrowLeftLong, FaRegClock, FaSun } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlan } from '../contexts/PlanContext';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase/Client';
+import toast from 'react-hot-toast';
+import RoundLoader from '../components/RoundLoader';
 
 function DayDetails() {
     const router = useNavigate();
-    const { state } = useLocation(); // expects { dayKey: "Day 1" }
+    const { state } = useLocation(); 
     const { draftPlan, removeActivity } = usePlan();
-
-    console.log(draftPlan)
-    const plan = draftPlan?.plan;
+    const { session } = useAuth();
+    
     const dayKey = state?.dayKey || 'Day 1';
-    const day = plan?.[dayKey];
+    const generatedAt = state?.generatedAt;
+    const isViewOnly = state?.isViewOnly || false;
+    
+    const [isLoading, setIsLoading] = useState(false);
+    const [day, setDay] = useState(null);
+    const [confirm, setConfirm] = useState({ open: false, index: null, title: '' });
+
+    useEffect(() => {
+        if (generatedAt && isViewOnly) {
+            // Load from database
+            loadDayFromDatabase();
+        } else {
+            // Use draft plan
+            const plan = draftPlan?.plan;
+            setDay(plan?.[dayKey]);
+        }
+    }, [dayKey, generatedAt, isViewOnly, draftPlan]);
+
+    const loadDayFromDatabase = async () => {
+        if (!session?.user) {
+            toast.error('Please login to view this itinerary');
+            router('/login');
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // Extract day number from dayKey (e.g., "Day 1" -> 1)
+            const dayNumber = parseInt(dayKey.replace(/[^0-9]/g, ''));
+            
+            const { data, error } = await supabase
+                .from('itineraries')
+                .select('*')
+                .eq('generated_at', generatedAt)
+                .eq('user_id', session.user.id)
+                .eq('day', dayNumber)
+                .single();
+
+            if (error) throw error;
+
+            if (data) {
+                // Construct day object from database data
+                setDay({
+                    activities: data.activities,
+                    Activities: data.activities, // for compatibility
+                    name: data.activities[0]?.dayInfo?.name,
+                    date: data.activities[0]?.dayInfo?.date
+                });
+            } else {
+                toast.error('Day not found');
+                router(-1);
+            }
+        } catch (error) {
+            console.error('Error loading day:', error);
+            toast.error('Failed to load day details');
+            router(-1);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const activities = useMemo(() => day?.activities || day?.Activities || [], [day]);
-
-    const [confirm, setConfirm] = useState({ open: false, index: null, title: '' });
 
     const pickVisuals = (item) => {
         const category = (item?.category || '').toLowerCase();
@@ -44,7 +104,6 @@ function DayDetails() {
         if (category === 'wellness' || /spa|relax|wellness|massage/.test(text))
             return pick(<FaSpa className='w-5 h-5' />, 'text-teal-600');
 
-
         return pick(<FaCamera className="w-5 h-5" />, 'text-gray-600');
     };
 
@@ -67,6 +126,26 @@ function DayDetails() {
         closeConfirm();
     };
 
+    const handleEdit = (index) => {
+        if (isViewOnly) {
+            toast.info('Cannot edit saved itineraries. Create a new draft to make changes.');
+            return;
+        }
+        router('/edit', { state: { dayKey, index } });
+    };
+
+    const handleSkip = (index, title) => {
+        if (isViewOnly) {
+            toast.info('Cannot modify saved itineraries. Create a new draft to make changes.');
+            return;
+        }
+        openConfirm(index, title);
+    };
+
+    if (isLoading) {
+        return <RoundLoader />;
+    }
+
     if (!day) {
         return (
             <div className='bg-gray-50 mt-10 px-4 py-16 sm:px-6 lg:px-8 min-h-screen'>
@@ -79,10 +158,10 @@ function DayDetails() {
     }
 
     return (
-        <div className='bg-gray-50  sm:px-4 sm:py-20 lg:px-8  min-h-screen'>
+        <div className='bg-gray-50 sm:px-4 sm:py-20 lg:px-8 min-h-screen'>
             <section className="relative max-w-7xl mx-auto sm:py-6 sm:px-4 bg-white shadow-lg w-full px-2 rounded-lg" data-aos="fade-in">
                 {/* Header */}
-                <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start pt-8 p-4 " data-aos="fade-in" data-aos-delay="100">
+                <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start pt-8 p-4" data-aos="fade-in" data-aos-delay="100">
                     <FaArrowLeftLong
                         className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1'
                         onClick={() => router(-1)}
@@ -92,11 +171,16 @@ function DayDetails() {
                             {dayKey}{day?.name ? ` - ${day.name}` : ''}
                         </h1>
                         {day?.date && <span className='text-md text-gray-500 font-medium'>{day.date}</span>}
+                        {isViewOnly && (
+                            <span className='text-sm text-blue-600 font-medium'>
+                                Viewing saved itinerary
+                            </span>
+                        )}
                     </div>
                     <div className='flex flex-1/10' />
                 </div>
 
-                {/* activities */}
+                {/* Activities */}
                 <div className="mx-auto p-4 space-y-6 min-h-screen">
                     {activities.map((a, index) => {
                         const { icon, color } = pickVisuals(a);
@@ -110,13 +194,13 @@ function DayDetails() {
                                 data-aos-delay={index * 100}
                             >
                                 {/* Time */}
-                                <div className="flex items-center gap-2 px-4 sm:px-6 pt-4">
+                                <div className="flex items-center gap-2 px-2 sm:px-6 pt-4">
                                     <FaRegClock className="text-gray-900 w-4 h-4" />
                                     <span className="text-sm font-medium text-gray-900">{a.time || '—'}</span>
                                 </div>
 
                                 {/* Content */}
-                                <div className="p-4 sm:p-6">
+                                <div className="p-2 sm:p-6">
                                     <div className="mb-4 flex gap-4">
                                         <div className={`w-12 h-12 rounded-full border border-current ${color} flex items-center justify-center flex-shrink-0`}>
                                             {icon}
@@ -132,15 +216,15 @@ function DayDetails() {
                                         </div>
                                     </div>
 
-                                    {a.image && (
+                                    {a.image && !Array.isArray(a.image) && (
                                         <div className="mb-4 rounded-xl overflow-hidden">
                                             <img src={a.image} alt={a.activity} className="w-full h-48 sm:h-64 object-cover" />
                                         </div>
                                     )}
 
-                                    {Array.isArray(a.images) && a.images.length > 0 && (
-                                        <div className={`grid gap-2 mb-4 ${a.images.length === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'}`}>
-                                            {a.images.map((img, i) => (
+                                    {Array.isArray(a.image) && a.image.length > 0 && (
+                                        <div className={`grid gap-2 mb-4 ${a.image.length === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'}`}>
+                                            {a.image.map((img, i) => (
                                                 <div key={i} className="rounded-lg overflow-hidden">
                                                     <img
                                                         src={img}
@@ -158,7 +242,7 @@ function DayDetails() {
                                                 <div className='p-2 rounded-lg bg-gray-100 text-gray-900'>
                                                     <FaTshirt className="w-5 h-5 text-gray-600" />
                                                 </div>
-                                                <span>Outfit: {a.outfit}</span>
+                                                <span className='capitalize'>Outfit: {a.outfit}</span>
                                             </div>
                                         )}
                                         {wText && (
@@ -168,48 +252,52 @@ function DayDetails() {
                                                     <div className='p-2 rounded-lg bg-gray-100 text-gray-900'>
                                                         <FaSun className="w-5 h-5 text-gray-600" />
                                                     </div>
-                                                    <span>Weather: {a.weather.summary}, {a.weather.tempC}<sup>o</sup>C  </span>
+                                                    <span className='capitalize'>Weather: {wText}</span>
                                                 </div>
                                             </>
                                         )}
                                     </div>
                                 </div>
 
-                                {/* Actions */}
-                                <div className="flex flex-row px-4 sm:px-6 gap-2 sm:pb-4">
-                                    <button
-                                        onClick={() => router('/edit', { state: { dayKey, index } })}
-                                        className="flex-1 py-3 sm:py-4 text-center text-blue-600 hover:bg-blue-50 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base border border-blue-500 cursor-pointer"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => openConfirm(index, a.activity)}
-                                        className="flex-1 py-3 sm:py-4 text-center bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base cursor-pointer"
-                                    >
-                                        Skip
-                                    </button>
-                                </div>
+                                {/* Actions - Only show for draft itineraries */}
+                                {!isViewOnly && (
+                                    <div className="flex flex-row px-4 sm:px-6 gap-2 sm:pb-4">
+                                        <button
+                                            onClick={() => handleEdit(index)}
+                                            className="flex-1 py-3 sm:py-4 text-center text-blue-600 hover:bg-blue-50 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base border border-blue-500 cursor-pointer"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleSkip(index, a.activity)}
+                                            className="flex-1 py-3 sm:py-4 text-center bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base cursor-pointer"
+                                        >
+                                            Skip
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         );
                     })}
 
                     {activities.length === 0 && (
                         <div className="text-center text-gray-600 py-12">
-                            No activities left for this day.
+                            No activities for this day.
                         </div>
                     )}
                 </div>
             </section>
 
-            {/* Confirmation Modal */}
-            <ConfirmSkipModal
-                open={confirm.open}
-                dayKey={dayKey}
-                activityTitle={confirm.title}
-                onCancel={closeConfirm}
-                onConfirm={confirmSkip}
-            />
+            {/* Confirmation Modal - Only for draft mode */}
+            {!isViewOnly && (
+                <ConfirmSkipModal
+                    open={confirm.open}
+                    dayKey={dayKey}
+                    activityTitle={confirm.title}
+                    onCancel={closeConfirm}
+                    onConfirm={confirmSkip}
+                />
+            )}
         </div>
     );
 }
@@ -249,7 +337,7 @@ function ConfirmSkipModal({ open, dayKey, activityTitle, onCancel, onConfirm }) 
                     </div>
 
                     <p className="mt-3 text-sm text-gray-600">
-                        You’re about to remove <span className="font-medium">“{activityTitle || 'this activity'}”</span> from <span className="font-medium">{dayKey}</span>.
+                        You're about to remove <span className="font-medium">"{activityTitle || 'this activity'}"</span> from <span className="font-medium">{dayKey}</span>.
                         You can't add this manually later.
                     </p>
 

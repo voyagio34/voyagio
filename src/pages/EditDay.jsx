@@ -16,7 +16,9 @@ function EditDay() {
 
   // Source: draft -> demo fallback
   const planData = draftPlan?.plan;
-  const item = planData?.[dayKey]?.Activities?.[index];
+  const day = planData?.[dayKey];
+  const activities = day?.activities || day?.Activities || [];
+  const item = activities[index];
 
   // Parse a "time" like "08:30 PM - 09:30 PM" into start/end inputs
   const parseTime = (t = '') => {
@@ -24,6 +26,19 @@ function EditDay() {
     const parts = t.split('-').map(s => s.trim());
     if (parts.length === 2) return { startTime: parts[0], endTime: parts[1] };
     return { startTime: t.trim(), endTime: '' };
+  };
+
+  const parseWeatherInput = (weatherStr) => {
+    if (!weatherStr || weatherStr.trim() === '') return undefined;
+    
+    // Parse the string to extract summary and temperature
+    const parts = weatherStr.split(',').map(s => s.trim());
+    const tempMatch = weatherStr.match(/(\d+)\s*°?\s*C/i); // Match temperature with or without degree symbol
+    
+    return {
+      summary: parts[0] || 'Partly cloudy', // Default if no summary found
+      tempC: tempMatch ? parseInt(tempMatch[1]) : 25 // Default temperature if not found
+    };
   };
 
   const initial = useMemo(() => {
@@ -46,7 +61,7 @@ function EditDay() {
       outfit: item?.outfit || '',
       weather: weatherStr,
       durationMinutes: item?.durationMinutes ?? '',
-      imageUrl: item?.image || null, // store URL/base64 for preview & context
+      image: item?.image || null, 
     };
   }, [item]);
 
@@ -56,11 +71,13 @@ function EditDay() {
   useEffect(() => setFormData(initial), [initial]);
 
   const handleInputChange = (e) => {
+    e.preventDefault();
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleImageUpload = async (e) => {
+    e.preventDefault();
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -82,7 +99,7 @@ function EditDay() {
         isPublic: true, // bucket set to Public
       });
 
-      setFormData((prev) => ({ ...prev, imageUrl: url }));
+      setFormData((prev) => ({ ...prev, image: url }));
       toast.success("Uploaded")
       console.log(url)
       // OPTIONAL: show a toast here
@@ -90,7 +107,7 @@ function EditDay() {
       console.error(err);
       toast.error(err.message || "Upload failed");
     } finally {
-      console.log(formData.imageUrl)
+      console.log(formData.image)
       setIsUploading(false);
       // reset input value so the same file can be re-selected if needed
       // e.currentTarget.value = undefined;
@@ -107,11 +124,13 @@ function EditDay() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!planData?.[dayKey]?.Activities?.[index]) return;
+    
+    const activities = planData?.[dayKey]?.activities || planData?.[dayKey]?.Activities || [];
+    if (!activities[index]) return;
 
     const currentTime = item?.time || '';
     const nextTime = buildTime(formData.startTime, formData.endTime);
-
+    
     // Build patch; omit time if it didn't change (PlanContext preserves old time)
     const patch = {
       activity: formData.title,
@@ -120,8 +139,8 @@ function EditDay() {
       outfit: formData.outfit,
       durationMinutes:
         formData.durationMinutes === '' ? undefined : Number(formData.durationMinutes),
-      weather: formData.weather || undefined,   // keep as string (DayDetails supports it)
-      image: formData.imageUrl || undefined,
+      weather: parseWeatherInput(formData.weather),   // Parse weather string back to object if needed
+      image: formData.image || undefined,
       ...(nextTime !== currentTime ? { time: nextTime } : {}),
     };
 
@@ -257,8 +276,8 @@ function EditDay() {
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8">
             <div className="text-center">
               <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4 overflow-hidden">
-                {formData.imageUrl ? (
-                  <img src={formData.imageUrl} alt="Preview" className="w-20 h-20 object-cover" />
+                {formData.image ? (
+                  <img src={formData.image} alt="Preview" className="w-20 h-20 object-cover" />
                 ) : (
                   <FaImage className="w-10 h-10 text-blue-500" />
                 )}
@@ -282,6 +301,7 @@ function EditDay() {
               </label>
             </div>
           </div>
+
           {/* Outfit */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">

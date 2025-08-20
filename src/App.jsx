@@ -70,13 +70,29 @@ function AppContent() {
           <Route path='/blog' element={<BlogList />} />
           <Route path='/blog/:id' element={<BlogDetails />} />
           <Route path='/travelhub' element={<TravelHub />} />
-          <Route path='/plan' element={<PlanDetails />} />
           <Route path='/yoursmart' element={<YourSmart />} />
-          <Route path='/day' element={<DayDetails />} />
-          <Route path='/edit' element={<EditDay />} />
           <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/terms' element={<TermsPage />} />
-          <Route path='/generate-itinerary' element={<GenerateItinerary />} />
+          <Route path='/plan' element={
+            <ProtectedRoutes>
+              <PlanDetails />
+            </ProtectedRoutes>
+          } />
+          <Route path='/edit' element={
+            <ProtectedRoutes>
+              <EditDay />
+            </ProtectedRoutes>
+          } />
+          <Route path='/day' element={
+            <ProtectedRoutes>
+              <DayDetails />
+            </ProtectedRoutes>
+          } />
+          <Route path='/generate-itinerary' element={
+            <ProtectedRoutes>
+              <GenerateItinerary />
+            </ProtectedRoutes>
+          } />
           <Route path='/generated-plans' element={
             <ProtectedRoutes>
               <GeneratedPlans />
