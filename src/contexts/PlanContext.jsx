@@ -1,6 +1,5 @@
 // src/contexts/PlanContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
-import { demoItinerary } from "../data/DemoItinerary";
 import { supabase } from "../lib/supabase/Client";
 
 const PlanContext = createContext(null);

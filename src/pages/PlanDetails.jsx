@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FaArrowLeftLong, FaRepeat, FaChevronUp } from 'react-icons/fa6';
 import {
     FaHiking, FaUtensils, FaCamera, FaUmbrellaBeach,
-    FaCalendarAlt, FaListUl, FaCoffee, FaShoppingBag, FaUniversity, FaTree
+    FaCalendarAlt, FaListUl, FaCoffee, FaShoppingBag, FaUniversity, FaTree,
+    FaSpa
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { usePlan } from '../contexts/PlanContext';
@@ -21,12 +22,12 @@ function PlanDetails() {
         setIsLoading(false)
         console.log(draftPlan)
     }, [draftPlan])
-   
+
 
 
     // Prefer draftPlan.data; if someone accidentally set draftPlan itself to an itinerary,
     // we still handle it; otherwise fall back to demoItinerary.
-    const data = draftPlan?.plan ||null ;
+    const data = draftPlan?.plan || null;
 
     const planTitle = draftPlan?.title || 'Trip Plan';
     const planDates = draftPlan?.dates || '';
@@ -36,24 +37,37 @@ function PlanDetails() {
     };
 
     // Icon + color (text-* class); use border-current so the border matches text color
-    const pickVisuals = (title = '', location = '', description = '') => {
-        const text = `${title} ${location} ${description}`.toLowerCase();
-        if (/coffee|cafe|brunch/.test(text)) return { icon: <FaCoffee className="w-5 h-5" />, color: 'text-blue-500' };
-        if (/lunch|dinner|restaurant|ristorante/.test(text)) return { icon: <FaUtensils className="w-5 h-5" />, color: 'text-yellow-500' };
-        if (/beach/.test(text)) return { icon: <FaUmbrellaBeach className="w-5 h-5" />, color: 'text-cyan-500' };
-        if (/park|garden|nature|walk/.test(text)) return { icon: <FaTree className="w-5 h-5" />, color: 'text-green-500' };
-        if (/museum|fort|castle|aquarium|planetarium|centre|center/.test(text)) return { icon: <FaUniversity className="w-5 h-5" />, color: 'text-purple-500' };
-        if (/shop|market/.test(text)) return { icon: <FaShoppingBag className="w-5 h-5" />, color: 'text-pink-500' };
-        if (/hike|trail|loop/.test(text)) return { icon: <FaHiking className="w-5 h-5" />, color: 'text-orange-500' };
-        return { icon: <FaCamera className="w-5 h-5" />, color: 'text-gray-500' };
+    const pickVisuals = (item) => {
+        const category = (item?.category || '').toLowerCase();
+        const text = `${item?.activity ?? ''} ${item?.description ?? ''}`.toLowerCase();
+        const pick = (icon, color) => ({ icon, color });
+
+        if (category === 'food' || /lunch|dinner|restaurant|ristorante/.test(text))
+            return pick(<FaUtensils className="w-5 h-5" />, 'text-yellow-600');
+        if (category === 'cafe' || /coffee|cafe|brunch/.test(text))
+            return pick(<FaCoffee className="w-5 h-5" />, 'text-blue-600');
+        if (category === 'beach' || /beach/.test(text))
+            return pick(<FaUmbrellaBeach className="w-5 h-5" />, 'text-cyan-600');
+        if (category === 'park' || /park|garden|nature|walk/.test(text))
+            return pick(<FaTree className="w-5 h-5" />, 'text-green-600');
+        if (category === 'museum' || category === 'landmark' || /museum|fort|castle|aquarium|planetarium|centre|center|landmark/.test(text))
+            return pick(<FaUniversity className="w-5 h-5" />, 'text-purple-600');
+        if (category === 'shopping' || /shop|market/.test(text))
+            return pick(<FaShoppingBag className="w-5 h-5" />, 'text-pink-600');
+        if (category === 'outdoor' || /hike|trail|loop/.test(text))
+            return pick(<FaHiking className="w-5 h-5" />, 'text-orange-600');
+        if (category === 'wellness' || /spa|relax|wellness|massage/.test(text))
+            return pick(<FaSpa className='w-5 h-5' />, 'text-teal-600');
+
+        return pick(<FaCamera className="w-5 h-5" />, 'text-gray-600');
     };
 
     // Turn the object of days into an array the UI can map
     const itineraryDays = useMemo(() => {
         if (!data) return [];
         return Object.entries(data).map(([dayLabel, dayObj], idx) => {
-            const activities = (dayObj?.Activities ||dayObj?.activities || []).map(a => {
-                const { icon, color } = pickVisuals(a.activity, a.location, a.description);
+            const activities = (dayObj?.Activities || dayObj?.activities || []).map(a => {
+                const { icon, color } = pickVisuals(a);
                 return {
                     time: a.time || 'aasa',
                     title: a.activity || '',
@@ -103,7 +117,7 @@ function PlanDetails() {
     if (!itineraryDays.length) {
         return (
             <div className="px-4 py-20">
-                <div className="max-w-2xl mx-auto bg-white rounded-xl shadow p-6 text-center">
+                <div className="max-w-2xl mx-auto bg-white  rounded-xl shadow p-6 text-center">
                     <h2 className="text-xl font-semibold mb-2">No plan found</h2>
                     <p className="text-gray-600 mb-6">Go pick a few places to generate your trip.</p>
                     <button
@@ -124,14 +138,14 @@ function PlanDetails() {
     }
 
     return (
-        <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10'>
+        <div className='bg-gray-50 sm:px-4 sm:py-20 lg:px-8 min-h-screen'>
             <section
-                className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
+                className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 px-2 bg-white shadow-lg w-full rounded-lg"
                 data-aos="fade-in"
             >
                 {/* Header */}
                 <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start p-4 mb-8" data-aos="fade-in" data-aos-delay="100">
-                    <div className='flex sm:flex-row w-full flex-col gap-4 sm:flex-8/10'>
+                    <div className='flex sm:flex-row w-full flex-col gap-4 my-8 sm:flex-8/10'>
                         <FaArrowLeftLong
                             className='w-8 flex sm:flex-1/10 h-6 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1'
                             onClick={() => router(-1)}

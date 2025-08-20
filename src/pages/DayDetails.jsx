@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import {
     FaCamera, FaCoffee, FaHiking, FaTshirt, FaUtensils,
-    FaUniversity, FaShoppingBag, FaUmbrellaBeach, FaTree, FaExclamationTriangle
+    FaUniversity, FaShoppingBag, FaUmbrellaBeach, FaTree, FaExclamationTriangle,
+    FaSpa
 } from 'react-icons/fa';
 import { FaArrowLeftLong, FaRegClock, FaSun } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -40,6 +41,9 @@ function DayDetails() {
             return pick(<FaShoppingBag className="w-5 h-5" />, 'text-pink-600');
         if (category === 'outdoor' || /hike|trail|loop/.test(text))
             return pick(<FaHiking className="w-5 h-5" />, 'text-orange-600');
+        if (category === 'wellness' || /spa|relax|wellness|massage/.test(text))
+            return pick(<FaSpa className='w-5 h-5' />, 'text-teal-600');
+
 
         return pick(<FaCamera className="w-5 h-5" />, 'text-gray-600');
     };
@@ -75,10 +79,10 @@ function DayDetails() {
     }
 
     return (
-        <div className='bg-gray-50 my-10 px-4 py-16 sm:px-6 lg:px-8 min-h-screen'>
-            <section className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg" data-aos="fade-in">
+        <div className='bg-gray-50  sm:px-4 sm:py-20 lg:px-8  min-h-screen'>
+            <section className="relative max-w-7xl mx-auto sm:py-6 sm:px-4 bg-white shadow-lg w-full px-2 rounded-lg" data-aos="fade-in">
                 {/* Header */}
-                <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start p-4 mb-8" data-aos="fade-in" data-aos-delay="100">
+                <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start pt-8 p-4 " data-aos="fade-in" data-aos-delay="100">
                     <FaArrowLeftLong
                         className='w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer duration-200 transition-all hover:-translate-x-1'
                         onClick={() => router(-1)}
@@ -172,7 +176,7 @@ function DayDetails() {
                                 </div>
 
                                 {/* Actions */}
-                                <div className="flex sm:flex-row flex-col px-4 sm:px-6 gap-2 pb-4">
+                                <div className="flex flex-row px-4 sm:px-6 gap-2 sm:pb-4">
                                     <button
                                         onClick={() => router('/edit', { state: { dayKey, index } })}
                                         className="flex-1 py-3 sm:py-4 text-center text-blue-600 hover:bg-blue-50 transition-colors duration-200 font-semibold text-sm rounded-lg sm:text-base border border-blue-500 cursor-pointer"

@@ -6,7 +6,6 @@ import RoundLoader from '../components/RoundLoader';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { usePlan } from '../contexts/PlanContext';
-import { demoItinerary } from '../data/DemoItinerary';
 import axios from 'axios';
 // import axios from 'axios';
 
@@ -102,15 +101,15 @@ function GenerateItinerary() {
     try {
       const data = {
         location_name: formData.destination,
-        start_date: formData.startDate || "2025-08-20",
+        start_date: formData.startDate ,
         end_date: formData.endDate,
         travel_styles: formData.travelStyles,
         added_places: selectedData
       }
       console.log(data)
       // TODO: call your backend with selectedData to generate a real plan
-      const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/generatePlan`, data, {
-      // const response = await axios.post(`https://xsng2q.buildship.run/generate`, data, {
+      // const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/generatePlan`, data, {
+      const response = await axios.post(`https://xsng2q.buildship.run/generate`, data, {
         headers: "application/json"
       })
       if (!response) {
@@ -149,7 +148,7 @@ function GenerateItinerary() {
   const truncate = (s = '', n = 70) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 
   return (
-    <div className="relative bg-gray-50 px-4 py-20 sm:px-6 lg:px-8 min-h-screen">
+    <div className="relative bg-gray-50 sm:px-4 sm:py-20 lg:px-8 min-h-screen">
       <section className="relative max-w-7xl mx-auto pt-4 px-4 bg-white shadow-lg w-full rounded-lg" data-aos="fade-right">
         <div className="flex md:flex-row flex-col md:justify-between gap-4 items-start my-8 p-4" data-aos="fade-in" data-aos-delay="100">
           <FaArrowLeftLong className="w-6 h-6 flex-1/10 text-gray-700 my-2 cursor-pointer hover:-translate-x-1" onClick={() => router('/')} />

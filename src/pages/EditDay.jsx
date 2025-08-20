@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FaArrowLeftLong, FaImage, FaUpload } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlan } from '../contexts/PlanContext';
-import { demoItinerary } from '../data/DemoItinerary';
 import { uploadActivityImage } from '../lib/supabase/Storage';
 import toast from 'react-hot-toast';
 
@@ -16,7 +15,7 @@ function EditDay() {
   const index = state?.index ?? 0;
 
   // Source: draft -> demo fallback
-  const planData = draftPlan?.plan || demoItinerary;
+  const planData = draftPlan?.plan;
   const item = planData?.[dayKey]?.Activities?.[index];
 
   // Parse a "time" like "08:30 PM - 09:30 PM" into start/end inputs
@@ -142,9 +141,9 @@ function EditDay() {
   }
 
   return (
-    <div className='bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 min-h-screen mt-10'>
+    <div className='bg-gray-50  sm:px-4 sm:py-20 lg:px-8  min-h-screen'>
       <section
-        className="relative max-w-7xl mx-auto sm:py-10 sm:px-4 bg-white shadow-lg w-full rounded-lg"
+        className="relative max-w-7xl mx-auto py-8 sm:py-10 sm:px-4 px-2 bg-white shadow-lg w-full rounded-lg"
         data-aos="fade-in"
       >
         {/* Header */}
