@@ -35,7 +35,7 @@ const Features = () => {
                 </div>
             </section>
 
-            <section className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col' data-aos="fade-up">
+            <section className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col' data-aos="fade-right">
                 <div className='flex flex-wrap justify-center sm:space-x-10 space-x-0 mt-10'>
                     {
                         AppFeatures.map((feature, index) => {

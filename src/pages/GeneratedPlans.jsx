@@ -70,7 +70,7 @@ function GeneratedPlans() {
             setItineraries(trips);
         } catch (error) {
             console.error('Error fetching itineraries:', error);
-            toast.error('Failed to load your trips');
+            toast.error('No any trips founded!');
         } finally {
             setLoading(false);
         }
@@ -152,7 +152,7 @@ function GeneratedPlans() {
                             You haven't created any trip plans yet. Start by generating your first itinerary!
                         </p>
                         <button
-                            onClick={() => router('/suggestions')}
+                            onClick={() => router('/')}
                             className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all"
                         >
                             Create Your First Trip
