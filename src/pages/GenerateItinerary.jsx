@@ -108,8 +108,8 @@ function GenerateItinerary() {
       }
       console.log(data)
       // TODO: call your backend with selectedData to generate a real plan
-      // const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/generatePlan`, data, {
-      const response = await axios.post(`https://xsng2q.buildship.run/generate`, data, {
+      const response = await axios.post(`${import.meta.env.VITE_BUILDSHIP_API_URL}/generatePlan`, data, {
+      // const response = await axios.post(`https://xsng2q.buildship.run/generate`, data, {
         headers: "application/json"
       })
       if (!response) {
