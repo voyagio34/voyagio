@@ -13,7 +13,7 @@ const Navbar = () => {
     const location = useLocation();
     const { session, signOut } = useAuth();
 
-    useEffect(() => {
+useEffect(() => {
         // Handle scroll effect]
         const handleScroll = () => {
             setScrolled(window.scrollY > 20)
